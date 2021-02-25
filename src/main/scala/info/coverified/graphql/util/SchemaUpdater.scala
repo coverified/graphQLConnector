@@ -26,7 +26,7 @@ object SchemaUpdater {
     val packageName = "info.coverified.graphql.schema"
     val objName = "CoVerifiedClientSchema"
     val outputPath =
-      "src/main/scala/info/coverified/graphql/schema/CoVerifiedClientSchema.scala"
+      "graphQLConnector/src/main/scala/info/coverified/graphql/schema/CoVerifiedClientSchema.scala"
 
     // run code
     val runtime = zio.Runtime.default
