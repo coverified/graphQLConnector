@@ -418,7 +418,7 @@ object ClientWriter {
                mappingClashedTypeNames
              )}"""
          )
-         .mkString(", ")}))
+         .mkString(", ")}).filterNot(_._2.equals(__NullValue)))
        |    override def typeName: String = "$inputObjectName"
        |  }
        |}""".stripMargin
