@@ -23,10 +23,15 @@ object CoVerifiedClientSchema {
   type Upload = String
 
   sealed trait SortUrlsBy extends scala.Product with scala.Serializable
+
   object SortUrlsBy {
+
     case object id_ASC extends SortUrlsBy
+
     case object id_DESC extends SortUrlsBy
+
     case object url_ASC extends SortUrlsBy
+
     case object url_DESC extends SortUrlsBy
 
     implicit val decoder: ScalarDecoder[SortUrlsBy] = {
@@ -44,19 +49,29 @@ object CoVerifiedClientSchema {
         case SortUrlsBy.url_ASC  => __EnumValue("url_ASC")
         case SortUrlsBy.url_DESC => __EnumValue("url_DESC")
       }
+
       override def typeName: String = "SortUrlsBy"
     }
   }
 
   sealed trait SortOrganizationsBy extends scala.Product with scala.Serializable
+
   object SortOrganizationsBy {
+
     case object id_ASC extends SortOrganizationsBy
+
     case object id_DESC extends SortOrganizationsBy
+
     case object name_ASC extends SortOrganizationsBy
+
     case object name_DESC extends SortOrganizationsBy
+
     case object updatedAt_ASC extends SortOrganizationsBy
+
     case object updatedAt_DESC extends SortOrganizationsBy
+
     case object createdAt_ASC extends SortOrganizationsBy
+
     case object createdAt_DESC extends SortOrganizationsBy
 
     implicit val decoder: ScalarDecoder[SortOrganizationsBy] = {
@@ -91,25 +106,41 @@ object CoVerifiedClientSchema {
           case SortOrganizationsBy.createdAt_DESC =>
             __EnumValue("createdAt_DESC")
         }
+
         override def typeName: String = "SortOrganizationsBy"
       }
   }
 
   sealed trait SortTagsBy extends scala.Product with scala.Serializable
+
   object SortTagsBy {
+
     case object id_ASC extends SortTagsBy
+
     case object id_DESC extends SortTagsBy
+
     case object name_ASC extends SortTagsBy
+
     case object name_DESC extends SortTagsBy
+
     case object language_ASC extends SortTagsBy
+
     case object language_DESC extends SortTagsBy
+
     case object description_ASC extends SortTagsBy
+
     case object description_DESC extends SortTagsBy
+
     case object relevance_ASC extends SortTagsBy
+
     case object relevance_DESC extends SortTagsBy
+
     case object updatedAt_ASC extends SortTagsBy
+
     case object updatedAt_DESC extends SortTagsBy
+
     case object createdAt_ASC extends SortTagsBy
+
     case object createdAt_DESC extends SortTagsBy
 
     implicit val decoder: ScalarDecoder[SortTagsBy] = {
@@ -148,19 +179,29 @@ object CoVerifiedClientSchema {
         case SortTagsBy.createdAt_ASC    => __EnumValue("createdAt_ASC")
         case SortTagsBy.createdAt_DESC   => __EnumValue("createdAt_DESC")
       }
+
       override def typeName: String = "SortTagsBy"
     }
   }
 
   sealed trait SortLanguagesBy extends scala.Product with scala.Serializable
+
   object SortLanguagesBy {
+
     case object id_ASC extends SortLanguagesBy
+
     case object id_DESC extends SortLanguagesBy
+
     case object name_ASC extends SortLanguagesBy
+
     case object name_DESC extends SortLanguagesBy
+
     case object updatedAt_ASC extends SortLanguagesBy
+
     case object updatedAt_DESC extends SortLanguagesBy
+
     case object createdAt_ASC extends SortLanguagesBy
+
     case object createdAt_DESC extends SortLanguagesBy
 
     implicit val decoder: ScalarDecoder[SortLanguagesBy] = {
@@ -191,21 +232,33 @@ object CoVerifiedClientSchema {
           case SortLanguagesBy.createdAt_ASC  => __EnumValue("createdAt_ASC")
           case SortLanguagesBy.createdAt_DESC => __EnumValue("createdAt_DESC")
         }
+
         override def typeName: String = "SortLanguagesBy"
       }
   }
 
   sealed trait SortGeoLocationsBy extends scala.Product with scala.Serializable
+
   object SortGeoLocationsBy {
+
     case object id_ASC extends SortGeoLocationsBy
+
     case object id_DESC extends SortGeoLocationsBy
+
     case object name_ASC extends SortGeoLocationsBy
+
     case object name_DESC extends SortGeoLocationsBy
+
     case object radius_ASC extends SortGeoLocationsBy
+
     case object radius_DESC extends SortGeoLocationsBy
+
     case object updatedAt_ASC extends SortGeoLocationsBy
+
     case object updatedAt_DESC extends SortGeoLocationsBy
+
     case object createdAt_ASC extends SortGeoLocationsBy
+
     case object createdAt_DESC extends SortGeoLocationsBy
 
     implicit val decoder: ScalarDecoder[SortGeoLocationsBy] = {
@@ -242,27 +295,45 @@ object CoVerifiedClientSchema {
           case SortGeoLocationsBy.createdAt_DESC =>
             __EnumValue("createdAt_DESC")
         }
+
         override def typeName: String = "SortGeoLocationsBy"
       }
   }
 
   sealed trait SortSourcesBy extends scala.Product with scala.Serializable
+
   object SortSourcesBy {
+
     case object id_ASC extends SortSourcesBy
+
     case object id_DESC extends SortSourcesBy
+
     case object name_ASC extends SortSourcesBy
+
     case object name_DESC extends SortSourcesBy
+
     case object acronym_ASC extends SortSourcesBy
+
     case object acronym_DESC extends SortSourcesBy
+
     case object url_ASC extends SortSourcesBy
+
     case object url_DESC extends SortSourcesBy
+
     case object location_ASC extends SortSourcesBy
+
     case object location_DESC extends SortSourcesBy
+
     case object description_ASC extends SortSourcesBy
+
     case object description_DESC extends SortSourcesBy
+
     case object updatedAt_ASC extends SortSourcesBy
+
     case object updatedAt_DESC extends SortSourcesBy
+
     case object createdAt_ASC extends SortSourcesBy
+
     case object createdAt_DESC extends SortSourcesBy
 
     implicit val decoder: ScalarDecoder[SortSourcesBy] = {
@@ -309,25 +380,41 @@ object CoVerifiedClientSchema {
           case SortSourcesBy.createdAt_ASC    => __EnumValue("createdAt_ASC")
           case SortSourcesBy.createdAt_DESC   => __EnumValue("createdAt_DESC")
         }
+
         override def typeName: String = "SortSourcesBy"
       }
   }
 
   sealed trait SortWidgetsBy extends scala.Product with scala.Serializable
+
   object SortWidgetsBy {
+
     case object id_ASC extends SortWidgetsBy
+
     case object id_DESC extends SortWidgetsBy
+
     case object name_ASC extends SortWidgetsBy
+
     case object name_DESC extends SortWidgetsBy
+
     case object organization_ASC extends SortWidgetsBy
+
     case object organization_DESC extends SortWidgetsBy
+
     case object language_ASC extends SortWidgetsBy
+
     case object language_DESC extends SortWidgetsBy
+
     case object sources_ASC extends SortWidgetsBy
+
     case object sources_DESC extends SortWidgetsBy
+
     case object updatedAt_ASC extends SortWidgetsBy
+
     case object updatedAt_DESC extends SortWidgetsBy
+
     case object createdAt_ASC extends SortWidgetsBy
+
     case object createdAt_DESC extends SortWidgetsBy
 
     implicit val decoder: ScalarDecoder[SortWidgetsBy] = {
@@ -371,16 +458,23 @@ object CoVerifiedClientSchema {
           case SortWidgetsBy.createdAt_ASC  => __EnumValue("createdAt_ASC")
           case SortWidgetsBy.createdAt_DESC => __EnumValue("createdAt_DESC")
         }
+
         override def typeName: String = "SortWidgetsBy"
       }
   }
 
   sealed trait EntryTypeType extends scala.Product with scala.Serializable
+
   object EntryTypeType {
+
     case object url extends EntryTypeType
+
     case object image extends EntryTypeType
+
     case object video extends EntryTypeType
+
     case object audio extends EntryTypeType
+
     case object document extends EntryTypeType
 
     implicit val decoder: ScalarDecoder[EntryTypeType] = {
@@ -401,39 +495,69 @@ object CoVerifiedClientSchema {
           case EntryTypeType.audio    => __EnumValue("audio")
           case EntryTypeType.document => __EnumValue("document")
         }
+
         override def typeName: String = "EntryTypeType"
       }
   }
 
   sealed trait SortEntriesBy extends scala.Product with scala.Serializable
+
   object SortEntriesBy {
+
     case object id_ASC extends SortEntriesBy
+
     case object id_DESC extends SortEntriesBy
+
     case object publishDate_ASC extends SortEntriesBy
+
     case object publishDate_DESC extends SortEntriesBy
+
     case object title_ASC extends SortEntriesBy
+
     case object title_DESC extends SortEntriesBy
+
     case object subTitle_ASC extends SortEntriesBy
+
     case object subTitle_DESC extends SortEntriesBy
+
     case object content_ASC extends SortEntriesBy
+
     case object content_DESC extends SortEntriesBy
+
     case object summary_ASC extends SortEntriesBy
+
     case object summary_DESC extends SortEntriesBy
+
     case object url_ASC extends SortEntriesBy
+
     case object url_DESC extends SortEntriesBy
+
     case object tags_ASC extends SortEntriesBy
+
     case object tags_DESC extends SortEntriesBy
+
     case object language_ASC extends SortEntriesBy
+
     case object language_DESC extends SortEntriesBy
+
     case object source_ASC extends SortEntriesBy
+
     case object source_DESC extends SortEntriesBy
+
     case object hasBeenTagged_ASC extends SortEntriesBy
+
     case object hasBeenTagged_DESC extends SortEntriesBy
+
     case object type_ASC extends SortEntriesBy
+
     case object type_DESC extends SortEntriesBy
+
     case object updatedAt_ASC extends SortEntriesBy
+
     case object updatedAt_DESC extends SortEntriesBy
+
     case object createdAt_ASC extends SortEntriesBy
+
     case object createdAt_DESC extends SortEntriesBy
 
     implicit val decoder: ScalarDecoder[SortEntriesBy] = {
@@ -508,25 +632,41 @@ object CoVerifiedClientSchema {
           case SortEntriesBy.createdAt_ASC  => __EnumValue("createdAt_ASC")
           case SortEntriesBy.createdAt_DESC => __EnumValue("createdAt_DESC")
         }
+
         override def typeName: String = "SortEntriesBy"
       }
   }
 
   sealed trait SortUsersBy extends scala.Product with scala.Serializable
+
   object SortUsersBy {
+
     case object id_ASC extends SortUsersBy
+
     case object id_DESC extends SortUsersBy
+
     case object name_ASC extends SortUsersBy
+
     case object name_DESC extends SortUsersBy
+
     case object email_ASC extends SortUsersBy
+
     case object email_DESC extends SortUsersBy
+
     case object isAdmin_ASC extends SortUsersBy
+
     case object isAdmin_DESC extends SortUsersBy
+
     case object organization_ASC extends SortUsersBy
+
     case object organization_DESC extends SortUsersBy
+
     case object updatedAt_ASC extends SortUsersBy
+
     case object updatedAt_DESC extends SortUsersBy
+
     case object createdAt_ASC extends SortUsersBy
+
     case object createdAt_DESC extends SortUsersBy
 
     implicit val decoder: ScalarDecoder[SortUsersBy] = {
@@ -567,13 +707,17 @@ object CoVerifiedClientSchema {
           case SortUsersBy.createdAt_ASC     => __EnumValue("createdAt_ASC")
           case SortUsersBy.createdAt_DESC    => __EnumValue("createdAt_DESC")
         }
+
         override def typeName: String = "SortUsersBy"
       }
   }
 
   sealed trait CacheControlScope extends scala.Product with scala.Serializable
+
   object CacheControlScope {
+
     case object PUBLIC extends CacheControlScope
+
     case object PRIVATE extends CacheControlScope
 
     implicit val decoder: ScalarDecoder[CacheControlScope] = {
@@ -588,11 +732,13 @@ object CoVerifiedClientSchema {
           case CacheControlScope.PUBLIC  => __EnumValue("PUBLIC")
           case CacheControlScope.PRIVATE => __EnumValue("PRIVATE")
         }
+
         override def typeName: String = "CacheControlScope"
       }
   }
 
   type Url
+
   object Url {
 
     final case class UrlView(
@@ -615,12 +761,15 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[Url, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[Url, String] = Field("id", Scalar())
+
     def url: SelectionBuilder[Url, Option[String]] =
       Field("url", OptionOf(Scalar()))
   }
 
   type Organization
+
   object Organization {
 
     final case class OrganizationView(
@@ -647,16 +796,21 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[Organization, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[Organization, String] = Field("id", Scalar())
+
     def name: SelectionBuilder[Organization, Option[String]] =
       Field("name", OptionOf(Scalar()))
+
     def updatedAt: SelectionBuilder[Organization, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[Organization, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type CloudinaryImage_File
+
   object CloudinaryImage_File {
 
     final case class CloudinaryImage_FileView(
@@ -703,19 +857,26 @@ object CoVerifiedClientSchema {
 
     def id: SelectionBuilder[CloudinaryImage_File, Option[String]] =
       Field("id", OptionOf(Scalar()))
+
     def path: SelectionBuilder[CloudinaryImage_File, Option[String]] =
       Field("path", OptionOf(Scalar()))
+
     def filename: SelectionBuilder[CloudinaryImage_File, Option[String]] =
       Field("filename", OptionOf(Scalar()))
+
     def originalFilename
         : SelectionBuilder[CloudinaryImage_File, Option[String]] =
       Field("originalFilename", OptionOf(Scalar()))
+
     def mimetype: SelectionBuilder[CloudinaryImage_File, Option[String]] =
       Field("mimetype", OptionOf(Scalar()))
+
     def encoding: SelectionBuilder[CloudinaryImage_File, Option[String]] =
       Field("encoding", OptionOf(Scalar()))
+
     def publicUrl: SelectionBuilder[CloudinaryImage_File, Option[String]] =
       Field("publicUrl", OptionOf(Scalar()))
+
     def publicUrlTransformed(
         transformation: Option[CloudinaryImageFormat] = None
     ): SelectionBuilder[CloudinaryImage_File, Option[String]] = Field(
@@ -726,6 +887,7 @@ object CoVerifiedClientSchema {
   }
 
   type Tag
+
   object Tag {
 
     final case class TagView[LanguageSelection, ImageSelection](
@@ -786,28 +948,37 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[Tag, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[Tag, String] = Field("id", Scalar())
+
     def name: SelectionBuilder[Tag, Option[String]] =
       Field("name", OptionOf(Scalar()))
+
     def language[A](
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[Tag, Option[A]] =
       Field("language", OptionOf(Obj(innerSelection)))
+
     def description: SelectionBuilder[Tag, Option[String]] =
       Field("description", OptionOf(Scalar()))
+
     def relevance: SelectionBuilder[Tag, Option[Int]] =
       Field("relevance", OptionOf(Scalar()))
+
     def image[A](
         innerSelection: SelectionBuilder[CloudinaryImage_File, A]
     ): SelectionBuilder[Tag, Option[A]] =
       Field("image", OptionOf(Obj(innerSelection)))
+
     def updatedAt: SelectionBuilder[Tag, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[Tag, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type Language
+
   object Language {
 
     final case class LanguageView(
@@ -834,16 +1005,21 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[Language, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[Language, String] = Field("id", Scalar())
+
     def name: SelectionBuilder[Language, Option[String]] =
       Field("name", OptionOf(Scalar()))
+
     def updatedAt: SelectionBuilder[Language, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[Language, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type LocationGoogle
+
   object LocationGoogle {
 
     final case class LocationGoogleView(
@@ -864,17 +1040,22 @@ object CoVerifiedClientSchema {
 
     def id: SelectionBuilder[LocationGoogle, Option[String]] =
       Field("id", OptionOf(Scalar()))
+
     def googlePlaceID: SelectionBuilder[LocationGoogle, Option[String]] =
       Field("googlePlaceID", OptionOf(Scalar()))
+
     def formattedAddress: SelectionBuilder[LocationGoogle, Option[String]] =
       Field("formattedAddress", OptionOf(Scalar()))
+
     def lat: SelectionBuilder[LocationGoogle, Option[Double]] =
       Field("lat", OptionOf(Scalar()))
+
     def lng: SelectionBuilder[LocationGoogle, Option[Double]] =
       Field("lng", OptionOf(Scalar()))
   }
 
   type GeoLocation
+
   object GeoLocation {
 
     final case class GeoLocationView[LocationSelection](
@@ -919,22 +1100,29 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[GeoLocation, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[GeoLocation, String] = Field("id", Scalar())
+
     def name: SelectionBuilder[GeoLocation, Option[String]] =
       Field("name", OptionOf(Scalar()))
+
     def location[A](
         innerSelection: SelectionBuilder[LocationGoogle, A]
     ): SelectionBuilder[GeoLocation, Option[A]] =
       Field("location", OptionOf(Obj(innerSelection)))
+
     def radius: SelectionBuilder[GeoLocation, Option[Double]] =
       Field("radius", OptionOf(Scalar()))
+
     def updatedAt: SelectionBuilder[GeoLocation, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[GeoLocation, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type Source
+
   object Source {
 
     final case class SourceView[LocationSelection](
@@ -989,26 +1177,35 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[Source, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[Source, String] = Field("id", Scalar())
+
     def name: SelectionBuilder[Source, Option[String]] =
       Field("name", OptionOf(Scalar()))
+
     def acronym: SelectionBuilder[Source, Option[String]] =
       Field("acronym", OptionOf(Scalar()))
+
     def url: SelectionBuilder[Source, Option[String]] =
       Field("url", OptionOf(Scalar()))
+
     def location[A](
         innerSelection: SelectionBuilder[GeoLocation, A]
     ): SelectionBuilder[Source, Option[A]] =
       Field("location", OptionOf(Obj(innerSelection)))
+
     def description: SelectionBuilder[Source, Option[String]] =
       Field("description", OptionOf(Scalar()))
+
     def updatedAt: SelectionBuilder[Source, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[Source, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type Widget
+
   object Widget {
 
     final case class WidgetView[
@@ -1123,17 +1320,22 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[Widget, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[Widget, String] = Field("id", Scalar())
+
     def name: SelectionBuilder[Widget, Option[String]] =
       Field("name", OptionOf(Scalar()))
+
     def organization[A](
         innerSelection: SelectionBuilder[Organization, A]
     ): SelectionBuilder[Widget, Option[A]] =
       Field("organization", OptionOf(Obj(innerSelection)))
+
     def language[A](
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[Widget, Option[A]] =
       Field("language", OptionOf(Obj(innerSelection)))
+
     def sources[A](
         where: Option[SourceWhereInput] = None,
         search: Option[String] = None,
@@ -1155,6 +1357,7 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
+
     def _sourcesMeta[A](
         where: Option[SourceWhereInput] = None,
         search: Option[String] = None,
@@ -1176,13 +1379,16 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
+
     def updatedAt: SelectionBuilder[Widget, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[Widget, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type Entry
+
   object Entry {
 
     final case class EntryView[
@@ -1345,23 +1551,32 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[Entry, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[Entry, String] = Field("id", Scalar())
+
     def publishDate: SelectionBuilder[Entry, Option[String]] =
       Field("publishDate", OptionOf(Scalar()))
+
     def title: SelectionBuilder[Entry, Option[String]] =
       Field("title", OptionOf(Scalar()))
+
     def subTitle: SelectionBuilder[Entry, Option[String]] =
       Field("subTitle", OptionOf(Scalar()))
+
     def image[A](
         innerSelection: SelectionBuilder[CloudinaryImage_File, A]
     ): SelectionBuilder[Entry, Option[A]] =
       Field("image", OptionOf(Obj(innerSelection)))
+
     def content: SelectionBuilder[Entry, Option[String]] =
       Field("content", OptionOf(Scalar()))
+
     def summary: SelectionBuilder[Entry, Option[String]] =
       Field("summary", OptionOf(Scalar()))
+
     def url: SelectionBuilder[Entry, Option[String]] =
       Field("url", OptionOf(Scalar()))
+
     def tags[A](
         where: Option[TagWhereInput] = None,
         search: Option[String] = None,
@@ -1383,6 +1598,7 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
+
     def _tagsMeta[A](
         where: Option[TagWhereInput] = None,
         search: Option[String] = None,
@@ -1404,25 +1620,32 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
+
     def language[A](
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[Entry, Option[A]] =
       Field("language", OptionOf(Obj(innerSelection)))
+
     def source[A](
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[Entry, Option[A]] =
       Field("source", OptionOf(Obj(innerSelection)))
+
     def hasBeenTagged: SelectionBuilder[Entry, Option[Boolean]] =
       Field("hasBeenTagged", OptionOf(Scalar()))
+
     def `type`: SelectionBuilder[Entry, Option[EntryTypeType]] =
       Field("type", OptionOf(Scalar()))
+
     def updatedAt: SelectionBuilder[Entry, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[Entry, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type User
+
   object User {
 
     final case class UserView[OrganizationSelection](
@@ -1480,26 +1703,35 @@ object CoVerifiedClientSchema {
       */
     def `_label_` : SelectionBuilder[User, Option[String]] =
       Field("_label_", OptionOf(Scalar()))
+
     def id: SelectionBuilder[User, String] = Field("id", Scalar())
+
     def name: SelectionBuilder[User, Option[String]] =
       Field("name", OptionOf(Scalar()))
+
     def email: SelectionBuilder[User, Option[String]] =
       Field("email", OptionOf(Scalar()))
+
     def isAdmin: SelectionBuilder[User, Option[Boolean]] =
       Field("isAdmin", OptionOf(Scalar()))
+
     def password_is_set: SelectionBuilder[User, Option[Boolean]] =
       Field("password_is_set", OptionOf(Scalar()))
+
     def organization[A](
         innerSelection: SelectionBuilder[Organization, A]
     ): SelectionBuilder[User, Option[A]] =
       Field("organization", OptionOf(Obj(innerSelection)))
+
     def updatedAt: SelectionBuilder[User, Option[DateTime]] =
       Field("updatedAt", OptionOf(Scalar()))
+
     def createdAt: SelectionBuilder[User, Option[DateTime]] =
       Field("createdAt", OptionOf(Scalar()))
   }
 
   type _ListAccess
+
   object _ListAccess {
 
     final case class _ListAccessView(
@@ -1552,6 +1784,7 @@ object CoVerifiedClientSchema {
   }
 
   type _ListQueries
+
   object _ListQueries {
 
     final case class _ListQueriesView(
@@ -1583,6 +1816,7 @@ object CoVerifiedClientSchema {
   }
 
   type _ListMutations
+
   object _ListMutations {
 
     final case class _ListMutationsView(
@@ -1644,6 +1878,7 @@ object CoVerifiedClientSchema {
   }
 
   type _ListInputTypes
+
   object _ListInputTypes {
 
     final case class _ListInputTypesView(
@@ -1712,6 +1947,7 @@ object CoVerifiedClientSchema {
   }
 
   type _ListSchemaFields
+
   object _ListSchemaFields {
 
     final case class _ListSchemaFieldsView(
@@ -1745,6 +1981,7 @@ object CoVerifiedClientSchema {
   }
 
   type _ListSchemaRelatedFields
+
   object _ListSchemaRelatedFields {
 
     final case class _ListSchemaRelatedFieldsView(
@@ -1773,6 +2010,7 @@ object CoVerifiedClientSchema {
   }
 
   type _ListSchema
+
   object _ListSchema {
 
     final case class _ListSchemaView[
@@ -1898,6 +2136,7 @@ object CoVerifiedClientSchema {
   }
 
   type _ListMeta
+
   object _ListMeta {
 
     final case class _ListMetaView[AccessSelection, SchemaSelection](
@@ -1999,6 +2238,7 @@ object CoVerifiedClientSchema {
   }
 
   type _QueryMeta
+
   object _QueryMeta {
 
     final case class _QueryMetaView(count: Option[Int])
@@ -2012,6 +2252,7 @@ object CoVerifiedClientSchema {
   }
 
   type unauthenticateUserOutput
+
   object unauthenticateUserOutput {
 
     final case class unauthenticateUserOutputView(success: Option[Boolean])
@@ -2030,6 +2271,7 @@ object CoVerifiedClientSchema {
   }
 
   type authenticateUserOutput
+
   object authenticateUserOutput {
 
     final case class authenticateUserOutputView[ItemSelection](
@@ -2091,6 +2333,7 @@ object CoVerifiedClientSchema {
       url_in: Option[List[Option[String]]] = None,
       url_not_in: Option[List[Option[String]]] = None
   )
+
   object UrlWhereInput {
     implicit val encoder: ArgEncoder[UrlWhereInput] =
       new ArgEncoder[UrlWhereInput] {
@@ -2227,10 +2470,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UrlWhereInput"
       }
   }
+
   case class UrlWhereUniqueInput(id: String)
+
   object UrlWhereUniqueInput {
     implicit val encoder: ArgEncoder[UrlWhereUniqueInput] =
       new ArgEncoder[UrlWhereUniqueInput] {
@@ -2238,10 +2484,13 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "UrlWhereUniqueInput"
       }
   }
+
   case class UrlUpdateInput(url: Option[String] = None)
+
   object UrlUpdateInput {
     implicit val encoder: ArgEncoder[UrlUpdateInput] =
       new ArgEncoder[UrlUpdateInput] {
@@ -2253,10 +2502,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UrlUpdateInput"
       }
   }
+
   case class UrlsUpdateInput(id: String, data: Option[UrlUpdateInput] = None)
+
   object UrlsUpdateInput {
     implicit val encoder: ArgEncoder[UrlsUpdateInput] =
       new ArgEncoder[UrlsUpdateInput] {
@@ -2269,10 +2521,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UrlsUpdateInput"
       }
   }
+
   case class UrlCreateInput(url: Option[String] = None)
+
   object UrlCreateInput {
     implicit val encoder: ArgEncoder[UrlCreateInput] =
       new ArgEncoder[UrlCreateInput] {
@@ -2284,10 +2539,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UrlCreateInput"
       }
   }
+
   case class UrlsCreateInput(data: Option[UrlCreateInput] = None)
+
   object UrlsCreateInput {
     implicit val encoder: ArgEncoder[UrlsCreateInput] =
       new ArgEncoder[UrlsCreateInput] {
@@ -2299,9 +2557,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UrlsCreateInput"
       }
   }
+
   case class OrganizationWhereInput(
       AND: Option[List[Option[OrganizationWhereInput]]] = None,
       OR: Option[List[Option[OrganizationWhereInput]]] = None,
@@ -2344,6 +2604,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object OrganizationWhereInput {
     implicit val encoder: ArgEncoder[OrganizationWhereInput] =
       new ArgEncoder[OrganizationWhereInput] {
@@ -2556,10 +2817,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "OrganizationWhereInput"
       }
   }
+
   case class OrganizationWhereUniqueInput(id: String)
+
   object OrganizationWhereUniqueInput {
     implicit val encoder: ArgEncoder[OrganizationWhereUniqueInput] =
       new ArgEncoder[OrganizationWhereUniqueInput] {
@@ -2567,10 +2831,13 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "OrganizationWhereUniqueInput"
       }
   }
+
   case class OrganizationUpdateInput(name: Option[String] = None)
+
   object OrganizationUpdateInput {
     implicit val encoder: ArgEncoder[OrganizationUpdateInput] =
       new ArgEncoder[OrganizationUpdateInput] {
@@ -2582,13 +2849,16 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "OrganizationUpdateInput"
       }
   }
+
   case class OrganizationsUpdateInput(
       id: String,
       data: Option[OrganizationUpdateInput] = None
   )
+
   object OrganizationsUpdateInput {
     implicit val encoder: ArgEncoder[OrganizationsUpdateInput] =
       new ArgEncoder[OrganizationsUpdateInput] {
@@ -2602,10 +2872,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "OrganizationsUpdateInput"
       }
   }
+
   case class OrganizationCreateInput(name: Option[String] = None)
+
   object OrganizationCreateInput {
     implicit val encoder: ArgEncoder[OrganizationCreateInput] =
       new ArgEncoder[OrganizationCreateInput] {
@@ -2617,12 +2890,15 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "OrganizationCreateInput"
       }
   }
+
   case class OrganizationsCreateInput(
       data: Option[OrganizationCreateInput] = None
   )
+
   object OrganizationsCreateInput {
     implicit val encoder: ArgEncoder[OrganizationsCreateInput] =
       new ArgEncoder[OrganizationsCreateInput] {
@@ -2635,15 +2911,18 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "OrganizationsCreateInput"
       }
   }
+
   case class LanguageRelateToOneInput(
       create: Option[LanguageCreateInput] = None,
       connect: Option[LanguageWhereUniqueInput] = None,
       disconnect: Option[LanguageWhereUniqueInput] = None,
       disconnectAll: Option[Boolean] = None
   )
+
   object LanguageRelateToOneInput {
     implicit val encoder: ArgEncoder[LanguageRelateToOneInput] =
       new ArgEncoder[LanguageRelateToOneInput] {
@@ -2667,9 +2946,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "LanguageRelateToOneInput"
       }
   }
+
   case class CloudinaryImageFormat(
       prettyName: Option[String] = None,
       width: Option[String] = None,
@@ -2701,6 +2982,7 @@ object CoVerifiedClientSchema {
       flags: Option[String] = None,
       transformation: Option[String] = None
   )
+
   object CloudinaryImageFormat {
     implicit val encoder: ArgEncoder[CloudinaryImageFormat] =
       new ArgEncoder[CloudinaryImageFormat] {
@@ -2796,9 +3078,11 @@ object CoVerifiedClientSchema {
               )(value => implicitly[ArgEncoder[String]].encode(value))
             )
           )
+
         override def typeName: String = "CloudinaryImageFormat"
       }
   }
+
   case class TagWhereInput(
       AND: Option[List[Option[TagWhereInput]]] = None,
       OR: Option[List[Option[TagWhereInput]]] = None,
@@ -2873,6 +3157,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object TagWhereInput {
     implicit val encoder: ArgEncoder[TagWhereInput] =
       new ArgEncoder[TagWhereInput] {
@@ -3242,10 +3527,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "TagWhereInput"
       }
   }
+
   case class TagWhereUniqueInput(id: String)
+
   object TagWhereUniqueInput {
     implicit val encoder: ArgEncoder[TagWhereUniqueInput] =
       new ArgEncoder[TagWhereUniqueInput] {
@@ -3253,9 +3541,11 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "TagWhereUniqueInput"
       }
   }
+
   case class TagUpdateInput(
       name: Option[String] = None,
       language: Option[LanguageRelateToOneInput] = None,
@@ -3263,6 +3553,7 @@ object CoVerifiedClientSchema {
       relevance: Option[Int] = None,
       image: Option[Upload] = None
   )
+
   object TagUpdateInput {
     implicit val encoder: ArgEncoder[TagUpdateInput] =
       new ArgEncoder[TagUpdateInput] {
@@ -3287,10 +3578,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "TagUpdateInput"
       }
   }
+
   case class TagsUpdateInput(id: String, data: Option[TagUpdateInput] = None)
+
   object TagsUpdateInput {
     implicit val encoder: ArgEncoder[TagsUpdateInput] =
       new ArgEncoder[TagsUpdateInput] {
@@ -3303,9 +3597,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "TagsUpdateInput"
       }
   }
+
   case class TagCreateInput(
       name: Option[String] = None,
       language: Option[LanguageRelateToOneInput] = None,
@@ -3313,6 +3609,7 @@ object CoVerifiedClientSchema {
       relevance: Option[Int] = None,
       image: Option[Upload] = None
   )
+
   object TagCreateInput {
     implicit val encoder: ArgEncoder[TagCreateInput] =
       new ArgEncoder[TagCreateInput] {
@@ -3337,10 +3634,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "TagCreateInput"
       }
   }
+
   case class TagsCreateInput(data: Option[TagCreateInput] = None)
+
   object TagsCreateInput {
     implicit val encoder: ArgEncoder[TagsCreateInput] =
       new ArgEncoder[TagsCreateInput] {
@@ -3352,9 +3652,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "TagsCreateInput"
       }
   }
+
   case class LanguageWhereInput(
       AND: Option[List[Option[LanguageWhereInput]]] = None,
       OR: Option[List[Option[LanguageWhereInput]]] = None,
@@ -3397,6 +3699,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object LanguageWhereInput {
     implicit val encoder: ArgEncoder[LanguageWhereInput] =
       new ArgEncoder[LanguageWhereInput] {
@@ -3609,10 +3912,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "LanguageWhereInput"
       }
   }
+
   case class LanguageWhereUniqueInput(id: String)
+
   object LanguageWhereUniqueInput {
     implicit val encoder: ArgEncoder[LanguageWhereUniqueInput] =
       new ArgEncoder[LanguageWhereUniqueInput] {
@@ -3620,10 +3926,13 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "LanguageWhereUniqueInput"
       }
   }
+
   case class LanguageUpdateInput(name: Option[String] = None)
+
   object LanguageUpdateInput {
     implicit val encoder: ArgEncoder[LanguageUpdateInput] =
       new ArgEncoder[LanguageUpdateInput] {
@@ -3635,13 +3944,16 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "LanguageUpdateInput"
       }
   }
+
   case class LanguagesUpdateInput(
       id: String,
       data: Option[LanguageUpdateInput] = None
   )
+
   object LanguagesUpdateInput {
     implicit val encoder: ArgEncoder[LanguagesUpdateInput] =
       new ArgEncoder[LanguagesUpdateInput] {
@@ -3655,10 +3967,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "LanguagesUpdateInput"
       }
   }
+
   case class LanguageCreateInput(name: Option[String] = None)
+
   object LanguageCreateInput {
     implicit val encoder: ArgEncoder[LanguageCreateInput] =
       new ArgEncoder[LanguageCreateInput] {
@@ -3670,10 +3985,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "LanguageCreateInput"
       }
   }
+
   case class LanguagesCreateInput(data: Option[LanguageCreateInput] = None)
+
   object LanguagesCreateInput {
     implicit val encoder: ArgEncoder[LanguagesCreateInput] =
       new ArgEncoder[LanguagesCreateInput] {
@@ -3686,9 +4004,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "LanguagesCreateInput"
       }
   }
+
   case class GeoLocationWhereInput(
       AND: Option[List[Option[GeoLocationWhereInput]]] = None,
       OR: Option[List[Option[GeoLocationWhereInput]]] = None,
@@ -3743,6 +4063,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object GeoLocationWhereInput {
     implicit val encoder: ArgEncoder[GeoLocationWhereInput] =
       new ArgEncoder[GeoLocationWhereInput] {
@@ -4025,10 +4346,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "GeoLocationWhereInput"
       }
   }
+
   case class GeoLocationWhereUniqueInput(id: String)
+
   object GeoLocationWhereUniqueInput {
     implicit val encoder: ArgEncoder[GeoLocationWhereUniqueInput] =
       new ArgEncoder[GeoLocationWhereUniqueInput] {
@@ -4036,14 +4360,17 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "GeoLocationWhereUniqueInput"
       }
   }
+
   case class GeoLocationUpdateInput(
       name: Option[String] = None,
       location: Option[String] = None,
       radius: Option[Double] = None
   )
+
   object GeoLocationUpdateInput {
     implicit val encoder: ArgEncoder[GeoLocationUpdateInput] =
       new ArgEncoder[GeoLocationUpdateInput] {
@@ -4061,13 +4388,16 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "GeoLocationUpdateInput"
       }
   }
+
   case class GeoLocationsUpdateInput(
       id: String,
       data: Option[GeoLocationUpdateInput] = None
   )
+
   object GeoLocationsUpdateInput {
     implicit val encoder: ArgEncoder[GeoLocationsUpdateInput] =
       new ArgEncoder[GeoLocationsUpdateInput] {
@@ -4081,14 +4411,17 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "GeoLocationsUpdateInput"
       }
   }
+
   case class GeoLocationCreateInput(
       name: Option[String] = None,
       location: Option[String] = None,
       radius: Option[Double] = None
   )
+
   object GeoLocationCreateInput {
     implicit val encoder: ArgEncoder[GeoLocationCreateInput] =
       new ArgEncoder[GeoLocationCreateInput] {
@@ -4106,12 +4439,15 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "GeoLocationCreateInput"
       }
   }
+
   case class GeoLocationsCreateInput(
       data: Option[GeoLocationCreateInput] = None
   )
+
   object GeoLocationsCreateInput {
     implicit val encoder: ArgEncoder[GeoLocationsCreateInput] =
       new ArgEncoder[GeoLocationsCreateInput] {
@@ -4124,15 +4460,18 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "GeoLocationsCreateInput"
       }
   }
+
   case class GeoLocationRelateToOneInput(
       create: Option[GeoLocationCreateInput] = None,
       connect: Option[GeoLocationWhereUniqueInput] = None,
       disconnect: Option[GeoLocationWhereUniqueInput] = None,
       disconnectAll: Option[Boolean] = None
   )
+
   object GeoLocationRelateToOneInput {
     implicit val encoder: ArgEncoder[GeoLocationRelateToOneInput] =
       new ArgEncoder[GeoLocationRelateToOneInput] {
@@ -4158,9 +4497,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "GeoLocationRelateToOneInput"
       }
   }
+
   case class SourceWhereInput(
       AND: Option[List[Option[SourceWhereInput]]] = None,
       OR: Option[List[Option[SourceWhereInput]]] = None,
@@ -4259,6 +4600,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object SourceWhereInput {
     implicit val encoder: ArgEncoder[SourceWhereInput] =
       new ArgEncoder[SourceWhereInput] {
@@ -4701,10 +5043,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "SourceWhereInput"
       }
   }
+
   case class SourceWhereUniqueInput(id: String)
+
   object SourceWhereUniqueInput {
     implicit val encoder: ArgEncoder[SourceWhereUniqueInput] =
       new ArgEncoder[SourceWhereUniqueInput] {
@@ -4712,9 +5057,11 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "SourceWhereUniqueInput"
       }
   }
+
   case class SourceUpdateInput(
       name: Option[String] = None,
       acronym: Option[String] = None,
@@ -4722,6 +5069,7 @@ object CoVerifiedClientSchema {
       location: Option[GeoLocationRelateToOneInput] = None,
       description: Option[String] = None
   )
+
   object SourceUpdateInput {
     implicit val encoder: ArgEncoder[SourceUpdateInput] =
       new ArgEncoder[SourceUpdateInput] {
@@ -4747,13 +5095,16 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "SourceUpdateInput"
       }
   }
+
   case class SourcesUpdateInput(
       id: String,
       data: Option[SourceUpdateInput] = None
   )
+
   object SourcesUpdateInput {
     implicit val encoder: ArgEncoder[SourcesUpdateInput] =
       new ArgEncoder[SourcesUpdateInput] {
@@ -4766,9 +5117,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "SourcesUpdateInput"
       }
   }
+
   case class SourceCreateInput(
       name: Option[String] = None,
       acronym: Option[String] = None,
@@ -4776,6 +5129,7 @@ object CoVerifiedClientSchema {
       location: Option[GeoLocationRelateToOneInput] = None,
       description: Option[String] = None
   )
+
   object SourceCreateInput {
     implicit val encoder: ArgEncoder[SourceCreateInput] =
       new ArgEncoder[SourceCreateInput] {
@@ -4801,10 +5155,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "SourceCreateInput"
       }
   }
+
   case class SourcesCreateInput(data: Option[SourceCreateInput] = None)
+
   object SourcesCreateInput {
     implicit val encoder: ArgEncoder[SourcesCreateInput] =
       new ArgEncoder[SourcesCreateInput] {
@@ -4816,15 +5173,18 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "SourcesCreateInput"
       }
   }
+
   case class OrganizationRelateToOneInput(
       create: Option[OrganizationCreateInput] = None,
       connect: Option[OrganizationWhereUniqueInput] = None,
       disconnect: Option[OrganizationWhereUniqueInput] = None,
       disconnectAll: Option[Boolean] = None
   )
+
   object OrganizationRelateToOneInput {
     implicit val encoder: ArgEncoder[OrganizationRelateToOneInput] =
       new ArgEncoder[OrganizationRelateToOneInput] {
@@ -4850,15 +5210,18 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "OrganizationRelateToOneInput"
       }
   }
+
   case class SourceRelateToManyInput(
       create: Option[List[Option[SourceCreateInput]]] = None,
       connect: Option[List[Option[SourceWhereUniqueInput]]] = None,
       disconnect: Option[List[Option[SourceWhereUniqueInput]]] = None,
       disconnectAll: Option[Boolean] = None
   )
+
   object SourceRelateToManyInput {
     implicit val encoder: ArgEncoder[SourceRelateToManyInput] =
       new ArgEncoder[SourceRelateToManyInput] {
@@ -4909,9 +5272,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "SourceRelateToManyInput"
       }
   }
+
   case class WidgetWhereInput(
       AND: Option[List[Option[WidgetWhereInput]]] = None,
       OR: Option[List[Option[WidgetWhereInput]]] = None,
@@ -4961,6 +5326,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object WidgetWhereInput {
     implicit val encoder: ArgEncoder[WidgetWhereInput] =
       new ArgEncoder[WidgetWhereInput] {
@@ -5196,10 +5562,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "WidgetWhereInput"
       }
   }
+
   case class WidgetWhereUniqueInput(id: String)
+
   object WidgetWhereUniqueInput {
     implicit val encoder: ArgEncoder[WidgetWhereUniqueInput] =
       new ArgEncoder[WidgetWhereUniqueInput] {
@@ -5207,15 +5576,18 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "WidgetWhereUniqueInput"
       }
   }
+
   case class WidgetUpdateInput(
       name: Option[String] = None,
       organization: Option[OrganizationRelateToOneInput] = None,
       language: Option[LanguageRelateToOneInput] = None,
       sources: Option[SourceRelateToManyInput] = None
   )
+
   object WidgetUpdateInput {
     implicit val encoder: ArgEncoder[WidgetUpdateInput] =
       new ArgEncoder[WidgetUpdateInput] {
@@ -5240,13 +5612,16 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "WidgetUpdateInput"
       }
   }
+
   case class WidgetsUpdateInput(
       id: String,
       data: Option[WidgetUpdateInput] = None
   )
+
   object WidgetsUpdateInput {
     implicit val encoder: ArgEncoder[WidgetsUpdateInput] =
       new ArgEncoder[WidgetsUpdateInput] {
@@ -5259,15 +5634,18 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "WidgetsUpdateInput"
       }
   }
+
   case class WidgetCreateInput(
       name: Option[String] = None,
       organization: Option[OrganizationRelateToOneInput] = None,
       language: Option[LanguageRelateToOneInput] = None,
       sources: Option[SourceRelateToManyInput] = None
   )
+
   object WidgetCreateInput {
     implicit val encoder: ArgEncoder[WidgetCreateInput] =
       new ArgEncoder[WidgetCreateInput] {
@@ -5292,10 +5670,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "WidgetCreateInput"
       }
   }
+
   case class WidgetsCreateInput(data: Option[WidgetCreateInput] = None)
+
   object WidgetsCreateInput {
     implicit val encoder: ArgEncoder[WidgetsCreateInput] =
       new ArgEncoder[WidgetsCreateInput] {
@@ -5307,15 +5688,18 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "WidgetsCreateInput"
       }
   }
+
   case class TagRelateToManyInput(
       create: Option[List[Option[TagCreateInput]]] = None,
       connect: Option[List[Option[TagWhereUniqueInput]]] = None,
       disconnect: Option[List[Option[TagWhereUniqueInput]]] = None,
       disconnectAll: Option[Boolean] = None
   )
+
   object TagRelateToManyInput {
     implicit val encoder: ArgEncoder[TagRelateToManyInput] =
       new ArgEncoder[TagRelateToManyInput] {
@@ -5365,15 +5749,18 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "TagRelateToManyInput"
       }
   }
+
   case class SourceRelateToOneInput(
       create: Option[SourceCreateInput] = None,
       connect: Option[SourceWhereUniqueInput] = None,
       disconnect: Option[SourceWhereUniqueInput] = None,
       disconnectAll: Option[Boolean] = None
   )
+
   object SourceRelateToOneInput {
     implicit val encoder: ArgEncoder[SourceRelateToOneInput] =
       new ArgEncoder[SourceRelateToOneInput] {
@@ -5396,9 +5783,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "SourceRelateToOneInput"
       }
   }
+
   case class EntryWhereInput(
       AND: Option[List[Option[EntryWhereInput]]] = None,
       OR: Option[List[Option[EntryWhereInput]]] = None,
@@ -5538,6 +5927,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object EntryWhereInput {
     implicit val encoder: ArgEncoder[EntryWhereInput] =
       new ArgEncoder[EntryWhereInput] {
@@ -6169,10 +6559,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "EntryWhereInput"
       }
   }
+
   case class EntryWhereUniqueInput(id: String)
+
   object EntryWhereUniqueInput {
     implicit val encoder: ArgEncoder[EntryWhereUniqueInput] =
       new ArgEncoder[EntryWhereUniqueInput] {
@@ -6180,9 +6573,11 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "EntryWhereUniqueInput"
       }
   }
+
   case class EntryUpdateInput(
       publishDate: Option[String] = None,
       title: Option[String] = None,
@@ -6197,6 +6592,7 @@ object CoVerifiedClientSchema {
       hasBeenTagged: Option[Boolean] = None,
       `type`: Option[EntryTypeType] = None
   )
+
   object EntryUpdateInput {
     implicit val encoder: ArgEncoder[EntryUpdateInput] =
       new ArgEncoder[EntryUpdateInput] {
@@ -6244,13 +6640,16 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "EntryUpdateInput"
       }
   }
+
   case class EntriesUpdateInput(
       id: String,
       data: Option[EntryUpdateInput] = None
   )
+
   object EntriesUpdateInput {
     implicit val encoder: ArgEncoder[EntriesUpdateInput] =
       new ArgEncoder[EntriesUpdateInput] {
@@ -6263,9 +6662,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "EntriesUpdateInput"
       }
   }
+
   case class EntryCreateInput(
       publishDate: Option[String] = None,
       title: Option[String] = None,
@@ -6280,10 +6681,11 @@ object CoVerifiedClientSchema {
       hasBeenTagged: Option[Boolean] = None,
       `type`: Option[EntryTypeType] = None
   )
+
   object EntryCreateInput {
     implicit val encoder: ArgEncoder[EntryCreateInput] =
       new ArgEncoder[EntryCreateInput] {
-        override def encode(value: EntryCreateInput): __Value =
+        override def encode(value: EntryCreateInput): __Value = {
           __ObjectValue(
             List(
               "publishDate" -> value.publishDate.fold(__NullValue: __Value)(
@@ -6325,12 +6727,15 @@ object CoVerifiedClientSchema {
               "type" -> value.`type`.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[EntryTypeType]].encode(value)
               )
-            )
+            ).filterNot(_._2.equals(__NullValue))
           )
+        }
         override def typeName: String = "EntryCreateInput"
       }
   }
+
   case class EntriesCreateInput(data: Option[EntryCreateInput] = None)
+
   object EntriesCreateInput {
     implicit val encoder: ArgEncoder[EntriesCreateInput] =
       new ArgEncoder[EntriesCreateInput] {
@@ -6342,9 +6747,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "EntriesCreateInput"
       }
   }
+
   case class UserWhereInput(
       AND: Option[List[Option[UserWhereInput]]] = None,
       OR: Option[List[Option[UserWhereInput]]] = None,
@@ -6410,6 +6817,7 @@ object CoVerifiedClientSchema {
       createdAt_in: Option[List[Option[DateTime]]] = None,
       createdAt_not_in: Option[List[Option[DateTime]]] = None
   )
+
   object UserWhereInput {
     implicit val encoder: ArgEncoder[UserWhereInput] =
       new ArgEncoder[UserWhereInput] {
@@ -6708,10 +7116,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UserWhereInput"
       }
   }
+
   case class UserWhereUniqueInput(id: String)
+
   object UserWhereUniqueInput {
     implicit val encoder: ArgEncoder[UserWhereUniqueInput] =
       new ArgEncoder[UserWhereUniqueInput] {
@@ -6719,9 +7130,11 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
           )
+
         override def typeName: String = "UserWhereUniqueInput"
       }
   }
+
   case class UserUpdateInput(
       name: Option[String] = None,
       email: Option[String] = None,
@@ -6729,6 +7142,7 @@ object CoVerifiedClientSchema {
       password: Option[String] = None,
       organization: Option[OrganizationRelateToOneInput] = None
   )
+
   object UserUpdateInput {
     implicit val encoder: ArgEncoder[UserUpdateInput] =
       new ArgEncoder[UserUpdateInput] {
@@ -6755,10 +7169,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UserUpdateInput"
       }
   }
+
   case class UsersUpdateInput(id: String, data: Option[UserUpdateInput] = None)
+
   object UsersUpdateInput {
     implicit val encoder: ArgEncoder[UsersUpdateInput] =
       new ArgEncoder[UsersUpdateInput] {
@@ -6771,9 +7188,11 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UsersUpdateInput"
       }
   }
+
   case class UserCreateInput(
       name: Option[String] = None,
       email: Option[String] = None,
@@ -6781,6 +7200,7 @@ object CoVerifiedClientSchema {
       password: Option[String] = None,
       organization: Option[OrganizationRelateToOneInput] = None
   )
+
   object UserCreateInput {
     implicit val encoder: ArgEncoder[UserCreateInput] =
       new ArgEncoder[UserCreateInput] {
@@ -6807,10 +7227,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UserCreateInput"
       }
   }
+
   case class UsersCreateInput(data: Option[UserCreateInput] = None)
+
   object UsersCreateInput {
     implicit val encoder: ArgEncoder[UsersCreateInput] =
       new ArgEncoder[UsersCreateInput] {
@@ -6822,13 +7245,16 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "UsersCreateInput"
       }
   }
+
   case class _ksListsMetaInput(
       key: Option[String] = None,
       auxiliary: Option[Boolean] = None
   )
+
   object _ksListsMetaInput {
     implicit val encoder: ArgEncoder[_ksListsMetaInput] =
       new ArgEncoder[_ksListsMetaInput] {
@@ -6843,10 +7269,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "_ksListsMetaInput"
       }
   }
+
   case class _ListSchemaFieldsInput(`type`: Option[String] = None)
+
   object _ListSchemaFieldsInput {
     implicit val encoder: ArgEncoder[_ListSchemaFieldsInput] =
       new ArgEncoder[_ListSchemaFieldsInput] {
@@ -6858,10 +7287,13 @@ object CoVerifiedClientSchema {
               )
             )
           )
+
         override def typeName: String = "_ListSchemaFieldsInput"
       }
   }
+
   type Query = RootQuery
+
   object Query {
 
     /** Search for all Url items which match the where clause.
@@ -7463,6 +7895,7 @@ object CoVerifiedClientSchema {
       */
     def appVersion: SelectionBuilder[RootQuery, Option[String]] =
       Field("appVersion", OptionOf(Scalar()))
+
     def authenticatedUser[A](
         innerSelection: SelectionBuilder[User, A]
     ): SelectionBuilder[RootQuery, Option[A]] =
@@ -7470,6 +7903,7 @@ object CoVerifiedClientSchema {
   }
 
   type Mutation = RootMutation
+
   object Mutation {
 
     /** Create a single Url item.
@@ -8042,10 +8476,12 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("email", email), Argument("password", password))
     )
+
     def unauthenticateUser[A](
         innerSelection: SelectionBuilder[unauthenticateUserOutput, A]
     ): SelectionBuilder[RootMutation, Option[A]] =
       Field("unauthenticateUser", OptionOf(Obj(innerSelection)))
+
     def updateAuthenticatedUser[A](data: Option[UserUpdateInput] = None)(
         innerSelection: SelectionBuilder[User, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
