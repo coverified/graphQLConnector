@@ -5,16 +5,9 @@
 
 package info.coverified.graphql
 
-import caliban.client.{CalibanClientError, SelectionBuilder}
 import sttp.client3.{Request, UriContext}
 import sttp.client3.asynchttpclient.zio.{SttpClient, send}
-import zio.RIO
-import zio.console.{Console, putStrLn}
-import caliban.client.Operations.RootQuery
 import caliban.client.{CalibanClientError, SelectionBuilder}
-import info.coverified.graphql.schema.CoVerifiedClientSchema._
-import sttp.client3.{UriContext, _}
-import sttp.client3.asynchttpclient.zio.{AsyncHttpClientZioBackend, _}
 import zio.console.{Console, putStrLn}
 import zio.{App, ExitCode, RIO, ZIO}
 
