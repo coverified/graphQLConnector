@@ -35,15 +35,13 @@ import scala.annotation.tailrec
 object ClientWriter {
 
   private val MaxTupleLength = 22
-  private implicit val unwantedKeyWords: Vector[String] =
-    Vector("keystone", "user", "authenticateditem")
 
   def write(
       schema: Document,
       objectName: String = "Client",
       packageName: Option[String] = None,
       effect: String = "zio.UIO"
-  ): String =
+  )(implicit unwantedKeyWords: Vector[String]): String =
     write(schema, objectName, packageName, genView = false)
 
   def write(
@@ -51,7 +49,7 @@ object ClientWriter {
       objectName: String,
       packageName: Option[String],
       genView: Boolean
-  ): String = {
+  )(implicit unwantedKeyWords: Vector[String]): String = {
     val schemaDef = schema.schemaDefinition
 
     val mappingClashedTypeNames = getMappingsClashedNames(
@@ -252,7 +250,7 @@ object ClientWriter {
       typedef: ObjectTypeDefinition,
       typesMap: Map[String, TypeDefinition],
       mappingClashedTypeNames: Map[String, String]
-  ): String =
+  )(implicit unwantedKeyWords: Vector[String]): String =
     s"""type ${typedef.name} = RootQuery
        |object ${typedef.name} {
        |  ${typedef.fields
@@ -266,7 +264,7 @@ object ClientWriter {
       typedef: ObjectTypeDefinition,
       typesMap: Map[String, TypeDefinition],
       mappingClashedTypeNames: Map[String, String]
-  ): String =
+  )(implicit unwantedKeyWords: Vector[String]): String =
     s"""type ${typedef.name} = RootMutation
        |object ${typedef.name} {
        |  ${typedef.fields
