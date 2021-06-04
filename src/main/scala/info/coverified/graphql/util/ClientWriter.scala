@@ -6,7 +6,11 @@
 package info.coverified.graphql.util
 
 import caliban.Value.StringValue
-import caliban.parsing.adt.Definition.TypeSystemDefinition.TypeDefinition
+import caliban.parsing.adt.Definition.TypeSystemDefinition.{
+  DirectiveDefinition,
+  SchemaDefinition,
+  TypeDefinition
+}
 import caliban.parsing.adt.Definition.TypeSystemDefinition.TypeDefinition.{
   EnumTypeDefinition,
   FieldDefinition,
@@ -17,13 +21,13 @@ import caliban.parsing.adt.Definition.TypeSystemDefinition.TypeDefinition.{
   ScalarTypeDefinition,
   UnionTypeDefinition
 }
-import caliban.parsing.adt.{Document, Type}
+import caliban.parsing.adt.{Definition, Document, Type}
 import caliban.parsing.adt.Type.{ListType, NamedType}
 
 import scala.annotation.tailrec
 
 /**
-  * //ToDo: Class Description
+  * Extract case classes etc. from client schema definition and write them to file
   *
   * @version 0.1
   * @since 24.02.21
@@ -31,6 +35,8 @@ import scala.annotation.tailrec
 object ClientWriter {
 
   private val MaxTupleLength = 22
+  private implicit val unwantedKeyWords: Vector[String] =
+    Vector("keystone", "user", "authenticateditem")
 
   def write(
       schema: Document,
@@ -49,7 +55,7 @@ object ClientWriter {
     val schemaDef = schema.schemaDefinition
 
     val mappingClashedTypeNames = getMappingsClashedNames(
-      schema.definitions.collect {
+      schema.definitions.filterNot(unwanted(_)).collect {
         case ObjectTypeDefinition(_, name, _, _, _)   => name
         case InputObjectTypeDefinition(_, name, _, _) => name
         case EnumTypeDefinition(_, name, _, _)        => name
@@ -60,6 +66,7 @@ object ClientWriter {
     )
 
     val typesMap: Map[String, TypeDefinition] = schema.definitions
+      .filterNot(unwanted(_))
       .collect {
         case op @ ObjectTypeDefinition(_, name, _, _, _)   => name -> op
         case op @ InputObjectTypeDefinition(_, name, _, _) => name -> op
@@ -81,20 +88,24 @@ object ClientWriter {
             schemaDef.exists(_.query.getOrElse("Query") == obj.name) ||
             schemaDef.exists(_.mutation.getOrElse("Mutation") == obj.name) ||
             schemaDef
-              .exists(_.subscription.getOrElse("Subscription") == obj.name)
+              .exists(_.subscription.getOrElse("Subscription") == obj.name) ||
+            unwanted(obj)
       )
       .map(writeObject(_, typesMap, mappingClashedTypeNames, genView))
       .mkString("\n")
 
     val inputs = schema.inputObjectTypeDefinitions
+      .filterNot(unwanted(_))
       .map(writeInputObject(_, mappingClashedTypeNames))
       .mkString("\n")
 
     val enums = schema.enumTypeDefinitions
+      .filterNot(unwanted(_))
       .map(writeEnum(_, mappingClashedTypeNames))
       .mkString("\n")
 
     val scalars = schema.scalarTypeDefinitions
+      .filterNot(unwanted(_))
       .filterNot(s => supportedScalars.contains(s.name))
       .map(writeScalar(_, mappingClashedTypeNames))
       .mkString("\n")
@@ -106,6 +117,7 @@ object ClientWriter {
 
     val mutations = schema
       .objectTypeDefinition(schemaDef.flatMap(_.mutation).getOrElse("Mutation"))
+      .filterNot(unwanted(_))
       .map(t => writeRootMutation(t, typesMap, mappingClashedTypeNames))
       .getOrElse("")
 
@@ -113,6 +125,7 @@ object ClientWriter {
       .objectTypeDefinition(
         schemaDef.flatMap(_.subscription).getOrElse("Subscription")
       )
+      .filterNot(unwanted(_))
       .map(t => writeRootSubscription(t, typesMap, mappingClashedTypeNames))
       .getOrElse("")
 
@@ -153,6 +166,62 @@ object ClientWriter {
        |}""".stripMargin
   }
 
+  /**
+    * Determine, if the given definition's name contains an undesired key word
+    *
+    * @param definition       Definition to assess
+    * @param unwantedKeyWords Key words, that indicate an unwanted entity
+    * @return true, if field is unwanted
+    * @throws IllegalArgumentException if there is an uncovered [[Definition]]
+    */
+  def unwanted(
+      definition: Definition
+  )(implicit unwantedKeyWords: Vector[String]): Boolean = definition match {
+    case ObjectTypeDefinition(_, name, _, _, _) =>
+      unwanted(name, unwantedKeyWords)
+    case InputObjectTypeDefinition(_, name, _, _) =>
+      unwanted(name, unwantedKeyWords)
+    case EnumTypeDefinition(_, name, _, _) => unwanted(name, unwantedKeyWords)
+    case UnionTypeDefinition(_, name, _, _) =>
+      unwanted(name, unwantedKeyWords)
+    case ScalarTypeDefinition(_, name, _) => unwanted(name, unwantedKeyWords)
+    case InterfaceTypeDefinition(_, name, _, _) =>
+      unwanted(name, unwantedKeyWords)
+    case _: SchemaDefinition | _: DirectiveDefinition => false
+    case invalid =>
+      throw new IllegalArgumentException(
+        s"Invalid field type $invalid provided!"
+      )
+  }
+
+  /**
+    * Determine, if the given definition's name contains an undesired key word
+    *
+    * @param definition       Definition to assess
+    * @param unwantedKeyWords Key words, that indicate an unwanted entity
+    * @return true, if field is unwanted
+    * @throws IllegalArgumentException if there is an uncovered [[Definition]]
+    */
+  def unwanted(
+      definition: FieldDefinition
+  )(implicit unwantedKeyWords: Vector[String]): Boolean =
+    unwantedKeyWords
+      .map(_.toLowerCase)
+      .exists(definition.name.toLowerCase.contains(_))
+
+  /**
+    * Check, if the field name contains any of the undesired key words (ignoring the case)
+    *
+    * @param fieldName        Name of the field to assess
+    * @param unwantedKeyWords Key words, that indicate an unwanted entity
+    * @return true, if an unwanted key word is in the field name
+    */
+  def unwanted(fieldName: String, unwantedKeyWords: Vector[String]): Boolean =
+    unwantedKeyWords.map(_.toLowerCase).exists {
+      case unwanted if fieldName.toLowerCase.contains(unwanted) => true
+      case _                                                    => false
+    }
+
   private def getMappingsClashedNames(
       typeNames: List[String]
   ): Map[String, String] =
@@ -187,6 +256,7 @@ object ClientWriter {
     s"""type ${typedef.name} = RootQuery
        |object ${typedef.name} {
        |  ${typedef.fields
+         .filterNot(unwanted(_))
          .map(writeField(_, "RootQuery", typesMap, mappingClashedTypeNames))
          .mkString("\n  ")}
        |}
@@ -200,6 +270,7 @@ object ClientWriter {
     s"""type ${typedef.name} = RootMutation
        |object ${typedef.name} {
        |  ${typedef.fields
+         .filterNot(unwanted(_))
          .map(writeField(_, "RootMutation", typesMap, mappingClashedTypeNames))
          .mkString("\n  ")}
        |}

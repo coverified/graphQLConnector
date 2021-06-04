@@ -1,3 +1,8 @@
+/**
+ * © 2021. CoVerified,
+ * Diehl, Fetzer, Hiry, Kilian, Mayer, Schlittenbauer, Schweikert, Vollnhals, Weise GbR
+ **/
+
 package info.coverified.graphql.schema
 
 import caliban.client.CalibanClientError.DecodingError
@@ -691,14 +696,14 @@ object CoVerifiedClientSchema {
         publicUrlTransformedTransformation
       )).map {
         case (
+            (
               (
-                (
-                  ((((id, path), filename), originalFilename), mimetype),
-                  encoding
-                ),
-                publicUrl
+                ((((id, path), filename), originalFilename), mimetype),
+                encoding
               ),
-              publicUrlTransformed
+              publicUrl
+            ),
+            publicUrlTransformed
             ) =>
           CloudinaryImage_FileView(
             id,
@@ -764,17 +769,17 @@ object CoVerifiedClientSchema {
         imageSelection
       ) ~ updatedAt ~ createdAt).map {
         case (
+            (
               (
                 (
-                  (
-                    ((((_label__, id), name), language), description),
-                    relevance
-                  ),
-                  image
+                  ((((_label__, id), name), language), description),
+                  relevance
                 ),
-                updatedAt
+                image
               ),
-              createdAt
+              updatedAt
+            ),
+            createdAt
             ) =>
           TagView(
             _label__,
@@ -903,23 +908,24 @@ object CoVerifiedClientSchema {
 
     def view[LocationSelection](
         locationSelection: SelectionBuilder[LocationGoogle, LocationSelection]
-    ): ViewSelection[LocationSelection] = (`_label_` ~ id ~ name ~ location(
-      locationSelection
-    ) ~ radius ~ updatedAt ~ createdAt).map {
-      case (
+    ): ViewSelection[LocationSelection] =
+      (`_label_` ~ id ~ name ~ location(
+        locationSelection
+      ) ~ radius ~ updatedAt ~ createdAt).map {
+        case (
             (((((_label__, id), name), location), radius), updatedAt),
             createdAt
-          ) =>
-        GeoLocationView(
-          _label__,
-          id,
-          name,
-          location,
-          radius,
-          updatedAt,
-          createdAt
-        )
-    }
+            ) =>
+          GeoLocationView(
+            _label__,
+            id,
+            name,
+            location,
+            radius,
+            updatedAt,
+            createdAt
+          )
+      }
 
     /** This virtual field will be resolved in one of the following ways (in this order):
       * 1. Execution of 'labelResolver' set on the GeoLocation List config, or
@@ -969,14 +975,14 @@ object CoVerifiedClientSchema {
         locationSelection
       ) ~ description ~ updatedAt ~ createdAt).map {
         case (
+            (
               (
-                (
-                  (((((_label__, id), name), acronym), url), location),
-                  description
-                ),
-                updatedAt
+                (((((_label__, id), name), acronym), url), location),
+                description
               ),
-              createdAt
+              updatedAt
+            ),
+            createdAt
             ) =>
           SourceView(
             _label__,
@@ -1084,24 +1090,25 @@ object CoVerifiedClientSchema {
       LanguageSelection,
       SourcesSelection,
       _sourcesMetaSelection
-    ] = (`_label_` ~ id ~ name ~ organization(organizationSelection) ~ language(
-      languageSelection
-    ) ~ sources(
-      sourcesWhere,
-      sourcesSearch,
-      sourcesSortBy,
-      sourcesOrderBy,
-      sourcesFirst,
-      sourcesSkip
-    )(sourcesSelection) ~ _sourcesMeta(
-      _sourcesMetaWhere,
-      _sourcesMetaSearch,
-      _sourcesMetaSortBy,
-      _sourcesMetaOrderBy,
-      _sourcesMetaFirst,
-      _sourcesMetaSkip
-    )(_sourcesMetaSelection) ~ updatedAt ~ createdAt).map {
-      case (
+    ] =
+      (`_label_` ~ id ~ name ~ organization(organizationSelection) ~ language(
+        languageSelection
+      ) ~ sources(
+        sourcesWhere,
+        sourcesSearch,
+        sourcesSortBy,
+        sourcesOrderBy,
+        sourcesFirst,
+        sourcesSkip
+      )(sourcesSelection) ~ _sourcesMeta(
+        _sourcesMetaWhere,
+        _sourcesMetaSearch,
+        _sourcesMetaSortBy,
+        _sourcesMetaOrderBy,
+        _sourcesMetaFirst,
+        _sourcesMetaSkip
+      )(_sourcesMetaSelection) ~ updatedAt ~ createdAt).map {
+        case (
             (
               (
                 (((((_label__, id), name), organization), language), sources),
@@ -1110,19 +1117,19 @@ object CoVerifiedClientSchema {
               updatedAt
             ),
             createdAt
-          ) =>
-        WidgetView(
-          _label__,
-          id,
-          name,
-          organization,
-          language,
-          sources,
-          _sourcesMeta,
-          updatedAt,
-          createdAt
-        )
-    }
+            ) =>
+          WidgetView(
+            _label__,
+            id,
+            name,
+            organization,
+            language,
+            sources,
+            _sourcesMeta,
+            updatedAt,
+            createdAt
+          )
+      }
 
     /** This virtual field will be resolved in one of the following ways (in this order):
       * 1. Execution of 'labelResolver' set on the Widget List config, or
@@ -1265,26 +1272,27 @@ object CoVerifiedClientSchema {
       _tagsMetaSelection,
       LanguageSelection,
       SourceSelection
-    ] = (`_label_` ~ id ~ publishDate ~ title ~ subTitle ~ image(
-      imageSelection
-    ) ~ content ~ summary ~ url ~ tags(
-      tagsWhere,
-      tagsSearch,
-      tagsSortBy,
-      tagsOrderBy,
-      tagsFirst,
-      tagsSkip
-    )(tagsSelection) ~ _tagsMeta(
-      _tagsMetaWhere,
-      _tagsMetaSearch,
-      _tagsMetaSortBy,
-      _tagsMetaOrderBy,
-      _tagsMetaFirst,
-      _tagsMetaSkip
-    )(_tagsMetaSelection) ~ language(languageSelection) ~ source(
-      sourceSelection
-    ) ~ hasBeenTagged ~ `type` ~ updatedAt ~ createdAt).map {
-      case (
+    ] =
+      (`_label_` ~ id ~ publishDate ~ title ~ subTitle ~ image(
+        imageSelection
+      ) ~ content ~ summary ~ url ~ tags(
+        tagsWhere,
+        tagsSearch,
+        tagsSortBy,
+        tagsOrderBy,
+        tagsFirst,
+        tagsSkip
+      )(tagsSelection) ~ _tagsMeta(
+        _tagsMetaWhere,
+        _tagsMetaSearch,
+        _tagsMetaSortBy,
+        _tagsMetaOrderBy,
+        _tagsMetaFirst,
+        _tagsMetaSkip
+      )(_tagsMetaSelection) ~ language(languageSelection) ~ source(
+        sourceSelection
+      ) ~ hasBeenTagged ~ `type` ~ updatedAt ~ createdAt).map {
+        case (
             (
               (
                 (
@@ -1323,27 +1331,27 @@ object CoVerifiedClientSchema {
               updatedAt
             ),
             createdAt
-          ) =>
-        EntryView(
-          _label__,
-          id,
-          publishDate,
-          title,
-          subTitle,
-          image,
-          content,
-          summary,
-          url,
-          tags,
-          _tagsMeta,
-          language,
-          source,
-          hasBeenTagged,
-          type_,
-          updatedAt,
-          createdAt
-        )
-    }
+            ) =>
+          EntryView(
+            _label__,
+            id,
+            publishDate,
+            title,
+            subTitle,
+            image,
+            content,
+            summary,
+            url,
+            tags,
+            _tagsMeta,
+            language,
+            source,
+            hasBeenTagged,
+            type_,
+            updatedAt,
+            createdAt
+          )
+      }
 
     /** This virtual field will be resolved in one of the following ways (in this order):
       * 1. Execution of 'labelResolver' set on the Entry List config, or
@@ -1458,14 +1466,14 @@ object CoVerifiedClientSchema {
         organizationSelection
       ) ~ updatedAt ~ createdAt).map {
         case (
+            (
               (
-                (
-                  (((((_label__, id), name), email), isAdmin), password_is_set),
-                  organization
-                ),
-                updatedAt
+                (((((_label__, id), name), email), isAdmin), password_is_set),
+                organization
               ),
-              createdAt
+              updatedAt
+            ),
+            createdAt
             ) =>
           UserView(
             _label__,
@@ -1607,8 +1615,8 @@ object CoVerifiedClientSchema {
     def view: ViewSelection =
       (create ~ createMany ~ update ~ updateMany ~ delete ~ deleteMany).map {
         case (
-              ((((create, createMany), update), updateMany), delete),
-              deleteMany
+            ((((create, createMany), update), updateMany), delete),
+            deleteMany
             ) =>
           _ListMutationsView(
             create,
@@ -1669,14 +1677,14 @@ object CoVerifiedClientSchema {
       (whereInput ~ whereUniqueInput ~ createInput ~ createManyInput ~ updateInput ~ updateManyInput)
         .map {
           case (
+              (
                 (
-                  (
-                    ((whereInput, whereUniqueInput), createInput),
-                    createManyInput
-                  ),
-                  updateInput
+                  ((whereInput, whereUniqueInput), createInput),
+                  createManyInput
                 ),
-                updateManyInput
+                updateInput
+              ),
+              updateManyInput
               ) =>
             _ListInputTypesView(
               whereInput,
@@ -1763,8 +1771,9 @@ object CoVerifiedClientSchema {
     type ViewSelection =
       SelectionBuilder[_ListSchemaRelatedFields, _ListSchemaRelatedFieldsView]
 
-    def view: ViewSelection = (`type` ~ fields).map { case (type_, fields) =>
-      _ListSchemaRelatedFieldsView(type_, fields)
+    def view: ViewSelection = (`type` ~ fields).map {
+      case (type_, fields) =>
+        _ListSchemaRelatedFieldsView(type_, fields)
     }
 
     /** The typename as used in GraphQL queries
@@ -1838,24 +1847,25 @@ object CoVerifiedClientSchema {
       InputTypesSelection,
       FieldsSelection,
       RelatedFieldsSelection
-    ] = (`type` ~ queries(queriesSelection) ~ mutations(
-      mutationsSelection
-    ) ~ inputTypes(inputTypesSelection) ~ fields(fieldsWhere)(
-      fieldsSelection
-    ) ~ relatedFields(relatedFieldsSelection)).map {
-      case (
+    ] =
+      (`type` ~ queries(queriesSelection) ~ mutations(
+        mutationsSelection
+      ) ~ inputTypes(inputTypesSelection) ~ fields(fieldsWhere)(
+        fieldsSelection
+      ) ~ relatedFields(relatedFieldsSelection)).map {
+        case (
             ((((type_, queries), mutations), inputTypes), fields),
             relatedFields
-          ) =>
-        _ListSchemaView(
-          type_,
-          queries,
-          mutations,
-          inputTypes,
-          fields,
-          relatedFields
-        )
-    }
+            ) =>
+          _ListSchemaView(
+            type_,
+            queries,
+            mutations,
+            inputTypes,
+            fields,
+            relatedFields
+          )
+      }
 
     /** The typename as used in GraphQL queries
       */
@@ -1931,14 +1941,14 @@ object CoVerifiedClientSchema {
         accessSelection
       ) ~ schema(schemaSelection)).map {
         case (
+            (
               (
-                (
-                  (((((key, name), description), label), singular), plural),
-                  path
-                ),
-                access
+                (((((key, name), description), label), singular), plural),
+                path
               ),
-              schema
+              access
+            ),
+            schema
             ) =>
           _ListMetaView(
             key,
@@ -2079,11 +2089,12 @@ object CoVerifiedClientSchema {
         override def encode(value: SourceRelateToOneInput): __Value =
           __ObjectValue(
             List(
-              "create" -> value.create.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceCreateInput]].encode(value)
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[SourceCreateInput]].encode(value)
               ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(value)
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(value)
               ),
               "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
                 value =>
@@ -2135,61 +2146,69 @@ object CoVerifiedClientSchema {
         override def encode(value: UrlWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_lt" -> value.id_lt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_lte" -> value.id_lte.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_gt" -> value.id_gt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_gte" -> value.id_gte.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url_not" -> value.url_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_lt" -> value.id_lt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_lte" -> value.id_lte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_gt" -> value.id_gt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_gte" -> value.id_gte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "url_not" -> value.url_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "url_contains" -> value.url_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -2209,11 +2228,11 @@ object CoVerifiedClientSchema {
               "url_not_ends_with" -> value.url_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "url_i" -> value.url_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_i" -> value.url_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url_not_i" -> value.url_not_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_not_i" -> value.url_not_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "url_contains_i" -> value.url_contains_i.fold(
                 __NullValue: __Value
@@ -2233,27 +2252,30 @@ object CoVerifiedClientSchema {
               "url_not_ends_with_i" -> value.url_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "url_in" -> value.url_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "url_in" -> value.url_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "url_not_in" -> value.url_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "source" -> value.source.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceWhereInput]].encode(value)
+              "source" -> value.source.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[SourceWhereInput]].encode(value)
               ),
               "source_is_null" -> value.source_is_null.fold(
                 __NullValue: __Value
@@ -2285,11 +2307,12 @@ object CoVerifiedClientSchema {
         override def encode(value: UrlUpdateInput): __Value =
           __ObjectValue(
             List(
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "source" -> value.source.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
+              "source" -> value.source.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2304,8 +2327,8 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[UrlUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[UrlUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2322,11 +2345,12 @@ object CoVerifiedClientSchema {
         override def encode(value: UrlCreateInput): __Value =
           __ObjectValue(
             List(
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "source" -> value.source.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
+              "source" -> value.source.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2340,8 +2364,8 @@ object CoVerifiedClientSchema {
         override def encode(value: UrlsCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[UrlCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[UrlCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2396,49 +2420,57 @@ object CoVerifiedClientSchema {
         override def encode(value: OrganizationWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -2458,8 +2490,8 @@ object CoVerifiedClientSchema {
               "name_not_ends_with" -> value.name_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -2482,27 +2514,30 @@ object CoVerifiedClientSchema {
               "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -2522,26 +2557,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -2561,23 +2601,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2603,8 +2648,8 @@ object CoVerifiedClientSchema {
         override def encode(value: OrganizationUpdateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2622,8 +2667,9 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[OrganizationUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[OrganizationUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2637,8 +2683,8 @@ object CoVerifiedClientSchema {
         override def encode(value: OrganizationCreateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2654,8 +2700,9 @@ object CoVerifiedClientSchema {
         override def encode(value: OrganizationsCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[OrganizationCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[OrganizationCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2674,11 +2721,13 @@ object CoVerifiedClientSchema {
         override def encode(value: LanguageRelateToOneInput): __Value =
           __ObjectValue(
             List(
-              "create" -> value.create.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
               ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
               ),
               "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
                 value =>
@@ -2732,86 +2781,86 @@ object CoVerifiedClientSchema {
               "prettyName" -> value.prettyName.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "width" -> value.width.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "width" -> value.width.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "height" -> value.height.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "height" -> value.height.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "crop" -> value.crop.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "crop" -> value.crop.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "aspect_ratio" -> value.aspect_ratio.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "gravity" -> value.gravity.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "gravity" -> value.gravity.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "zoom" -> value.zoom.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "zoom" -> value.zoom.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "x" -> value.x.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "x" -> value.x.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "y" -> value.y.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "y" -> value.y.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "format" -> value.format.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "format" -> value.format.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "fetch_format" -> value.fetch_format.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "quality" -> value.quality.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "quality" -> value.quality.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "radius" -> value.radius.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "radius" -> value.radius.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "angle" -> value.angle.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "angle" -> value.angle.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "effect" -> value.effect.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "effect" -> value.effect.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "opacity" -> value.opacity.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "opacity" -> value.opacity.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "border" -> value.border.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "border" -> value.border.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "background" -> value.background.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "overlay" -> value.overlay.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "overlay" -> value.overlay.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "underlay" -> value.underlay.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "underlay" -> value.underlay.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "default_image" -> value.default_image.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "delay" -> value.delay.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "delay" -> value.delay.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "color" -> value.color.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "color" -> value.color.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "color_space" -> value.color_space.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "dpr" -> value.dpr.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "dpr" -> value.dpr.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "page" -> value.page.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "page" -> value.page.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "density" -> value.density.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "density" -> value.density.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "flags" -> value.flags.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "flags" -> value.flags.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "transformation" -> value.transformation.fold(
                 __NullValue: __Value
@@ -2901,49 +2950,57 @@ object CoVerifiedClientSchema {
         override def encode(value: TagWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -2963,8 +3020,8 @@ object CoVerifiedClientSchema {
               "name_not_ends_with" -> value.name_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -2987,27 +3044,31 @@ object CoVerifiedClientSchema {
               "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
               ),
               "language_is_null" -> value.language_is_null.fold(
                 __NullValue: __Value
@@ -3028,15 +3089,15 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_starts_with" -> value.description_not_starts_with
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_ends_with" -> value.description_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_ends_with" -> value.description_not_ends_with
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_i" -> value.description_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -3048,48 +3109,52 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_contains_i" -> value.description_not_contains_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_starts_with_i" -> value.description_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_not_starts_with_i" -> value.description_not_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_ends_with_i" -> value.description_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_ends_with_i" -> value.description_not_ends_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_in" -> value.description_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "description_not_in" -> value.description_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "relevance" -> value.relevance.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Int]].encode(value)
+              "relevance" -> value.relevance.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Int]].encode(value)
               ),
               "relevance_not" -> value.relevance_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Int]].encode(value)
@@ -3109,51 +3174,57 @@ object CoVerifiedClientSchema {
               "relevance_in" -> value.relevance_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[Int]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[Int]].encode(value)
+                        )
                     )
                   )
               ),
               "relevance_not_in" -> value.relevance_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[Int]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[Int]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "image" -> value.image.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "image" -> value.image.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "image_not" -> value.image_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "image_not" -> value.image_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "image_in" -> value.image_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "image_in" -> value.image_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "image_not_in" -> value.image_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -3173,26 +3244,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -3212,23 +3288,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3260,20 +3341,21 @@ object CoVerifiedClientSchema {
         override def encode(value: TagUpdateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
               "description" -> value.description.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "relevance" -> value.relevance.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Int]].encode(value)
+              "relevance" -> value.relevance.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Int]].encode(value)
               ),
-              "image" -> value.image.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Upload]].encode(value)
+              "image" -> value.image.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Upload]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3288,8 +3370,8 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[TagUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[TagUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3309,20 +3391,21 @@ object CoVerifiedClientSchema {
         override def encode(value: TagCreateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
               "description" -> value.description.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "relevance" -> value.relevance.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Int]].encode(value)
+              "relevance" -> value.relevance.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Int]].encode(value)
               ),
-              "image" -> value.image.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Upload]].encode(value)
+              "image" -> value.image.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Upload]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3336,8 +3419,8 @@ object CoVerifiedClientSchema {
         override def encode(value: TagsCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[TagCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[TagCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3392,49 +3475,57 @@ object CoVerifiedClientSchema {
         override def encode(value: LanguageWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -3454,8 +3545,8 @@ object CoVerifiedClientSchema {
               "name_not_ends_with" -> value.name_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -3478,27 +3569,30 @@ object CoVerifiedClientSchema {
               "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -3518,26 +3612,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -3557,23 +3656,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3599,8 +3703,8 @@ object CoVerifiedClientSchema {
         override def encode(value: LanguageUpdateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3618,8 +3722,9 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3633,8 +3738,8 @@ object CoVerifiedClientSchema {
         override def encode(value: LanguageCreateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3648,8 +3753,9 @@ object CoVerifiedClientSchema {
         override def encode(value: LanguagesCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3716,49 +3822,57 @@ object CoVerifiedClientSchema {
         override def encode(value: GeoLocationWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -3778,8 +3892,8 @@ object CoVerifiedClientSchema {
               "name_not_ends_with" -> value.name_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -3802,27 +3916,30 @@ object CoVerifiedClientSchema {
               "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "location" -> value.location.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "location" -> value.location.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "location_not" -> value.location_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -3830,63 +3947,69 @@ object CoVerifiedClientSchema {
               "location_in" -> value.location_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
               "location_not_in" -> value.location_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "radius" -> value.radius.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Double]].encode(value)
+              "radius" -> value.radius.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Double]].encode(value)
               ),
               "radius_not" -> value.radius_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Double]].encode(value)
               ),
-              "radius_lt" -> value.radius_lt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Double]].encode(value)
+              "radius_lt" -> value.radius_lt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Double]].encode(value)
               ),
               "radius_lte" -> value.radius_lte.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Double]].encode(value)
               ),
-              "radius_gt" -> value.radius_gt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Double]].encode(value)
+              "radius_gt" -> value.radius_gt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Double]].encode(value)
               ),
               "radius_gte" -> value.radius_gte.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Double]].encode(value)
               ),
-              "radius_in" -> value.radius_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[Double]].encode(value)
+              "radius_in" -> value.radius_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[Double]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "radius_not_in" -> value.radius_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[Double]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[Double]].encode(value)
+                        )
                     )
                   )
               ),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -3906,26 +4029,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -3945,23 +4073,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -3991,14 +4124,14 @@ object CoVerifiedClientSchema {
         override def encode(value: GeoLocationUpdateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "location" -> value.location.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "location" -> value.location.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "radius" -> value.radius.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Double]].encode(value)
+              "radius" -> value.radius.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Double]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -4016,8 +4149,9 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[GeoLocationUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[GeoLocationUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -4035,14 +4169,14 @@ object CoVerifiedClientSchema {
         override def encode(value: GeoLocationCreateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "location" -> value.location.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "location" -> value.location.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "radius" -> value.radius.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Double]].encode(value)
+              "radius" -> value.radius.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Double]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -4058,8 +4192,9 @@ object CoVerifiedClientSchema {
         override def encode(value: GeoLocationsCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[GeoLocationCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[GeoLocationCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -4078,13 +4213,15 @@ object CoVerifiedClientSchema {
         override def encode(value: GeoLocationRelateToOneInput): __Value =
           __ObjectValue(
             List(
-              "create" -> value.create.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[GeoLocationCreateInput]].encode(value)
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[GeoLocationCreateInput]].encode(value)
               ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[GeoLocationWhereUniqueInput]].encode(
-                  value
-                )
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[GeoLocationWhereUniqueInput]].encode(
+                    value
+                  )
               ),
               "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
                 value =>
@@ -4204,49 +4341,57 @@ object CoVerifiedClientSchema {
         override def encode(value: SourceWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4266,8 +4411,8 @@ object CoVerifiedClientSchema {
               "name_not_ends_with" -> value.name_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4290,27 +4435,30 @@ object CoVerifiedClientSchema {
               "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "acronym" -> value.acronym.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "acronym" -> value.acronym.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "acronym_not" -> value.acronym_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4333,8 +4481,8 @@ object CoVerifiedClientSchema {
               "acronym_not_ends_with" -> value.acronym_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "acronym_i" -> value.acronym_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "acronym_i" -> value.acronym_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "acronym_not_i" -> value.acronym_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4349,8 +4497,8 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "acronym_not_starts_with_i" -> value.acronym_not_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "acronym_ends_with_i" -> value.acronym_ends_with_i.fold(
                 __NullValue: __Value
@@ -4361,29 +4509,32 @@ object CoVerifiedClientSchema {
               "acronym_in" -> value.acronym_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
               "acronym_not_in" -> value.acronym_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url_not" -> value.url_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_not" -> value.url_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "url_contains" -> value.url_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4403,11 +4554,11 @@ object CoVerifiedClientSchema {
               "url_not_ends_with" -> value.url_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "url_i" -> value.url_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_i" -> value.url_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url_not_i" -> value.url_not_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_not_i" -> value.url_not_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "url_contains_i" -> value.url_contains_i.fold(
                 __NullValue: __Value
@@ -4427,27 +4578,31 @@ object CoVerifiedClientSchema {
               "url_not_ends_with_i" -> value.url_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "url_in" -> value.url_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "url_in" -> value.url_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "url_not_in" -> value.url_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "location" -> value.location.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[GeoLocationWhereInput]].encode(value)
+              "location" -> value.location.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[GeoLocationWhereInput]].encode(value)
               ),
               "location_is_null" -> value.location_is_null.fold(
                 __NullValue: __Value
@@ -4468,15 +4623,15 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_starts_with" -> value.description_not_starts_with
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_ends_with" -> value.description_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_ends_with" -> value.description_not_ends_with
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_i" -> value.description_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4488,48 +4643,52 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_contains_i" -> value.description_not_contains_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_starts_with_i" -> value.description_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_not_starts_with_i" -> value.description_not_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_ends_with_i" -> value.description_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "description_not_ends_with_i" -> value.description_not_ends_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "description_in" -> value.description_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "description_not_in" -> value.description_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -4549,26 +4708,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -4588,23 +4752,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -4636,19 +4805,20 @@ object CoVerifiedClientSchema {
         override def encode(value: SourceUpdateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "acronym" -> value.acronym.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "acronym" -> value.acronym.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "location" -> value.location.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[GeoLocationRelateToOneInput]].encode(
-                  value
-                )
+              "location" -> value.location.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[GeoLocationRelateToOneInput]].encode(
+                    value
+                  )
               ),
               "description" -> value.description.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4669,8 +4839,8 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[SourceUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -4690,19 +4860,20 @@ object CoVerifiedClientSchema {
         override def encode(value: SourceCreateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "acronym" -> value.acronym.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "acronym" -> value.acronym.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "location" -> value.location.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[GeoLocationRelateToOneInput]].encode(
-                  value
-                )
+              "location" -> value.location.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[GeoLocationRelateToOneInput]].encode(
+                    value
+                  )
               ),
               "description" -> value.description.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4719,8 +4890,8 @@ object CoVerifiedClientSchema {
         override def encode(value: SourcesCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[SourceCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -4739,13 +4910,15 @@ object CoVerifiedClientSchema {
         override def encode(value: OrganizationRelateToOneInput): __Value =
           __ObjectValue(
             List(
-              "create" -> value.create.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[OrganizationCreateInput]].encode(value)
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[OrganizationCreateInput]].encode(value)
               ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[OrganizationWhereUniqueInput]].encode(
-                  value
-                )
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[OrganizationWhereUniqueInput]].encode(
+                    value
+                  )
               ),
               "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
                 value =>
@@ -4773,35 +4946,46 @@ object CoVerifiedClientSchema {
         override def encode(value: SourceRelateToManyInput): __Value =
           __ObjectValue(
             List(
-              "create" -> value.create.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[SourceCreateInput]].encode(value)
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[SourceCreateInput]]
+                              .encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(
-                        value
-                      )
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[SourceWhereUniqueInput]]
+                              .encode(
+                                value
+                              )
+                        )
                     )
                   )
-                )
               ),
               "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(
-                          value
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[SourceWhereUniqueInput]]
+                              .encode(
+                                value
+                              )
                         )
-                      )
                     )
                   )
               ),
@@ -4868,49 +5052,57 @@ object CoVerifiedClientSchema {
         override def encode(value: WidgetWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4930,8 +5122,8 @@ object CoVerifiedClientSchema {
               "name_not_ends_with" -> value.name_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -4954,22 +5146,25 @@ object CoVerifiedClientSchema {
               "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
@@ -4980,8 +5175,9 @@ object CoVerifiedClientSchema {
               "organization_is_null" -> value.organization_is_null.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
               ),
               "language_is_null" -> value.language_is_null.fold(
                 __NullValue: __Value
@@ -4995,8 +5191,8 @@ object CoVerifiedClientSchema {
               "sources_none" -> value.sources_none.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[SourceWhereInput]].encode(value)
               ),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -5016,26 +5212,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -5055,23 +5256,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -5102,8 +5308,8 @@ object CoVerifiedClientSchema {
         override def encode(value: WidgetUpdateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "organization" -> value.organization.fold(__NullValue: __Value)(
                 value =>
@@ -5111,11 +5317,13 @@ object CoVerifiedClientSchema {
                     value
                   )
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
-              "sources" -> value.sources.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceRelateToManyInput]].encode(value)
+              "sources" -> value.sources.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceRelateToManyInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -5133,8 +5341,8 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[WidgetUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[WidgetUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -5153,8 +5361,8 @@ object CoVerifiedClientSchema {
         override def encode(value: WidgetCreateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "organization" -> value.organization.fold(__NullValue: __Value)(
                 value =>
@@ -5162,11 +5370,13 @@ object CoVerifiedClientSchema {
                     value
                   )
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
-              "sources" -> value.sources.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceRelateToManyInput]].encode(value)
+              "sources" -> value.sources.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceRelateToManyInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -5180,8 +5390,8 @@ object CoVerifiedClientSchema {
         override def encode(value: WidgetsCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[WidgetCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[WidgetCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -5200,33 +5410,42 @@ object CoVerifiedClientSchema {
         override def encode(value: TagRelateToManyInput): __Value =
           __ObjectValue(
             List(
-              "create" -> value.create.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[TagCreateInput]].encode(value)
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[TagCreateInput]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[TagWhereUniqueInput]].encode(value)
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[TagWhereUniqueInput]]
+                              .encode(value)
+                        )
                     )
                   )
-                )
               ),
               "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[TagWhereUniqueInput]].encode(
-                          value
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[TagWhereUniqueInput]].encode(
+                              value
+                            )
                         )
-                      )
                     )
                   )
               ),
@@ -5383,43 +5602,51 @@ object CoVerifiedClientSchema {
         override def encode(value: EntryWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
+              ),
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
               ),
               "publishDate" -> value.publishDate.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5441,31 +5668,35 @@ object CoVerifiedClientSchema {
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "publishDate_in" -> value.publishDate_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "publishDate_not_in" -> value.publishDate_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "title" -> value.title.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "title" -> value.title.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "title_not" -> value.title_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "title_not" -> value.title_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "title_contains" -> value.title_contains.fold(
                 __NullValue: __Value
@@ -5485,8 +5716,8 @@ object CoVerifiedClientSchema {
               "title_not_ends_with" -> value.title_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "title_i" -> value.title_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "title_i" -> value.title_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "title_not_i" -> value.title_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5509,27 +5740,30 @@ object CoVerifiedClientSchema {
               "title_not_ends_with_i" -> value.title_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "title_in" -> value.title_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "title_in" -> value.title_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "title_not_in" -> value.title_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "subTitle" -> value.subTitle.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "subTitle" -> value.subTitle.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "subTitle_not" -> value.subTitle_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5568,8 +5802,8 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "subTitle_not_starts_with_i" -> value.subTitle_not_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "subTitle_ends_with_i" -> value.subTitle_ends_with_i.fold(
                 __NullValue: __Value
@@ -5580,51 +5814,57 @@ object CoVerifiedClientSchema {
               "subTitle_in" -> value.subTitle_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
               "subTitle_not_in" -> value.subTitle_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "image" -> value.image.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "image" -> value.image.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "image_not" -> value.image_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "image_not" -> value.image_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "image_in" -> value.image_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "image_in" -> value.image_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "image_not_in" -> value.image_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "content" -> value.content.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "content" -> value.content.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "content_not" -> value.content_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5647,8 +5887,8 @@ object CoVerifiedClientSchema {
               "content_not_ends_with" -> value.content_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_i" -> value.content_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "content_i" -> value.content_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "content_not_i" -> value.content_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5663,8 +5903,8 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "content_not_starts_with_i" -> value.content_not_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "content_ends_with_i" -> value.content_ends_with_i.fold(
                 __NullValue: __Value
@@ -5675,26 +5915,29 @@ object CoVerifiedClientSchema {
               "content_in" -> value.content_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
               "content_not_in" -> value.content_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "summary" -> value.summary.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "summary" -> value.summary.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "summary_not" -> value.summary_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5717,8 +5960,8 @@ object CoVerifiedClientSchema {
               "summary_not_ends_with" -> value.summary_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_i" -> value.summary_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "summary_i" -> value.summary_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "summary_not_i" -> value.summary_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5733,8 +5976,8 @@ object CoVerifiedClientSchema {
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
               "summary_not_starts_with_i" -> value.summary_not_starts_with_i
-                .fold(__NullValue: __Value)(value =>
-                  implicitly[ArgEncoder[String]].encode(value)
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
                 ),
               "summary_ends_with_i" -> value.summary_ends_with_i.fold(
                 __NullValue: __Value
@@ -5745,29 +5988,32 @@ object CoVerifiedClientSchema {
               "summary_in" -> value.summary_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
               "summary_not_in" -> value.summary_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url_not" -> value.url_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_not" -> value.url_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "url_contains" -> value.url_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -5787,11 +6033,11 @@ object CoVerifiedClientSchema {
               "url_not_ends_with" -> value.url_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "url_i" -> value.url_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_i" -> value.url_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url_not_i" -> value.url_not_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url_not_i" -> value.url_not_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "url_contains_i" -> value.url_contains_i.fold(
                 __NullValue: __Value
@@ -5811,42 +6057,46 @@ object CoVerifiedClientSchema {
               "url_not_ends_with_i" -> value.url_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "url_in" -> value.url_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "url_in" -> value.url_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "url_not_in" -> value.url_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
               "tags_every" -> value.tags_every.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
               ),
-              "tags_some" -> value.tags_some.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[TagWhereInput]].encode(value)
+              "tags_some" -> value.tags_some.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
               ),
-              "tags_none" -> value.tags_none.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[TagWhereInput]].encode(value)
+              "tags_none" -> value.tags_none.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
               ),
               "language_is_null" -> value.language_is_null.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
-              "source" -> value.source.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceWhereInput]].encode(value)
+              "source" -> value.source.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[SourceWhereInput]].encode(value)
               ),
               "source_is_null" -> value.source_is_null.fold(
                 __NullValue: __Value
@@ -5857,33 +6107,38 @@ object CoVerifiedClientSchema {
               "hasBeenTagged_not" -> value.hasBeenTagged_not.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
-              "type" -> value.`type`.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[EntryTypeType]].encode(value)
+              "type" -> value.`type`.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[EntryTypeType]].encode(value)
               ),
-              "type_not" -> value.type_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[EntryTypeType]].encode(value)
+              "type_not" -> value.type_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[EntryTypeType]].encode(value)
               ),
-              "type_in" -> value.type_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[EntryTypeType]].encode(value)
+              "type_in" -> value.type_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[EntryTypeType]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "type_not_in" -> value.type_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[EntryTypeType]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[EntryTypeType]].encode(value)
+                        )
                     )
                   )
               ),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -5903,26 +6158,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -5942,23 +6202,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6000,38 +6265,41 @@ object CoVerifiedClientSchema {
               "publishDate" -> value.publishDate.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "title" -> value.title.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "title" -> value.title.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "subTitle" -> value.subTitle.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "subTitle" -> value.subTitle.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "image" -> value.image.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Upload]].encode(value)
+              "image" -> value.image.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Upload]].encode(value)
               ),
-              "content" -> value.content.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "content" -> value.content.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "summary" -> value.summary.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "summary" -> value.summary.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "tags" -> value.tags.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[TagRelateToManyInput]].encode(value)
+              "tags" -> value.tags.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[TagRelateToManyInput]].encode(value)
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
-              "source" -> value.source.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
+              "source" -> value.source.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
               ),
               "hasBeenTagged" -> value.hasBeenTagged.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               ),
-              "type" -> value.`type`.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[EntryTypeType]].encode(value)
+              "type" -> value.`type`.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[EntryTypeType]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6049,8 +6317,8 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[EntryUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[EntryUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6080,38 +6348,41 @@ object CoVerifiedClientSchema {
               "publishDate" -> value.publishDate.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "title" -> value.title.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "title" -> value.title.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "subTitle" -> value.subTitle.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "subTitle" -> value.subTitle.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "image" -> value.image.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Upload]].encode(value)
+              "image" -> value.image.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Upload]].encode(value)
               ),
-              "content" -> value.content.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "content" -> value.content.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "summary" -> value.summary.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "summary" -> value.summary.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "url" -> value.url.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "tags" -> value.tags.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[TagRelateToManyInput]].encode(value)
+              "tags" -> value.tags.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[TagRelateToManyInput]].encode(value)
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              "language" -> value.language.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
-              "source" -> value.source.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
+              "source" -> value.source.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceRelateToOneInput]].encode(value)
               ),
               "hasBeenTagged" -> value.hasBeenTagged.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               ),
-              "type" -> value.`type`.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[EntryTypeType]].encode(value)
+              "type" -> value.`type`.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[EntryTypeType]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6125,8 +6396,8 @@ object CoVerifiedClientSchema {
         override def encode(value: EntriesCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[EntryCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[EntryCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6204,49 +6475,57 @@ object CoVerifiedClientSchema {
         override def encode(value: UserWhereInput): __Value =
           __ObjectValue(
             List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value => encode(value))
-                  )
-                )
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(value => encode(value))
                     )
                   )
-                )
               ),
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -6266,8 +6545,8 @@ object CoVerifiedClientSchema {
               "name_not_ends_with" -> value.name_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -6290,30 +6569,33 @@ object CoVerifiedClientSchema {
               "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "email" -> value.email.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "email" -> value.email.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "email_not" -> value.email_not.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "email_not" -> value.email_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "email_contains" -> value.email_contains.fold(
                 __NullValue: __Value
@@ -6333,8 +6615,8 @@ object CoVerifiedClientSchema {
               "email_not_ends_with" -> value.email_not_ends_with.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "email_i" -> value.email_i.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "email_i" -> value.email_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "email_not_i" -> value.email_not_i.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -6357,27 +6639,30 @@ object CoVerifiedClientSchema {
               "email_not_ends_with_i" -> value.email_not_ends_with_i.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "email_in" -> value.email_in.fold(__NullValue: __Value)(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[String]].encode(value)
+              "email_in" -> value.email_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
-                )
               ),
               "email_not_in" -> value.email_not_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[String]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
                     )
                   )
               ),
-              "isAdmin" -> value.isAdmin.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Boolean]].encode(value)
+              "isAdmin" -> value.isAdmin.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               ),
               "isAdmin_not" -> value.isAdmin_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
@@ -6392,8 +6677,8 @@ object CoVerifiedClientSchema {
               "organization_is_null" -> value.organization_is_null.fold(
                 __NullValue: __Value
               )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
-              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "updatedAt_not" -> value.updatedAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -6413,26 +6698,31 @@ object CoVerifiedClientSchema {
               "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "updatedAt_not_in" -> value.updatedAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               ),
-              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[DateTime]].encode(value)
+              "createdAt" -> value.createdAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[DateTime]].encode(value)
               ),
               "createdAt_not" -> value.createdAt_not.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[DateTime]].encode(value)
@@ -6452,23 +6742,28 @@ object CoVerifiedClientSchema {
               "createdAt_in" -> value.createdAt_in.fold(__NullValue: __Value)(
                 value =>
                   __ListValue(
-                    value.map(value =>
-                      value.fold(__NullValue: __Value)(value =>
-                        implicitly[ArgEncoder[DateTime]].encode(value)
-                      )
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
               ),
               "createdAt_not_in" -> value.createdAt_not_in.fold(
                 __NullValue: __Value
-              )(value =>
-                __ListValue(
-                  value.map(value =>
-                    value.fold(__NullValue: __Value)(value =>
-                      implicitly[ArgEncoder[DateTime]].encode(value)
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[DateTime]].encode(value)
+                        )
                     )
                   )
-                )
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6500,17 +6795,17 @@ object CoVerifiedClientSchema {
         override def encode(value: UserUpdateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "email" -> value.email.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "email" -> value.email.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "isAdmin" -> value.isAdmin.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Boolean]].encode(value)
+              "isAdmin" -> value.isAdmin.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               ),
-              "password" -> value.password.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "password" -> value.password.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "organization" -> value.organization.fold(__NullValue: __Value)(
                 value =>
@@ -6531,8 +6826,8 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "id" -> implicitly[ArgEncoder[String]].encode(value.id),
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[UserUpdateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[UserUpdateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6552,17 +6847,17 @@ object CoVerifiedClientSchema {
         override def encode(value: UserCreateInput): __Value =
           __ObjectValue(
             List(
-              "name" -> value.name.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "email" -> value.email.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "email" -> value.email.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "isAdmin" -> value.isAdmin.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Boolean]].encode(value)
+              "isAdmin" -> value.isAdmin.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               ),
-              "password" -> value.password.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "password" -> value.password.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "organization" -> value.organization.fold(__NullValue: __Value)(
                 value =>
@@ -6582,8 +6877,8 @@ object CoVerifiedClientSchema {
         override def encode(value: UsersCreateInput): __Value =
           __ObjectValue(
             List(
-              "data" -> value.data.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[UserCreateInput]].encode(value)
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[UserCreateInput]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6600,11 +6895,11 @@ object CoVerifiedClientSchema {
         override def encode(value: _ksListsMetaInput): __Value =
           __ObjectValue(
             List(
-              "key" -> value.key.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "key" -> value.key.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "auxiliary" -> value.auxiliary.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[Boolean]].encode(value)
+              "auxiliary" -> value.auxiliary.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -6618,8 +6913,8 @@ object CoVerifiedClientSchema {
         override def encode(value: _ListSchemaFieldsInput): __Value =
           __ObjectValue(
             List(
-              "type" -> value.`type`.fold(__NullValue: __Value)(value =>
-                implicitly[ArgEncoder[String]].encode(value)
+              "type" -> value.`type`.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -7821,4 +8116,3 @@ object CoVerifiedClientSchema {
   }
 
 }
-

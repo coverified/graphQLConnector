@@ -22,11 +22,11 @@ object SchemaUpdater {
   def main(args: Array[String]): Unit = {
 
     // params
-    val url = "http://coverified-backend-keystone.docker/admin/api"
+    val url = "http://keystone-next.docker/api/graphql"
     val packageName = "info.coverified.graphql.schema"
     val objName = "CoVerifiedClientSchema"
     val outputPath =
-      "graphQLConnector/src/main/scala/info/coverified/graphql/schema/CoVerifiedClientSchema.scala"
+      "src/main/scala/info/coverified/graphql/schema/CoVerifiedClientSchema.scala"
 
     // run code
     val runtime = zio.Runtime.default
