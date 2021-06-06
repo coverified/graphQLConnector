@@ -470,7 +470,6 @@ object ClientWriter {
       mappingClashedTypeNames: Map[String, String]
   ): String = {
     val inputObjectName = safeTypeName(typedef.name, mappingClashedTypeNames)
-    val keepNullValues = inputObjectName.endsWith("WhereInput")
     s"""case class $inputObjectName(${writeArgumentFields(
          typedef.fields,
          mappingClashedTypeNames
@@ -488,9 +487,7 @@ object ClientWriter {
                mappingClashedTypeNames
              )}"""
          )
-         .mkString(", ")})${if (!keepNullValues)
-         ".filterNot(_._2.equals(__NullValue))"
-       else ""})
+         .mkString(", ")}).filterNot(_._2.equals(__NullValue)))
        |    override def typeName: String = "$inputObjectName"
        |  }
        |}""".stripMargin
