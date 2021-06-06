@@ -1169,7 +1169,7 @@ object CoVerifiedClientSchema {
                     )
                   )
               )
-            ).filterNot(_._2.equals(__NullValue))
+            )
           )
         override def typeName: String = "UrlWhereInput"
       }
@@ -1693,7 +1693,7 @@ object CoVerifiedClientSchema {
               "urls_none" -> value.urls_none.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[UrlWhereInput]].encode(value)
               )
-            ).filterNot(_._2.equals(__NullValue))
+            )
           )
         override def typeName: String = "SourceWhereInput"
       }
@@ -2114,7 +2114,7 @@ object CoVerifiedClientSchema {
               "tags_none" -> value.tags_none.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
               )
-            ).filterNot(_._2.equals(__NullValue))
+            )
           )
         override def typeName: String = "LanguageWhereInput"
       }
@@ -2438,7 +2438,7 @@ object CoVerifiedClientSchema {
               "entries_none" -> value.entries_none.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[EntryWhereInput]].encode(value)
               )
-            ).filterNot(_._2.equals(__NullValue))
+            )
           )
         override def typeName: String = "TagWhereInput"
       }
@@ -3002,7 +3002,7 @@ object CoVerifiedClientSchema {
                     )
                   )
               )
-            ).filterNot(_._2.equals(__NullValue))
+            )
           )
         override def typeName: String = "EntryWhereInput"
       }
