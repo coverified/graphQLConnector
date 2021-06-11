@@ -8,6 +8,7 @@ package info.coverified.graphql
 import sttp.client3.{Request, UriContext}
 import sttp.client3.asynchttpclient.zio.{SttpClient, send}
 import caliban.client.{CalibanClientError, SelectionBuilder}
+import com.typesafe.scalalogging.LazyLogging
 import zio.console.{Console, putStrLn}
 import zio.{App, ExitCode, RIO, ZIO}
 
@@ -17,7 +18,7 @@ import zio.{App, ExitCode, RIO, ZIO}
   * @version 0.1
   * @since 25.02.21
   */
-object Connector {
+object Connector extends LazyLogging {
 
   def sendRequest[T](
       req: Request[Either[CalibanClientError, T], Any]
@@ -26,7 +27,10 @@ object Connector {
       .map(_.body)
       .absolve
       .tap(res => {
-        putStrLn(s"Result: $res")
+        logger.trace(s"Result: $res")
+        putStrLn(
+          s"Successfully received result of type '${res.getClass.getName}'."
+        )
       })
   }
 
