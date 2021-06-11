@@ -5,12 +5,12 @@
 
 package info.coverified.graphql
 
-import sttp.client3.{Request, UriContext}
+import sttp.client3.Request
 import sttp.client3.asynchttpclient.zio.{SttpClient, send}
-import caliban.client.{CalibanClientError, SelectionBuilder}
+import caliban.client.CalibanClientError
 import com.typesafe.scalalogging.LazyLogging
 import zio.console.{Console, putStrLn}
-import zio.{App, ExitCode, RIO, ZIO}
+import zio.RIO
 
 /**
   * //ToDo: Class Description
