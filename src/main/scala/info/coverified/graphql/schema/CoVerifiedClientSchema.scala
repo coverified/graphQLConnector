@@ -14,9 +14,9 @@ import caliban.client.__Value._
 
 object CoVerifiedClientSchema {
 
-  type JSON = String
+  type ID = String
 
-  type Upload = String
+  type JSON = String
 
   sealed trait SortUrlsBy extends scala.Product with scala.Serializable
   object SortUrlsBy {
@@ -48,6 +48,27 @@ object CoVerifiedClientSchema {
       }
       override def typeName: String = "SortUrlsBy"
     }
+  }
+
+  sealed trait OrderDirection extends scala.Product with scala.Serializable
+  object OrderDirection {
+    case object asc extends OrderDirection
+    case object desc extends OrderDirection
+
+    implicit val decoder: ScalarDecoder[OrderDirection] = {
+      case __StringValue("asc")  => Right(OrderDirection.asc)
+      case __StringValue("desc") => Right(OrderDirection.desc)
+      case other =>
+        Left(DecodingError(s"Can't build OrderDirection from input $other"))
+    }
+    implicit val encoder: ArgEncoder[OrderDirection] =
+      new ArgEncoder[OrderDirection] {
+        override def encode(value: OrderDirection): __Value = value match {
+          case OrderDirection.asc  => __EnumValue("asc")
+          case OrderDirection.desc => __EnumValue("desc")
+        }
+        override def typeName: String = "OrderDirection"
+      }
   }
 
   sealed trait SortSourcesBy extends scala.Product with scala.Serializable
@@ -287,26 +308,26 @@ object CoVerifiedClientSchema {
         name: Option[String],
         acronym: Option[String],
         url: Option[String],
-        urls: List[UrlsSelection],
-        _urlsMeta: Option[_urlsMetaSelection]
+        urls: Option[List[UrlsSelection]],
+        _urlsMeta: Option[_urlsMetaSelection],
+        urlsCount: Option[Int]
     )
 
     type ViewSelection[UrlsSelection, _urlsMetaSelection] =
       SelectionBuilder[Source, SourceView[UrlsSelection, _urlsMetaSelection]]
 
     def view[UrlsSelection, _urlsMetaSelection](
-        urlsWhere: Option[UrlWhereInput] = None,
+        urlsWhere: UrlWhereInput,
         urlsSearch: Option[String] = None,
-        urlsSortBy: Option[List[SortUrlsBy]] = None,
-        urlsOrderBy: Option[String] = None,
+        urlsOrderBy: List[UrlOrderByInput] = Nil,
         urlsFirst: Option[Int] = None,
-        urlsSkip: Option[Int] = None,
-        _urlsMetaWhere: Option[UrlWhereInput] = None,
+        urlsSkip: Int,
+        _urlsMetaWhere: UrlWhereInput,
         _urlsMetaSearch: Option[String] = None,
-        _urlsMetaSortBy: Option[List[SortUrlsBy]] = None,
-        _urlsMetaOrderBy: Option[String] = None,
+        _urlsMetaOrderBy: List[UrlOrderByInput] = Nil,
         _urlsMetaFirst: Option[Int] = None,
-        _urlsMetaSkip: Option[Int] = None
+        _urlsMetaSkip: Int,
+        urlsCountWhere: UrlWhereInput
     )(
         urlsSelection: SelectionBuilder[Url, UrlsSelection],
         _urlsMetaSelection: SelectionBuilder[_QueryMeta, _urlsMetaSelection]
@@ -314,20 +335,18 @@ object CoVerifiedClientSchema {
       (id ~ name ~ acronym ~ url ~ urls(
         urlsWhere,
         urlsSearch,
-        urlsSortBy,
         urlsOrderBy,
         urlsFirst,
         urlsSkip
       )(urlsSelection) ~ _urlsMeta(
         _urlsMetaWhere,
         _urlsMetaSearch,
-        _urlsMetaSortBy,
         _urlsMetaOrderBy,
         _urlsMetaFirst,
         _urlsMetaSkip
-      )(_urlsMetaSelection)).map {
-        case (((((id, name), acronym), url), urls), _urlsMeta) =>
-          SourceView(id, name, acronym, url, urls, _urlsMeta)
+      )(_urlsMetaSelection) ~ urlsCount(urlsCountWhere)).map {
+        case ((((((id, name), acronym), url), urls), _urlsMeta), urlsCount) =>
+          SourceView(id, name, acronym, url, urls, _urlsMeta, urlsCount)
       }
 
     def id: SelectionBuilder[Source, String] = Field("id", Scalar())
@@ -338,33 +357,34 @@ object CoVerifiedClientSchema {
     def url: SelectionBuilder[Source, Option[String]] =
       Field("url", OptionOf(Scalar()))
     def urls[A](
-        where: Option[UrlWhereInput] = None,
+        where: UrlWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortUrlsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[UrlOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Url, A]
-    ): SelectionBuilder[Source, List[A]] = Field(
+    ): SelectionBuilder[Source, Option[List[A]]] = Field(
       "urls",
-      ListOf(Obj(innerSelection)),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    @deprecated(
+      "This query will be removed in a future version. Please use urlsCount instead.",
+      ""
+    )
     def _urlsMeta[A](
-        where: Option[UrlWhereInput] = None,
+        where: UrlWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortUrlsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[UrlOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[Source, Option[A]] = Field(
@@ -373,12 +393,30 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    def urlsCount(where: UrlWhereInput): SelectionBuilder[Source, Option[Int]] =
+      Field(
+        "urlsCount",
+        OptionOf(Scalar()),
+        arguments = List(Argument("where", where))
+      )
+  }
+
+  type _QueryMeta
+  object _QueryMeta {
+
+    final case class _QueryMetaView(count: Option[Int])
+
+    type ViewSelection = SelectionBuilder[_QueryMeta, _QueryMetaView]
+
+    def view: ViewSelection = count.map(count => _QueryMetaView(count))
+
+    def count: SelectionBuilder[_QueryMeta, Option[Int]] =
+      Field("count", OptionOf(Scalar()))
   }
 
   type Language
@@ -392,10 +430,12 @@ object CoVerifiedClientSchema {
     ](
         id: String,
         name: Option[String],
-        entries: List[EntriesSelection],
+        entries: Option[List[EntriesSelection]],
         _entriesMeta: Option[_entriesMetaSelection],
-        tags: List[TagsSelection],
-        _tagsMeta: Option[_tagsMetaSelection]
+        entriesCount: Option[Int],
+        tags: Option[List[TagsSelection]],
+        _tagsMeta: Option[_tagsMetaSelection],
+        tagsCount: Option[Int]
     )
 
     type ViewSelection[
@@ -416,30 +456,28 @@ object CoVerifiedClientSchema {
         TagsSelection,
         _tagsMetaSelection
     ](
-        entriesWhere: Option[EntryWhereInput] = None,
+        entriesWhere: EntryWhereInput,
         entriesSearch: Option[String] = None,
-        entriesSortBy: Option[List[SortEntriesBy]] = None,
-        entriesOrderBy: Option[String] = None,
+        entriesOrderBy: List[EntryOrderByInput] = Nil,
         entriesFirst: Option[Int] = None,
-        entriesSkip: Option[Int] = None,
-        _entriesMetaWhere: Option[EntryWhereInput] = None,
+        entriesSkip: Int,
+        _entriesMetaWhere: EntryWhereInput,
         _entriesMetaSearch: Option[String] = None,
-        _entriesMetaSortBy: Option[List[SortEntriesBy]] = None,
-        _entriesMetaOrderBy: Option[String] = None,
+        _entriesMetaOrderBy: List[EntryOrderByInput] = Nil,
         _entriesMetaFirst: Option[Int] = None,
-        _entriesMetaSkip: Option[Int] = None,
-        tagsWhere: Option[TagWhereInput] = None,
+        _entriesMetaSkip: Int,
+        entriesCountWhere: EntryWhereInput,
+        tagsWhere: TagWhereInput,
         tagsSearch: Option[String] = None,
-        tagsSortBy: Option[List[SortTagsBy]] = None,
-        tagsOrderBy: Option[String] = None,
+        tagsOrderBy: List[TagOrderByInput] = Nil,
         tagsFirst: Option[Int] = None,
-        tagsSkip: Option[Int] = None,
-        _tagsMetaWhere: Option[TagWhereInput] = None,
+        tagsSkip: Int,
+        _tagsMetaWhere: TagWhereInput,
         _tagsMetaSearch: Option[String] = None,
-        _tagsMetaSortBy: Option[List[SortTagsBy]] = None,
-        _tagsMetaOrderBy: Option[String] = None,
+        _tagsMetaOrderBy: List[TagOrderByInput] = Nil,
         _tagsMetaFirst: Option[Int] = None,
-        _tagsMetaSkip: Option[Int] = None
+        _tagsMetaSkip: Int,
+        tagsCountWhere: TagWhereInput
     )(
         entriesSelection: SelectionBuilder[Entry, EntriesSelection],
         _entriesMetaSelection: SelectionBuilder[
@@ -457,67 +495,79 @@ object CoVerifiedClientSchema {
       (id ~ name ~ entries(
         entriesWhere,
         entriesSearch,
-        entriesSortBy,
         entriesOrderBy,
         entriesFirst,
         entriesSkip
       )(entriesSelection) ~ _entriesMeta(
         _entriesMetaWhere,
         _entriesMetaSearch,
-        _entriesMetaSortBy,
         _entriesMetaOrderBy,
         _entriesMetaFirst,
         _entriesMetaSkip
-      )(_entriesMetaSelection) ~ tags(
+      )(_entriesMetaSelection) ~ entriesCount(entriesCountWhere) ~ tags(
         tagsWhere,
         tagsSearch,
-        tagsSortBy,
         tagsOrderBy,
         tagsFirst,
         tagsSkip
       )(tagsSelection) ~ _tagsMeta(
         _tagsMetaWhere,
         _tagsMetaSearch,
-        _tagsMetaSortBy,
         _tagsMetaOrderBy,
         _tagsMetaFirst,
         _tagsMetaSkip
-      )(_tagsMetaSelection)).map {
-        case (((((id, name), entries), _entriesMeta), tags), _tagsMeta) =>
-          LanguageView(id, name, entries, _entriesMeta, tags, _tagsMeta)
+      )(_tagsMetaSelection) ~ tagsCount(tagsCountWhere)).map {
+        case (
+            (
+              (((((id, name), entries), _entriesMeta), entriesCount), tags),
+              _tagsMeta
+            ),
+            tagsCount
+            ) =>
+          LanguageView(
+            id,
+            name,
+            entries,
+            _entriesMeta,
+            entriesCount,
+            tags,
+            _tagsMeta,
+            tagsCount
+          )
       }
 
     def id: SelectionBuilder[Language, String] = Field("id", Scalar())
     def name: SelectionBuilder[Language, Option[String]] =
       Field("name", OptionOf(Scalar()))
     def entries[A](
-        where: Option[EntryWhereInput] = None,
+        where: EntryWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortEntriesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[EntryOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Entry, A]
-    ): SelectionBuilder[Language, List[A]] = Field(
+    ): SelectionBuilder[Language, Option[List[A]]] = Field(
       "entries",
-      ListOf(Obj(innerSelection)),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    @deprecated(
+      "This query will be removed in a future version. Please use entriesCount instead.",
+      ""
+    )
     def _entriesMeta[A](
-        where: Option[EntryWhereInput] = None,
+        where: EntryWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortEntriesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[EntryOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[Language, Option[A]] = Field(
@@ -526,40 +576,47 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    def entriesCount(
+        where: EntryWhereInput
+    ): SelectionBuilder[Language, Option[Int]] = Field(
+      "entriesCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
     def tags[A](
-        where: Option[TagWhereInput] = None,
+        where: TagWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortTagsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[TagOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Tag, A]
-    ): SelectionBuilder[Language, List[A]] = Field(
+    ): SelectionBuilder[Language, Option[List[A]]] = Field(
       "tags",
-      ListOf(Obj(innerSelection)),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    @deprecated(
+      "This query will be removed in a future version. Please use tagsCount instead.",
+      ""
+    )
     def _tagsMeta[A](
-        where: Option[TagWhereInput] = None,
+        where: TagWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortTagsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[TagOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[Language, Option[A]] = Field(
@@ -568,11 +625,17 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
+    )
+    def tagsCount(
+        where: TagWhereInput
+    ): SelectionBuilder[Language, Option[Int]] = Field(
+      "tagsCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
     )
   }
 
@@ -587,8 +650,9 @@ object CoVerifiedClientSchema {
         id: String,
         name: Option[String],
         language: Option[LanguageSelection],
-        entries: List[EntriesSelection],
-        _entriesMeta: Option[_entriesMetaSelection]
+        entries: Option[List[EntriesSelection]],
+        _entriesMeta: Option[_entriesMetaSelection],
+        entriesCount: Option[Int]
     )
 
     type ViewSelection[
@@ -601,18 +665,17 @@ object CoVerifiedClientSchema {
     ]
 
     def view[LanguageSelection, EntriesSelection, _entriesMetaSelection](
-        entriesWhere: Option[EntryWhereInput] = None,
+        entriesWhere: EntryWhereInput,
         entriesSearch: Option[String] = None,
-        entriesSortBy: Option[List[SortEntriesBy]] = None,
-        entriesOrderBy: Option[String] = None,
+        entriesOrderBy: List[EntryOrderByInput] = Nil,
         entriesFirst: Option[Int] = None,
-        entriesSkip: Option[Int] = None,
-        _entriesMetaWhere: Option[EntryWhereInput] = None,
+        entriesSkip: Int,
+        _entriesMetaWhere: EntryWhereInput,
         _entriesMetaSearch: Option[String] = None,
-        _entriesMetaSortBy: Option[List[SortEntriesBy]] = None,
-        _entriesMetaOrderBy: Option[String] = None,
+        _entriesMetaOrderBy: List[EntryOrderByInput] = Nil,
         _entriesMetaFirst: Option[Int] = None,
-        _entriesMetaSkip: Option[Int] = None
+        _entriesMetaSkip: Int,
+        entriesCountWhere: EntryWhereInput
     )(
         languageSelection: SelectionBuilder[Language, LanguageSelection],
         entriesSelection: SelectionBuilder[Entry, EntriesSelection],
@@ -628,20 +691,21 @@ object CoVerifiedClientSchema {
       (id ~ name ~ language(languageSelection) ~ entries(
         entriesWhere,
         entriesSearch,
-        entriesSortBy,
         entriesOrderBy,
         entriesFirst,
         entriesSkip
       )(entriesSelection) ~ _entriesMeta(
         _entriesMetaWhere,
         _entriesMetaSearch,
-        _entriesMetaSortBy,
         _entriesMetaOrderBy,
         _entriesMetaFirst,
         _entriesMetaSkip
-      )(_entriesMetaSelection)).map {
-        case ((((id, name), language), entries), _entriesMeta) =>
-          TagView(id, name, language, entries, _entriesMeta)
+      )(_entriesMetaSelection) ~ entriesCount(entriesCountWhere)).map {
+        case (
+            ((((id, name), language), entries), _entriesMeta),
+            entriesCount
+            ) =>
+          TagView(id, name, language, entries, _entriesMeta, entriesCount)
       }
 
     def id: SelectionBuilder[Tag, String] = Field("id", Scalar())
@@ -652,33 +716,34 @@ object CoVerifiedClientSchema {
     ): SelectionBuilder[Tag, Option[A]] =
       Field("language", OptionOf(Obj(innerSelection)))
     def entries[A](
-        where: Option[EntryWhereInput] = None,
+        where: EntryWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortEntriesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[EntryOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Entry, A]
-    ): SelectionBuilder[Tag, List[A]] = Field(
+    ): SelectionBuilder[Tag, Option[List[A]]] = Field(
       "entries",
-      ListOf(Obj(innerSelection)),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    @deprecated(
+      "This query will be removed in a future version. Please use entriesCount instead.",
+      ""
+    )
     def _entriesMeta[A](
-        where: Option[EntryWhereInput] = None,
+        where: EntryWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortEntriesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[EntryOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[Tag, Option[A]] = Field(
@@ -687,11 +752,17 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
+    )
+    def entriesCount(
+        where: EntryWhereInput
+    ): SelectionBuilder[Tag, Option[Int]] = Field(
+      "entriesCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
     )
   }
 
@@ -708,8 +779,9 @@ object CoVerifiedClientSchema {
         name: Option[String],
         hasBeenTagged: Option[Boolean],
         url: Option[UrlSelection],
-        tags: List[TagsSelection],
+        tags: Option[List[TagsSelection]],
         _tagsMeta: Option[_tagsMetaSelection],
+        tagsCount: Option[Int],
         language: Option[LanguageSelection],
         content: Option[String],
         summary: Option[String],
@@ -734,18 +806,17 @@ object CoVerifiedClientSchema {
         _tagsMetaSelection,
         LanguageSelection
     ](
-        tagsWhere: Option[TagWhereInput] = None,
+        tagsWhere: TagWhereInput,
         tagsSearch: Option[String] = None,
-        tagsSortBy: Option[List[SortTagsBy]] = None,
-        tagsOrderBy: Option[String] = None,
+        tagsOrderBy: List[TagOrderByInput] = Nil,
         tagsFirst: Option[Int] = None,
-        tagsSkip: Option[Int] = None,
-        _tagsMetaWhere: Option[TagWhereInput] = None,
+        tagsSkip: Int,
+        _tagsMetaWhere: TagWhereInput,
         _tagsMetaSearch: Option[String] = None,
-        _tagsMetaSortBy: Option[List[SortTagsBy]] = None,
-        _tagsMetaOrderBy: Option[String] = None,
+        _tagsMetaOrderBy: List[TagOrderByInput] = Nil,
         _tagsMetaFirst: Option[Int] = None,
-        _tagsMetaSkip: Option[Int] = None
+        _tagsMetaSkip: Int,
+        tagsCountWhere: TagWhereInput
     )(
         urlSelection: SelectionBuilder[Url, UrlSelection],
         tagsSelection: SelectionBuilder[Tag, TagsSelection],
@@ -760,25 +831,26 @@ object CoVerifiedClientSchema {
       (id ~ name ~ hasBeenTagged ~ url(urlSelection) ~ tags(
         tagsWhere,
         tagsSearch,
-        tagsSortBy,
         tagsOrderBy,
         tagsFirst,
         tagsSkip
       )(tagsSelection) ~ _tagsMeta(
         _tagsMetaWhere,
         _tagsMetaSearch,
-        _tagsMetaSortBy,
         _tagsMetaOrderBy,
         _tagsMetaFirst,
         _tagsMetaSkip
-      )(_tagsMetaSelection) ~ language(
+      )(_tagsMetaSelection) ~ tagsCount(tagsCountWhere) ~ language(
         languageSelection
       ) ~ content ~ summary ~ date).map {
         case (
             (
               (
                 (
-                  (((((id, name), hasBeenTagged), url), tags), _tagsMeta),
+                  (
+                    (((((id, name), hasBeenTagged), url), tags), _tagsMeta),
+                    tagsCount
+                  ),
                   language
                 ),
                 content
@@ -794,6 +866,7 @@ object CoVerifiedClientSchema {
             url,
             tags,
             _tagsMeta,
+            tagsCount,
             language,
             content,
             summary,
@@ -811,33 +884,34 @@ object CoVerifiedClientSchema {
     ): SelectionBuilder[Entry, Option[A]] =
       Field("url", OptionOf(Obj(innerSelection)))
     def tags[A](
-        where: Option[TagWhereInput] = None,
+        where: TagWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortTagsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[TagOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Tag, A]
-    ): SelectionBuilder[Entry, List[A]] = Field(
+    ): SelectionBuilder[Entry, Option[List[A]]] = Field(
       "tags",
-      ListOf(Obj(innerSelection)),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    @deprecated(
+      "This query will be removed in a future version. Please use tagsCount instead.",
+      ""
+    )
     def _tagsMeta[A](
-        where: Option[TagWhereInput] = None,
+        where: TagWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortTagsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[TagOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[Entry, Option[A]] = Field(
@@ -846,12 +920,17 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    def tagsCount(where: TagWhereInput): SelectionBuilder[Entry, Option[Int]] =
+      Field(
+        "tagsCount",
+        OptionOf(Scalar()),
+        arguments = List(Argument("where", where))
+      )
     def language[A](
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[Entry, Option[A]] =
@@ -864,84 +943,22 @@ object CoVerifiedClientSchema {
       Field("date", OptionOf(Scalar()))
   }
 
-  type _QueryMeta
-  object _QueryMeta {
+  type PasswordState
+  object PasswordState {
 
-    final case class _QueryMetaView(count: Option[Int])
+    final case class PasswordStateView(isSet: Boolean)
 
-    type ViewSelection = SelectionBuilder[_QueryMeta, _QueryMetaView]
+    type ViewSelection = SelectionBuilder[PasswordState, PasswordStateView]
 
-    def view: ViewSelection = count.map(count => _QueryMetaView(count))
+    def view: ViewSelection = isSet.map(isSet => PasswordStateView(isSet))
 
-    def count: SelectionBuilder[_QueryMeta, Option[Int]] =
-      Field("count", OptionOf(Scalar()))
+    def isSet: SelectionBuilder[PasswordState, Boolean] =
+      Field("isSet", Scalar())
   }
 
-  case class SourceRelateToOneInput(
-      create: Option[SourceCreateInput] = None,
-      connect: Option[SourceWhereUniqueInput] = None,
-      disconnect: Option[SourceWhereUniqueInput] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object SourceRelateToOneInput {
-    implicit val encoder: ArgEncoder[SourceRelateToOneInput] =
-      new ArgEncoder[SourceRelateToOneInput] {
-        override def encode(value: SourceRelateToOneInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[SourceCreateInput]].encode(value)
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(value)
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(value)
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "SourceRelateToOneInput"
-      }
-  }
-  case class EntryRelateToOneInput(
-      create: Option[EntryCreateInput] = None,
-      connect: Option[EntryWhereUniqueInput] = None,
-      disconnect: Option[EntryWhereUniqueInput] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object EntryRelateToOneInput {
-    implicit val encoder: ArgEncoder[EntryRelateToOneInput] =
-      new ArgEncoder[EntryRelateToOneInput] {
-        override def encode(value: EntryRelateToOneInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[EntryCreateInput]].encode(value)
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[EntryWhereUniqueInput]].encode(value)
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[EntryWhereUniqueInput]].encode(value)
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "EntryRelateToOneInput"
-      }
-  }
   case class UrlWhereInput(
-      AND: Option[List[Option[UrlWhereInput]]] = None,
-      OR: Option[List[Option[UrlWhereInput]]] = None,
+      AND: Option[List[UrlWhereInput]] = None,
+      OR: Option[List[UrlWhereInput]] = None,
       id: Option[String] = None,
       id_not: Option[String] = None,
       id_lt: Option[String] = None,
@@ -988,22 +1005,10 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "AND" -> value.AND.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "OR" -> value.OR.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "id" -> value.id.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -1174,16 +1179,50 @@ object CoVerifiedClientSchema {
         override def typeName: String = "UrlWhereInput"
       }
   }
-  case class UrlWhereUniqueInput(id: String)
+  case class UrlWhereUniqueInput(
+      id: Option[String] = None,
+      name: Option[String] = None
+  )
   object UrlWhereUniqueInput {
     implicit val encoder: ArgEncoder[UrlWhereUniqueInput] =
       new ArgEncoder[UrlWhereUniqueInput] {
         override def encode(value: UrlWhereUniqueInput): __Value =
           __ObjectValue(
-            List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
-              .filterNot(_._2.equals(__NullValue))
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "UrlWhereUniqueInput"
+      }
+  }
+  case class UrlOrderByInput(
+      id: Option[OrderDirection] = None,
+      name: Option[OrderDirection] = None,
+      lastCrawl: Option[OrderDirection] = None
+  )
+  object UrlOrderByInput {
+    implicit val encoder: ArgEncoder[UrlOrderByInput] =
+      new ArgEncoder[UrlOrderByInput] {
+        override def encode(value: UrlOrderByInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "lastCrawl" -> value.lastCrawl.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "UrlOrderByInput"
       }
   }
   case class UrlUpdateInput(
@@ -1215,6 +1254,68 @@ object CoVerifiedClientSchema {
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "UrlUpdateInput"
+      }
+  }
+  case class SourceRelateToOneInput(
+      create: Option[SourceCreateInput] = None,
+      connect: Option[SourceWhereUniqueInput] = None,
+      disconnect: Option[SourceWhereUniqueInput] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object SourceRelateToOneInput {
+    implicit val encoder: ArgEncoder[SourceRelateToOneInput] =
+      new ArgEncoder[SourceRelateToOneInput] {
+        override def encode(value: SourceRelateToOneInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[SourceCreateInput]].encode(value)
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(value)
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[SourceWhereUniqueInput]].encode(value)
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "SourceRelateToOneInput"
+      }
+  }
+  case class EntryRelateToOneInput(
+      create: Option[EntryCreateInput] = None,
+      connect: Option[EntryWhereUniqueInput] = None,
+      disconnect: Option[EntryWhereUniqueInput] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object EntryRelateToOneInput {
+    implicit val encoder: ArgEncoder[EntryRelateToOneInput] =
+      new ArgEncoder[EntryRelateToOneInput] {
+        override def encode(value: EntryRelateToOneInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[EntryCreateInput]].encode(value)
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[EntryWhereUniqueInput]].encode(value)
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[EntryWhereUniqueInput]].encode(value)
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "EntryRelateToOneInput"
       }
   }
   case class UrlsUpdateInput(id: String, data: Option[UrlUpdateInput] = None)
@@ -1279,68 +1380,9 @@ object CoVerifiedClientSchema {
         override def typeName: String = "UrlsCreateInput"
       }
   }
-  case class UrlRelateToManyInput(
-      create: Option[List[Option[UrlCreateInput]]] = None,
-      connect: Option[List[Option[UrlWhereUniqueInput]]] = None,
-      disconnect: Option[List[Option[UrlWhereUniqueInput]]] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object UrlRelateToManyInput {
-    implicit val encoder: ArgEncoder[UrlRelateToManyInput] =
-      new ArgEncoder[UrlRelateToManyInput] {
-        override def encode(value: UrlRelateToManyInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[UrlCreateInput]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[UrlWhereUniqueInput]]
-                              .encode(value)
-                        )
-                    )
-                  )
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[UrlWhereUniqueInput]].encode(
-                              value
-                            )
-                        )
-                    )
-                  )
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "UrlRelateToManyInput"
-      }
-  }
   case class SourceWhereInput(
-      AND: Option[List[Option[SourceWhereInput]]] = None,
-      OR: Option[List[Option[SourceWhereInput]]] = None,
+      AND: Option[List[SourceWhereInput]] = None,
+      OR: Option[List[SourceWhereInput]] = None,
       id: Option[String] = None,
       id_not: Option[String] = None,
       id_lt: Option[String] = None,
@@ -1414,22 +1456,10 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "AND" -> value.AND.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "OR" -> value.OR.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "id" -> value.id.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -1698,16 +1728,58 @@ object CoVerifiedClientSchema {
         override def typeName: String = "SourceWhereInput"
       }
   }
-  case class SourceWhereUniqueInput(id: String)
+  case class SourceWhereUniqueInput(
+      id: Option[String] = None,
+      name: Option[String] = None,
+      url: Option[String] = None
+  )
   object SourceWhereUniqueInput {
     implicit val encoder: ArgEncoder[SourceWhereUniqueInput] =
       new ArgEncoder[SourceWhereUniqueInput] {
         override def encode(value: SourceWhereUniqueInput): __Value =
           __ObjectValue(
-            List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
-              .filterNot(_._2.equals(__NullValue))
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "SourceWhereUniqueInput"
+      }
+  }
+  case class SourceOrderByInput(
+      id: Option[OrderDirection] = None,
+      name: Option[OrderDirection] = None,
+      acronym: Option[OrderDirection] = None,
+      url: Option[OrderDirection] = None
+  )
+  object SourceOrderByInput {
+    implicit val encoder: ArgEncoder[SourceOrderByInput] =
+      new ArgEncoder[SourceOrderByInput] {
+        override def encode(value: SourceOrderByInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "acronym" -> value.acronym.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "url" -> value.url.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "SourceOrderByInput"
       }
   }
   case class SourceUpdateInput(
@@ -1738,6 +1810,65 @@ object CoVerifiedClientSchema {
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "SourceUpdateInput"
+      }
+  }
+  case class UrlRelateToManyInput(
+      create: Option[List[Option[UrlCreateInput]]] = None,
+      connect: Option[List[Option[UrlWhereUniqueInput]]] = None,
+      disconnect: Option[List[Option[UrlWhereUniqueInput]]] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object UrlRelateToManyInput {
+    implicit val encoder: ArgEncoder[UrlRelateToManyInput] =
+      new ArgEncoder[UrlRelateToManyInput] {
+        override def encode(value: UrlRelateToManyInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[UrlCreateInput]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[UrlWhereUniqueInput]]
+                              .encode(value)
+                        )
+                    )
+                  )
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[UrlWhereUniqueInput]].encode(
+                              value
+                            )
+                        )
+                    )
+                  )
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "UrlRelateToManyInput"
       }
   }
   case class SourcesUpdateInput(
@@ -1804,131 +1935,9 @@ object CoVerifiedClientSchema {
         override def typeName: String = "SourcesCreateInput"
       }
   }
-  case class EntryRelateToManyInput(
-      create: Option[List[Option[EntryCreateInput]]] = None,
-      connect: Option[List[Option[EntryWhereUniqueInput]]] = None,
-      disconnect: Option[List[Option[EntryWhereUniqueInput]]] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object EntryRelateToManyInput {
-    implicit val encoder: ArgEncoder[EntryRelateToManyInput] =
-      new ArgEncoder[EntryRelateToManyInput] {
-        override def encode(value: EntryRelateToManyInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[EntryCreateInput]]
-                              .encode(value)
-                        )
-                    )
-                  )
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[EntryWhereUniqueInput]]
-                              .encode(
-                                value
-                              )
-                        )
-                    )
-                  )
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[EntryWhereUniqueInput]]
-                              .encode(
-                                value
-                              )
-                        )
-                    )
-                  )
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "EntryRelateToManyInput"
-      }
-  }
-  case class TagRelateToManyInput(
-      create: Option[List[Option[TagCreateInput]]] = None,
-      connect: Option[List[Option[TagWhereUniqueInput]]] = None,
-      disconnect: Option[List[Option[TagWhereUniqueInput]]] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object TagRelateToManyInput {
-    implicit val encoder: ArgEncoder[TagRelateToManyInput] =
-      new ArgEncoder[TagRelateToManyInput] {
-        override def encode(value: TagRelateToManyInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[TagCreateInput]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[TagWhereUniqueInput]]
-                              .encode(value)
-                        )
-                    )
-                  )
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value =>
-                            implicitly[ArgEncoder[TagWhereUniqueInput]].encode(
-                              value
-                            )
-                        )
-                    )
-                  )
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "TagRelateToManyInput"
-      }
-  }
   case class LanguageWhereInput(
-      AND: Option[List[Option[LanguageWhereInput]]] = None,
-      OR: Option[List[Option[LanguageWhereInput]]] = None,
+      AND: Option[List[LanguageWhereInput]] = None,
+      OR: Option[List[LanguageWhereInput]] = None,
       id: Option[String] = None,
       id_not: Option[String] = None,
       id_lt: Option[String] = None,
@@ -1969,22 +1978,10 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "AND" -> value.AND.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "OR" -> value.OR.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "id" -> value.id.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -2119,16 +2116,46 @@ object CoVerifiedClientSchema {
         override def typeName: String = "LanguageWhereInput"
       }
   }
-  case class LanguageWhereUniqueInput(id: String)
+  case class LanguageWhereUniqueInput(
+      id: Option[String] = None,
+      name: Option[String] = None
+  )
   object LanguageWhereUniqueInput {
     implicit val encoder: ArgEncoder[LanguageWhereUniqueInput] =
       new ArgEncoder[LanguageWhereUniqueInput] {
         override def encode(value: LanguageWhereUniqueInput): __Value =
           __ObjectValue(
-            List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
-              .filterNot(_._2.equals(__NullValue))
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "LanguageWhereUniqueInput"
+      }
+  }
+  case class LanguageOrderByInput(
+      id: Option[OrderDirection] = None,
+      name: Option[OrderDirection] = None
+  )
+  object LanguageOrderByInput {
+    implicit val encoder: ArgEncoder[LanguageOrderByInput] =
+      new ArgEncoder[LanguageOrderByInput] {
+        override def encode(value: LanguageOrderByInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "LanguageOrderByInput"
       }
   }
   case class LanguageUpdateInput(
@@ -2156,6 +2183,128 @@ object CoVerifiedClientSchema {
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "LanguageUpdateInput"
+      }
+  }
+  case class EntryRelateToManyInput(
+      create: Option[List[Option[EntryCreateInput]]] = None,
+      connect: Option[List[Option[EntryWhereUniqueInput]]] = None,
+      disconnect: Option[List[Option[EntryWhereUniqueInput]]] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object EntryRelateToManyInput {
+    implicit val encoder: ArgEncoder[EntryRelateToManyInput] =
+      new ArgEncoder[EntryRelateToManyInput] {
+        override def encode(value: EntryRelateToManyInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[EntryCreateInput]]
+                              .encode(value)
+                        )
+                    )
+                  )
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[EntryWhereUniqueInput]]
+                              .encode(
+                                value
+                              )
+                        )
+                    )
+                  )
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[EntryWhereUniqueInput]]
+                              .encode(
+                                value
+                              )
+                        )
+                    )
+                  )
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "EntryRelateToManyInput"
+      }
+  }
+  case class TagRelateToManyInput(
+      create: Option[List[Option[TagCreateInput]]] = None,
+      connect: Option[List[Option[TagWhereUniqueInput]]] = None,
+      disconnect: Option[List[Option[TagWhereUniqueInput]]] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object TagRelateToManyInput {
+    implicit val encoder: ArgEncoder[TagRelateToManyInput] =
+      new ArgEncoder[TagRelateToManyInput] {
+        override def encode(value: TagRelateToManyInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[TagCreateInput]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[TagWhereUniqueInput]]
+                              .encode(value)
+                        )
+                    )
+                  )
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[TagWhereUniqueInput]].encode(
+                              value
+                            )
+                        )
+                    )
+                  )
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "TagRelateToManyInput"
       }
   }
   case class LanguagesUpdateInput(
@@ -2221,41 +2370,9 @@ object CoVerifiedClientSchema {
         override def typeName: String = "LanguagesCreateInput"
       }
   }
-  case class LanguageRelateToOneInput(
-      create: Option[LanguageCreateInput] = None,
-      connect: Option[LanguageWhereUniqueInput] = None,
-      disconnect: Option[LanguageWhereUniqueInput] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object LanguageRelateToOneInput {
-    implicit val encoder: ArgEncoder[LanguageRelateToOneInput] =
-      new ArgEncoder[LanguageRelateToOneInput] {
-        override def encode(value: LanguageRelateToOneInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "LanguageRelateToOneInput"
-      }
-  }
   case class TagWhereInput(
-      AND: Option[List[Option[TagWhereInput]]] = None,
-      OR: Option[List[Option[TagWhereInput]]] = None,
+      AND: Option[List[TagWhereInput]] = None,
+      OR: Option[List[TagWhereInput]] = None,
       id: Option[String] = None,
       id_not: Option[String] = None,
       id_lt: Option[String] = None,
@@ -2295,22 +2412,10 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "AND" -> value.AND.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "OR" -> value.OR.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "id" -> value.id.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -2443,16 +2548,46 @@ object CoVerifiedClientSchema {
         override def typeName: String = "TagWhereInput"
       }
   }
-  case class TagWhereUniqueInput(id: String)
+  case class TagWhereUniqueInput(
+      id: Option[String] = None,
+      name: Option[String] = None
+  )
   object TagWhereUniqueInput {
     implicit val encoder: ArgEncoder[TagWhereUniqueInput] =
       new ArgEncoder[TagWhereUniqueInput] {
         override def encode(value: TagWhereUniqueInput): __Value =
           __ObjectValue(
-            List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
-              .filterNot(_._2.equals(__NullValue))
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "TagWhereUniqueInput"
+      }
+  }
+  case class TagOrderByInput(
+      id: Option[OrderDirection] = None,
+      name: Option[OrderDirection] = None
+  )
+  object TagOrderByInput {
+    implicit val encoder: ArgEncoder[TagOrderByInput] =
+      new ArgEncoder[TagOrderByInput] {
+        override def encode(value: TagOrderByInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "TagOrderByInput"
       }
   }
   case class TagUpdateInput(
@@ -2480,6 +2615,38 @@ object CoVerifiedClientSchema {
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "TagUpdateInput"
+      }
+  }
+  case class LanguageRelateToOneInput(
+      create: Option[LanguageCreateInput] = None,
+      connect: Option[LanguageWhereUniqueInput] = None,
+      disconnect: Option[LanguageWhereUniqueInput] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object LanguageRelateToOneInput {
+    implicit val encoder: ArgEncoder[LanguageRelateToOneInput] =
+      new ArgEncoder[LanguageRelateToOneInput] {
+        override def encode(value: LanguageRelateToOneInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "LanguageRelateToOneInput"
       }
   }
   case class TagsUpdateInput(id: String, data: Option[TagUpdateInput] = None)
@@ -2540,40 +2707,9 @@ object CoVerifiedClientSchema {
         override def typeName: String = "TagsCreateInput"
       }
   }
-  case class UrlRelateToOneInput(
-      create: Option[UrlCreateInput] = None,
-      connect: Option[UrlWhereUniqueInput] = None,
-      disconnect: Option[UrlWhereUniqueInput] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object UrlRelateToOneInput {
-    implicit val encoder: ArgEncoder[UrlRelateToOneInput] =
-      new ArgEncoder[UrlRelateToOneInput] {
-        override def encode(value: UrlRelateToOneInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[UrlCreateInput]].encode(value)
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[UrlWhereUniqueInput]].encode(value)
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[UrlWhereUniqueInput]].encode(value)
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "UrlRelateToOneInput"
-      }
-  }
   case class EntryWhereInput(
-      AND: Option[List[Option[EntryWhereInput]]] = None,
-      OR: Option[List[Option[EntryWhereInput]]] = None,
+      AND: Option[List[EntryWhereInput]] = None,
+      OR: Option[List[EntryWhereInput]] = None,
       id: Option[String] = None,
       id_not: Option[String] = None,
       id_lt: Option[String] = None,
@@ -2661,22 +2797,10 @@ object CoVerifiedClientSchema {
           __ObjectValue(
             List(
               "AND" -> value.AND.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "OR" -> value.OR.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(value => encode(value))
-                    )
-                  )
+                value => __ListValue(value.map(value => encode(value)))
               ),
               "id" -> value.id.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
@@ -3007,16 +3131,56 @@ object CoVerifiedClientSchema {
         override def typeName: String = "EntryWhereInput"
       }
   }
-  case class EntryWhereUniqueInput(id: String)
+  case class EntryWhereUniqueInput(id: Option[String] = None)
   object EntryWhereUniqueInput {
     implicit val encoder: ArgEncoder[EntryWhereUniqueInput] =
       new ArgEncoder[EntryWhereUniqueInput] {
         override def encode(value: EntryWhereUniqueInput): __Value =
           __ObjectValue(
-            List("id" -> implicitly[ArgEncoder[String]].encode(value.id))
-              .filterNot(_._2.equals(__NullValue))
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "EntryWhereUniqueInput"
+      }
+  }
+  case class EntryOrderByInput(
+      id: Option[OrderDirection] = None,
+      name: Option[OrderDirection] = None,
+      hasBeenTagged: Option[OrderDirection] = None,
+      content: Option[OrderDirection] = None,
+      summary: Option[OrderDirection] = None,
+      date: Option[OrderDirection] = None
+  )
+  object EntryOrderByInput {
+    implicit val encoder: ArgEncoder[EntryOrderByInput] =
+      new ArgEncoder[EntryOrderByInput] {
+        override def encode(value: EntryOrderByInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "hasBeenTagged" -> value.hasBeenTagged.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "content" -> value.content.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "summary" -> value.summary.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "date" -> value.date.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "EntryOrderByInput"
       }
   }
   case class EntryUpdateInput(
@@ -3065,6 +3229,37 @@ object CoVerifiedClientSchema {
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "EntryUpdateInput"
+      }
+  }
+  case class UrlRelateToOneInput(
+      create: Option[UrlCreateInput] = None,
+      connect: Option[UrlWhereUniqueInput] = None,
+      disconnect: Option[UrlWhereUniqueInput] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object UrlRelateToOneInput {
+    implicit val encoder: ArgEncoder[UrlRelateToOneInput] =
+      new ArgEncoder[UrlRelateToOneInput] {
+        override def encode(value: UrlRelateToOneInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[UrlCreateInput]].encode(value)
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[UrlWhereUniqueInput]].encode(value)
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[UrlWhereUniqueInput]].encode(value)
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "UrlRelateToOneInput"
       }
   }
   case class EntriesUpdateInput(
@@ -3155,21 +3350,19 @@ object CoVerifiedClientSchema {
     /** Search for all Url items which match the where clause.
       */
     def allUrls[A](
-        where: Option[UrlWhereInput] = None,
+        where: UrlWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortUrlsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[UrlOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Url, A]
-    ): SelectionBuilder[RootQuery, Option[List[Option[A]]]] = Field(
+    ): SelectionBuilder[RootQuery, Option[List[A]]] = Field(
       "allUrls",
-      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
@@ -3188,13 +3381,16 @@ object CoVerifiedClientSchema {
 
     /** Perform a meta-query on all Url items which match the where clause.
       */
+    @deprecated(
+      "This query will be removed in a future version. Please use urlsCount instead.",
+      ""
+    )
     def _allUrlsMeta[A](
-        where: Option[UrlWhereInput] = None,
+        where: UrlWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortUrlsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[UrlOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -3203,31 +3399,35 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    def urlsCount(
+        where: UrlWhereInput
+    ): SelectionBuilder[RootQuery, Option[Int]] = Field(
+      "urlsCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
 
     /** Search for all Source items which match the where clause.
       */
     def allSources[A](
-        where: Option[SourceWhereInput] = None,
+        where: SourceWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortSourcesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[SourceOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Source, A]
-    ): SelectionBuilder[RootQuery, Option[List[Option[A]]]] = Field(
+    ): SelectionBuilder[RootQuery, Option[List[A]]] = Field(
       "allSources",
-      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
@@ -3246,13 +3446,16 @@ object CoVerifiedClientSchema {
 
     /** Perform a meta-query on all Source items which match the where clause.
       */
+    @deprecated(
+      "This query will be removed in a future version. Please use sourcesCount instead.",
+      ""
+    )
     def _allSourcesMeta[A](
-        where: Option[SourceWhereInput] = None,
+        where: SourceWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortSourcesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[SourceOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -3261,31 +3464,35 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    def sourcesCount(
+        where: SourceWhereInput
+    ): SelectionBuilder[RootQuery, Option[Int]] = Field(
+      "sourcesCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
 
     /** Search for all Language items which match the where clause.
       */
     def allLanguages[A](
-        where: Option[LanguageWhereInput] = None,
+        where: LanguageWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortLanguagesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[LanguageOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Language, A]
-    ): SelectionBuilder[RootQuery, Option[List[Option[A]]]] = Field(
+    ): SelectionBuilder[RootQuery, Option[List[A]]] = Field(
       "allLanguages",
-      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
@@ -3304,13 +3511,16 @@ object CoVerifiedClientSchema {
 
     /** Perform a meta-query on all Language items which match the where clause.
       */
+    @deprecated(
+      "This query will be removed in a future version. Please use languagesCount instead.",
+      ""
+    )
     def _allLanguagesMeta[A](
-        where: Option[LanguageWhereInput] = None,
+        where: LanguageWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortLanguagesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[LanguageOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -3319,31 +3529,35 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    def languagesCount(
+        where: LanguageWhereInput
+    ): SelectionBuilder[RootQuery, Option[Int]] = Field(
+      "languagesCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
 
     /** Search for all Tag items which match the where clause.
       */
     def allTags[A](
-        where: Option[TagWhereInput] = None,
+        where: TagWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortTagsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[TagOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Tag, A]
-    ): SelectionBuilder[RootQuery, Option[List[Option[A]]]] = Field(
+    ): SelectionBuilder[RootQuery, Option[List[A]]] = Field(
       "allTags",
-      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
@@ -3362,13 +3576,16 @@ object CoVerifiedClientSchema {
 
     /** Perform a meta-query on all Tag items which match the where clause.
       */
+    @deprecated(
+      "This query will be removed in a future version. Please use tagsCount instead.",
+      ""
+    )
     def _allTagsMeta[A](
-        where: Option[TagWhereInput] = None,
+        where: TagWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortTagsBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[TagOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -3377,31 +3594,35 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
     )
+    def tagsCount(
+        where: TagWhereInput
+    ): SelectionBuilder[RootQuery, Option[Int]] = Field(
+      "tagsCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
 
     /** Search for all Entry items which match the where clause.
       */
     def allEntries[A](
-        where: Option[EntryWhereInput] = None,
+        where: EntryWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortEntriesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[EntryOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[Entry, A]
-    ): SelectionBuilder[RootQuery, Option[List[Option[A]]]] = Field(
+    ): SelectionBuilder[RootQuery, Option[List[A]]] = Field(
       "allEntries",
-      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      OptionOf(ListOf(Obj(innerSelection))),
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
@@ -3420,13 +3641,16 @@ object CoVerifiedClientSchema {
 
     /** Perform a meta-query on all Entry items which match the where clause.
       */
+    @deprecated(
+      "This query will be removed in a future version. Please use entriesCount instead.",
+      ""
+    )
     def _allEntriesMeta[A](
-        where: Option[EntryWhereInput] = None,
+        where: EntryWhereInput,
         search: Option[String] = None,
-        sortBy: Option[List[SortEntriesBy]] = None,
-        orderBy: Option[String] = None,
+        orderBy: List[EntryOrderByInput] = Nil,
         first: Option[Int] = None,
-        skip: Option[Int] = None
+        skip: Int
     )(
         innerSelection: SelectionBuilder[_QueryMeta, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -3435,11 +3659,17 @@ object CoVerifiedClientSchema {
       arguments = List(
         Argument("where", where),
         Argument("search", search),
-        Argument("sortBy", sortBy),
         Argument("orderBy", orderBy),
         Argument("first", first),
         Argument("skip", skip)
       )
+    )
+    def entriesCount(
+        where: EntryWhereInput
+    ): SelectionBuilder[RootQuery, Option[Int]] = Field(
+      "entriesCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
     )
   }
 
