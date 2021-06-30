@@ -27,7 +27,7 @@ sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
 configurations {
-	scalaCompilerPlugin
+	scalaimplementationrPlugin
 }
 
 repositories {
@@ -49,16 +49,16 @@ dependencies {
 	implementation group: 'com.github.ghostdogpr', name: "caliban-tools_${scalaVersion}", version: '0.9.5'
 
 	// logging
-	compile "org.slf4j:slf4j-api:${slf4jVersion}"  // slf4j wrapper
-	compile 'com.lmax:disruptor:3.4.2' // async logging
-	compile 'org.apache.logging.log4j:log4j-api:2.14.0' // log4j
-	compile 'org.apache.logging.log4j:log4j-core:2.14.0' // log4j
-	compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.0' // log4j -> slf4j
+	implementation "org.slf4j:slf4j-api:${slf4jVersion}"  // slf4j wrapper
+	implementation 'com.lmax:disruptor:3.4.2' // async logging
+	implementation 'org.apache.logging.log4j:log4j-api:2.14.0' // log4j
+	implementation 'org.apache.logging.log4j:log4j-core:2.14.0' // log4j
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.0' // log4j -> slf4j
 
-	compile "com.typesafe.scala-logging:scala-logging_${scalaVersion}:3.9.2" // akka scala logging
-	compile 'com.typesafe.scala-logging:scala-logging-slf4j_2.11:2.1.2'// scala logging
-	compile "org.slf4j:log4j-over-slf4j:${slf4jVersion}" // slf4j -> log4j
+	implementation "com.typesafe.scala-logging:scala-logging_${scalaVersion}:3.9.2" // akka scala logging
+	implementation 'com.typesafe.scala-logging:scala-logging-slf4j_2.11:2.1.2'// scala logging
+	implementation "org.slf4j:log4j-over-slf4j:${slf4jVersion}" // slf4j -> log4j
 
 	// CORE Scala //
-	compile "org.scala-lang:scala-library:${scalaBinaryVersion}"
+	implementation "org.scala-lang:scala-library:${scalaBinaryVersion}"
 }
