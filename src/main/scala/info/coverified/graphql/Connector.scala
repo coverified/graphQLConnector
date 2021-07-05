@@ -26,12 +26,10 @@ object Connector extends LazyLogging {
     send(req)
       .map(_.body)
       .absolve
-      .tap(res => {
-        logger.trace(s"Result: $res")
-        putStrLn(
-          s"Successfully received result of type '${res.getClass.getName}'."
-        )
-      })
+      .map { body =>
+        logger.trace(s"Result: $body")
+        body
+      }
   }
 
 }
