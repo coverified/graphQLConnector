@@ -12,6 +12,8 @@ import caliban.client._
 import caliban.client.Operations._
 import caliban.client.__Value._
 
+import scala.annotation.tailrec
+
 object CoVerifiedClientSchema {
 
   type ID = String
@@ -143,21 +145,28 @@ object CoVerifiedClientSchema {
     case object id_DESC extends SortTagsBy
     case object name_ASC extends SortTagsBy
     case object name_DESC extends SortTagsBy
+    case object highlighted_ASC extends SortTagsBy
+    case object highlighted_DESC extends SortTagsBy
 
     implicit val decoder: ScalarDecoder[SortTagsBy] = {
-      case __StringValue("id_ASC")    => Right(SortTagsBy.id_ASC)
-      case __StringValue("id_DESC")   => Right(SortTagsBy.id_DESC)
-      case __StringValue("name_ASC")  => Right(SortTagsBy.name_ASC)
-      case __StringValue("name_DESC") => Right(SortTagsBy.name_DESC)
+      case __StringValue("id_ASC")          => Right(SortTagsBy.id_ASC)
+      case __StringValue("id_DESC")         => Right(SortTagsBy.id_DESC)
+      case __StringValue("name_ASC")        => Right(SortTagsBy.name_ASC)
+      case __StringValue("name_DESC")       => Right(SortTagsBy.name_DESC)
+      case __StringValue("highlighted_ASC") => Right(SortTagsBy.highlighted_ASC)
+      case __StringValue("highlighted_DESC") =>
+        Right(SortTagsBy.highlighted_DESC)
       case other =>
         Left(DecodingError(s"Can't build SortTagsBy from input $other"))
     }
     implicit val encoder: ArgEncoder[SortTagsBy] = new ArgEncoder[SortTagsBy] {
       override def encode(value: SortTagsBy): __Value = value match {
-        case SortTagsBy.id_ASC    => __EnumValue("id_ASC")
-        case SortTagsBy.id_DESC   => __EnumValue("id_DESC")
-        case SortTagsBy.name_ASC  => __EnumValue("name_ASC")
-        case SortTagsBy.name_DESC => __EnumValue("name_DESC")
+        case SortTagsBy.id_ASC           => __EnumValue("id_ASC")
+        case SortTagsBy.id_DESC          => __EnumValue("id_DESC")
+        case SortTagsBy.name_ASC         => __EnumValue("name_ASC")
+        case SortTagsBy.name_DESC        => __EnumValue("name_DESC")
+        case SortTagsBy.highlighted_ASC  => __EnumValue("highlighted_ASC")
+        case SortTagsBy.highlighted_DESC => __EnumValue("highlighted_DESC")
       }
       override def typeName: String = "SortTagsBy"
     }
@@ -177,6 +186,16 @@ object CoVerifiedClientSchema {
     case object summary_DESC extends SortEntriesBy
     case object date_ASC extends SortEntriesBy
     case object date_DESC extends SortEntriesBy
+    case object nextCrawl_ASC extends SortEntriesBy
+    case object nextCrawl_DESC extends SortEntriesBy
+    case object updatedAt_ASC extends SortEntriesBy
+    case object updatedAt_DESC extends SortEntriesBy
+    case object eTag_ASC extends SortEntriesBy
+    case object eTag_DESC extends SortEntriesBy
+    case object profileHash_ASC extends SortEntriesBy
+    case object profileHash_DESC extends SortEntriesBy
+    case object disabled_ASC extends SortEntriesBy
+    case object disabled_DESC extends SortEntriesBy
 
     implicit val decoder: ScalarDecoder[SortEntriesBy] = {
       case __StringValue("id_ASC")    => Right(SortEntriesBy.id_ASC)
@@ -187,12 +206,26 @@ object CoVerifiedClientSchema {
         Right(SortEntriesBy.hasBeenTagged_ASC)
       case __StringValue("hasBeenTagged_DESC") =>
         Right(SortEntriesBy.hasBeenTagged_DESC)
-      case __StringValue("content_ASC")  => Right(SortEntriesBy.content_ASC)
-      case __StringValue("content_DESC") => Right(SortEntriesBy.content_DESC)
-      case __StringValue("summary_ASC")  => Right(SortEntriesBy.summary_ASC)
-      case __StringValue("summary_DESC") => Right(SortEntriesBy.summary_DESC)
-      case __StringValue("date_ASC")     => Right(SortEntriesBy.date_ASC)
-      case __StringValue("date_DESC")    => Right(SortEntriesBy.date_DESC)
+      case __StringValue("content_ASC")   => Right(SortEntriesBy.content_ASC)
+      case __StringValue("content_DESC")  => Right(SortEntriesBy.content_DESC)
+      case __StringValue("summary_ASC")   => Right(SortEntriesBy.summary_ASC)
+      case __StringValue("summary_DESC")  => Right(SortEntriesBy.summary_DESC)
+      case __StringValue("date_ASC")      => Right(SortEntriesBy.date_ASC)
+      case __StringValue("date_DESC")     => Right(SortEntriesBy.date_DESC)
+      case __StringValue("nextCrawl_ASC") => Right(SortEntriesBy.nextCrawl_ASC)
+      case __StringValue("nextCrawl_DESC") =>
+        Right(SortEntriesBy.nextCrawl_DESC)
+      case __StringValue("updatedAt_ASC") => Right(SortEntriesBy.updatedAt_ASC)
+      case __StringValue("updatedAt_DESC") =>
+        Right(SortEntriesBy.updatedAt_DESC)
+      case __StringValue("eTag_ASC")  => Right(SortEntriesBy.eTag_ASC)
+      case __StringValue("eTag_DESC") => Right(SortEntriesBy.eTag_DESC)
+      case __StringValue("profileHash_ASC") =>
+        Right(SortEntriesBy.profileHash_ASC)
+      case __StringValue("profileHash_DESC") =>
+        Right(SortEntriesBy.profileHash_DESC)
+      case __StringValue("disabled_ASC")  => Right(SortEntriesBy.disabled_ASC)
+      case __StringValue("disabled_DESC") => Right(SortEntriesBy.disabled_DESC)
       case other =>
         Left(DecodingError(s"Can't build SortEntriesBy from input $other"))
     }
@@ -207,12 +240,22 @@ object CoVerifiedClientSchema {
             __EnumValue("hasBeenTagged_ASC")
           case SortEntriesBy.hasBeenTagged_DESC =>
             __EnumValue("hasBeenTagged_DESC")
-          case SortEntriesBy.content_ASC  => __EnumValue("content_ASC")
-          case SortEntriesBy.content_DESC => __EnumValue("content_DESC")
-          case SortEntriesBy.summary_ASC  => __EnumValue("summary_ASC")
-          case SortEntriesBy.summary_DESC => __EnumValue("summary_DESC")
-          case SortEntriesBy.date_ASC     => __EnumValue("date_ASC")
-          case SortEntriesBy.date_DESC    => __EnumValue("date_DESC")
+          case SortEntriesBy.content_ASC      => __EnumValue("content_ASC")
+          case SortEntriesBy.content_DESC     => __EnumValue("content_DESC")
+          case SortEntriesBy.summary_ASC      => __EnumValue("summary_ASC")
+          case SortEntriesBy.summary_DESC     => __EnumValue("summary_DESC")
+          case SortEntriesBy.date_ASC         => __EnumValue("date_ASC")
+          case SortEntriesBy.date_DESC        => __EnumValue("date_DESC")
+          case SortEntriesBy.nextCrawl_ASC    => __EnumValue("nextCrawl_ASC")
+          case SortEntriesBy.nextCrawl_DESC   => __EnumValue("nextCrawl_DESC")
+          case SortEntriesBy.updatedAt_ASC    => __EnumValue("updatedAt_ASC")
+          case SortEntriesBy.updatedAt_DESC   => __EnumValue("updatedAt_DESC")
+          case SortEntriesBy.eTag_ASC         => __EnumValue("eTag_ASC")
+          case SortEntriesBy.eTag_DESC        => __EnumValue("eTag_DESC")
+          case SortEntriesBy.profileHash_ASC  => __EnumValue("profileHash_ASC")
+          case SortEntriesBy.profileHash_DESC => __EnumValue("profileHash_DESC")
+          case SortEntriesBy.disabled_ASC     => __EnumValue("disabled_ASC")
+          case SortEntriesBy.disabled_DESC    => __EnumValue("disabled_DESC")
         }
         override def typeName: String = "SortEntriesBy"
       }
@@ -341,7 +384,8 @@ object CoVerifiedClientSchema {
     final case class TagView[LanguageSelection](
         id: String,
         name: Option[String],
-        language: Option[LanguageSelection]
+        language: Option[LanguageSelection],
+        highlighted: Option[Boolean]
     )
 
     type ViewSelection[LanguageSelection] =
@@ -350,8 +394,9 @@ object CoVerifiedClientSchema {
     def view[LanguageSelection](
         languageSelection: SelectionBuilder[Language, LanguageSelection]
     ): ViewSelection[LanguageSelection] =
-      (id ~ name ~ language(languageSelection)).map {
-        case ((id, name), language) => TagView(id, name, language)
+      (id ~ name ~ language(languageSelection) ~ highlighted).map {
+        case (((id, name), language), highlighted) =>
+          TagView(id, name, language, highlighted)
       }
 
     def id: SelectionBuilder[Tag, String] = Field("id", Scalar())
@@ -361,6 +406,8 @@ object CoVerifiedClientSchema {
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[Tag, Option[A]] =
       Field("language", OptionOf(Obj(innerSelection)))
+    def highlighted: SelectionBuilder[Tag, Option[Boolean]] =
+      Field("highlighted", OptionOf(Scalar()))
   }
 
   type Entry
@@ -382,7 +429,12 @@ object CoVerifiedClientSchema {
         language: Option[LanguageSelection],
         content: Option[String],
         summary: Option[String],
-        date: Option[String]
+        date: Option[String],
+        nextCrawl: Option[String],
+        updatedAt: Option[String],
+        eTag: Option[String],
+        profileHash: Option[String],
+        disabled: Option[Boolean]
     )
 
     type ViewSelection[
@@ -439,37 +491,61 @@ object CoVerifiedClientSchema {
         _tagsMetaSkip
       )(_tagsMetaSelection) ~ tagsCount(tagsCountWhere) ~ language(
         languageSelection
-      ) ~ content ~ summary ~ date).map {
-        case (
-            (
+      ) ~ content ~ summary ~ date ~ nextCrawl ~ updatedAt ~ eTag ~ profileHash ~ disabled)
+        .map {
+          case (
               (
                 (
                   (
-                    (((((id, name), hasBeenTagged), url), tags), _tagsMeta),
-                    tagsCount
+                    (
+                      (
+                        (
+                          (
+                            (
+                              (
+                                (
+                                  ((((id, name), hasBeenTagged), url), tags),
+                                  _tagsMeta
+                                ),
+                                tagsCount
+                              ),
+                              language
+                            ),
+                            content
+                          ),
+                          summary
+                        ),
+                        date
+                      ),
+                      nextCrawl
+                    ),
+                    updatedAt
                   ),
-                  language
+                  eTag
                 ),
-                content
+                profileHash
               ),
-              summary
-            ),
-            date
-            ) =>
-          EntryView(
-            id,
-            name,
-            hasBeenTagged,
-            url,
-            tags,
-            _tagsMeta,
-            tagsCount,
-            language,
-            content,
-            summary,
-            date
-          )
-      }
+              disabled
+              ) =>
+            EntryView(
+              id,
+              name,
+              hasBeenTagged,
+              url,
+              tags,
+              _tagsMeta,
+              tagsCount,
+              language,
+              content,
+              summary,
+              date,
+              nextCrawl,
+              updatedAt,
+              eTag,
+              profileHash,
+              disabled
+            )
+        }
 
     def id: SelectionBuilder[Entry, String] = Field("id", Scalar())
     def name: SelectionBuilder[Entry, Option[String]] =
@@ -538,6 +614,16 @@ object CoVerifiedClientSchema {
       Field("summary", OptionOf(Scalar()))
     def date: SelectionBuilder[Entry, Option[String]] =
       Field("date", OptionOf(Scalar()))
+    def nextCrawl: SelectionBuilder[Entry, Option[String]] =
+      Field("nextCrawl", OptionOf(Scalar()))
+    def updatedAt: SelectionBuilder[Entry, Option[String]] =
+      Field("updatedAt", OptionOf(Scalar()))
+    def eTag: SelectionBuilder[Entry, Option[String]] =
+      Field("eTag", OptionOf(Scalar()))
+    def profileHash: SelectionBuilder[Entry, Option[String]] =
+      Field("profileHash", OptionOf(Scalar()))
+    def disabled: SelectionBuilder[Entry, Option[Boolean]] =
+      Field("disabled", OptionOf(Scalar()))
   }
 
   type _QueryMeta
@@ -1718,7 +1804,9 @@ object CoVerifiedClientSchema {
       name_in: Option[List[Option[String]]] = None,
       name_not_in: Option[List[Option[String]]] = None,
       language: Option[LanguageWhereInput] = None,
-      language_is_null: Option[Boolean] = None
+      language_is_null: Option[Boolean] = None,
+      highlighted: Option[Boolean] = None,
+      highlighted_not: Option[Boolean] = None
   )
   object TagWhereInput {
     implicit val encoder: ArgEncoder[TagWhereInput] =
@@ -1842,6 +1930,12 @@ object CoVerifiedClientSchema {
               ),
               "language_is_null" -> value.language_is_null.fold(
                 __NullValue: __Value
+              )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
+              "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              ),
+              "highlighted_not" -> value.highlighted_not.fold(
+                __NullValue: __Value
               )(value => implicitly[ArgEncoder[Boolean]].encode(value))
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -1871,7 +1965,8 @@ object CoVerifiedClientSchema {
   }
   case class TagOrderByInput(
       id: Option[OrderDirection] = None,
-      name: Option[OrderDirection] = None
+      name: Option[OrderDirection] = None,
+      highlighted: Option[OrderDirection] = None
   )
   object TagOrderByInput {
     implicit val encoder: ArgEncoder[TagOrderByInput] =
@@ -1884,6 +1979,9 @@ object CoVerifiedClientSchema {
               ),
               "name" -> value.name.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -1892,7 +1990,8 @@ object CoVerifiedClientSchema {
   }
   case class TagUpdateInput(
       name: Option[String] = None,
-      language: Option[LanguageRelateToOneInput] = None
+      language: Option[LanguageRelateToOneInput] = None,
+      highlighted: Option[Boolean] = None
   )
   object TagUpdateInput {
     implicit val encoder: ArgEncoder[TagUpdateInput] =
@@ -1906,6 +2005,9 @@ object CoVerifiedClientSchema {
               "language" -> value.language.fold(__NullValue: __Value)(
                 value =>
                   implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              ),
+              "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -1962,7 +2064,8 @@ object CoVerifiedClientSchema {
   }
   case class TagCreateInput(
       name: Option[String] = None,
-      language: Option[LanguageRelateToOneInput] = None
+      language: Option[LanguageRelateToOneInput] = None,
+      highlighted: Option[Boolean] = None
   )
   object TagCreateInput {
     implicit val encoder: ArgEncoder[TagCreateInput] =
@@ -1976,6 +2079,9 @@ object CoVerifiedClientSchema {
               "language" -> value.language.fold(__NullValue: __Value)(
                 value =>
                   implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
+              ),
+              "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -1997,424 +2103,989 @@ object CoVerifiedClientSchema {
         override def typeName: String = "TagsCreateInput"
       }
   }
-  case class EntryWhereInput(
-      AND: Option[List[EntryWhereInput]] = None,
-      OR: Option[List[EntryWhereInput]] = None,
-      id: Option[String] = None,
-      id_not: Option[String] = None,
-      id_lt: Option[String] = None,
-      id_lte: Option[String] = None,
-      id_gt: Option[String] = None,
-      id_gte: Option[String] = None,
-      id_in: Option[List[String]] = None,
-      id_not_in: Option[List[String]] = None,
-      name: Option[String] = None,
-      name_not: Option[String] = None,
-      name_contains: Option[String] = None,
-      name_not_contains: Option[String] = None,
-      name_starts_with: Option[String] = None,
-      name_not_starts_with: Option[String] = None,
-      name_ends_with: Option[String] = None,
-      name_not_ends_with: Option[String] = None,
-      name_i: Option[String] = None,
-      name_not_i: Option[String] = None,
-      name_contains_i: Option[String] = None,
-      name_not_contains_i: Option[String] = None,
-      name_starts_with_i: Option[String] = None,
-      name_not_starts_with_i: Option[String] = None,
-      name_ends_with_i: Option[String] = None,
-      name_not_ends_with_i: Option[String] = None,
-      name_in: Option[List[Option[String]]] = None,
-      name_not_in: Option[List[Option[String]]] = None,
-      hasBeenTagged: Option[Boolean] = None,
-      hasBeenTagged_not: Option[Boolean] = None,
-      url: Option[UrlWhereInput] = None,
-      url_is_null: Option[Boolean] = None,
-      tags_every: Option[TagWhereInput] = None,
-      tags_some: Option[TagWhereInput] = None,
-      tags_none: Option[TagWhereInput] = None,
-      language: Option[LanguageWhereInput] = None,
-      language_is_null: Option[Boolean] = None,
-      content: Option[String] = None,
-      content_not: Option[String] = None,
-      content_contains: Option[String] = None,
-      content_not_contains: Option[String] = None,
-      content_starts_with: Option[String] = None,
-      content_not_starts_with: Option[String] = None,
-      content_ends_with: Option[String] = None,
-      content_not_ends_with: Option[String] = None,
-      content_i: Option[String] = None,
-      content_not_i: Option[String] = None,
-      content_contains_i: Option[String] = None,
-      content_not_contains_i: Option[String] = None,
-      content_starts_with_i: Option[String] = None,
-      content_not_starts_with_i: Option[String] = None,
-      content_ends_with_i: Option[String] = None,
-      content_not_ends_with_i: Option[String] = None,
-      content_in: Option[List[Option[String]]] = None,
-      content_not_in: Option[List[Option[String]]] = None,
-      summary: Option[String] = None,
-      summary_not: Option[String] = None,
-      summary_contains: Option[String] = None,
-      summary_not_contains: Option[String] = None,
-      summary_starts_with: Option[String] = None,
-      summary_not_starts_with: Option[String] = None,
-      summary_ends_with: Option[String] = None,
-      summary_not_ends_with: Option[String] = None,
-      summary_i: Option[String] = None,
-      summary_not_i: Option[String] = None,
-      summary_contains_i: Option[String] = None,
-      summary_not_contains_i: Option[String] = None,
-      summary_starts_with_i: Option[String] = None,
-      summary_not_starts_with_i: Option[String] = None,
-      summary_ends_with_i: Option[String] = None,
-      summary_not_ends_with_i: Option[String] = None,
-      summary_in: Option[List[Option[String]]] = None,
-      summary_not_in: Option[List[Option[String]]] = None,
-      date: Option[String] = None,
-      date_not: Option[String] = None,
-      date_lt: Option[String] = None,
-      date_lte: Option[String] = None,
-      date_gt: Option[String] = None,
-      date_gte: Option[String] = None,
-      date_in: Option[List[Option[String]]] = None,
-      date_not_in: Option[List[Option[String]]] = None
-  )
+
+  sealed trait EntryWhereInput
   object EntryWhereInput {
+
     implicit val encoder: ArgEncoder[EntryWhereInput] =
       new ArgEncoder[EntryWhereInput] {
-        override def encode(value: EntryWhereInput): __Value =
-          __ObjectValue(
-            List(
-              "AND" -> value.AND.fold(__NullValue: __Value)(
-                value => __ListValue(value.map(value => encode(value)))
-              ),
-              "OR" -> value.OR.fold(__NullValue: __Value)(
-                value => __ListValue(value.map(value => encode(value)))
-              ),
-              "id" -> value.id.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_not" -> value.id_not.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_lt" -> value.id_lt.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_lte" -> value.id_lte.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_gt" -> value.id_gt.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_gte" -> value.id_gte.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "id_in" -> value.id_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value => implicitly[ArgEncoder[String]].encode(value)
-                    )
-                  )
-              ),
-              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value => implicitly[ArgEncoder[String]].encode(value)
-                    )
-                  )
-              ),
-              "name" -> value.name.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "name_not" -> value.name_not.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "name_not_contains" -> value.name_not_contains.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_starts_with" -> value.name_starts_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_not_starts_with" -> value.name_not_starts_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_ends_with" -> value.name_ends_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_not_ends_with" -> value.name_not_ends_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_i" -> value.name_i.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "name_contains_i" -> value.name_contains_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_not_contains_i" -> value.name_not_contains_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_starts_with_i" -> value.name_starts_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_not_starts_with_i" -> value.name_not_starts_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_ends_with_i" -> value.name_ends_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "name_in" -> value.name_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "hasBeenTagged" -> value.hasBeenTagged.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              ),
-              "hasBeenTagged_not" -> value.hasBeenTagged_not.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
-              "url" -> value.url.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[UrlWhereInput]].encode(value)
-              ),
-              "url_is_null" -> value.url_is_null.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              ),
-              "tags_every" -> value.tags_every.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
-              ),
-              "tags_some" -> value.tags_some.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
-              ),
-              "tags_none" -> value.tags_none.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
-              ),
-              "language" -> value.language.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
-              ),
-              "language_is_null" -> value.language_is_null.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
-              "content" -> value.content.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "content_not" -> value.content_not.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "content_contains" -> value.content_contains.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_not_contains" -> value.content_not_contains.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_starts_with" -> value.content_starts_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_not_starts_with" -> value.content_not_starts_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_ends_with" -> value.content_ends_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_not_ends_with" -> value.content_not_ends_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_i" -> value.content_i.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "content_not_i" -> value.content_not_i.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "content_contains_i" -> value.content_contains_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_not_contains_i" -> value.content_not_contains_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_starts_with_i" -> value.content_starts_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_not_starts_with_i" -> value.content_not_starts_with_i
-                .fold(__NullValue: __Value)(
-                  value => implicitly[ArgEncoder[String]].encode(value)
-                ),
-              "content_ends_with_i" -> value.content_ends_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_not_ends_with_i" -> value.content_not_ends_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "content_in" -> value.content_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "content_not_in" -> value.content_not_in.fold(
-                __NullValue: __Value
-              )(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "summary" -> value.summary.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "summary_not" -> value.summary_not.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "summary_contains" -> value.summary_contains.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_not_contains" -> value.summary_not_contains.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_starts_with" -> value.summary_starts_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_not_starts_with" -> value.summary_not_starts_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_ends_with" -> value.summary_ends_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_not_ends_with" -> value.summary_not_ends_with.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_i" -> value.summary_i.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "summary_not_i" -> value.summary_not_i.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "summary_contains_i" -> value.summary_contains_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_not_contains_i" -> value.summary_not_contains_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_starts_with_i" -> value.summary_starts_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_not_starts_with_i" -> value.summary_not_starts_with_i
-                .fold(__NullValue: __Value)(
-                  value => implicitly[ArgEncoder[String]].encode(value)
-                ),
-              "summary_ends_with_i" -> value.summary_ends_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_not_ends_with_i" -> value.summary_not_ends_with_i.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[String]].encode(value)),
-              "summary_in" -> value.summary_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "summary_not_in" -> value.summary_not_in.fold(
-                __NullValue: __Value
-              )(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "date" -> value.date.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "date_not" -> value.date_not.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "date_lt" -> value.date_lt.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "date_lte" -> value.date_lte.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "date_gt" -> value.date_gt.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "date_gte" -> value.date_gte.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[String]].encode(value)
-              ),
-              "date_in" -> value.date_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              ),
-              "date_not_in" -> value.date_not_in.fold(__NullValue: __Value)(
-                value =>
-                  __ListValue(
-                    value.map(
-                      value =>
-                        value.fold(__NullValue: __Value)(
-                          value => implicitly[ArgEncoder[String]].encode(value)
-                        )
-                    )
-                  )
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
+        @tailrec
+        override def encode(value: EntryWhereInput): __Value = value match {
+          case conjunctionDisjunction: ConjunctionDisjunction =>
+            encode(conjunctionDisjunction)
+          case id: Id     => Id.encoder.encode(id)
+          case name: Name => Name.encoder.encode(name)
+          case hasBeenTagged: HasBeenTagged =>
+            HasBeenTagged.encoder.encode(hasBeenTagged)
+          case url: Url             => Url.encoder.encode(url)
+          case tags: Tags           => Tags.encoder.encode(tags)
+          case language: Language   => Language.encoder.encode(language)
+          case content: Content     => Content.encoder.encode(content)
+          case summary: Summary     => Summary.encoder.encode(summary)
+          case date: Date           => Date.encoder.encode(date)
+          case nextCrawl: NextCrawl => NextCrawl.encoder.encode(nextCrawl)
+          case updatedAt: UpdatedAt => UpdatedAt.encoder.encode(updatedAt)
+          case eTag: ETag           => ETag.encoder.encode(eTag)
+          case profileHash: ProfileHash =>
+            ProfileHash.encoder.encode(profileHash)
+          case disabled: Disabled => Disabled.encoder.encode(disabled)
+        }
+
         override def typeName: String = "EntryWhereInput"
       }
+
+    case class ConjunctionDisjunction(
+        AND: Option[List[EntryWhereInput]] = None,
+        OR: Option[List[EntryWhereInput]] = None
+    ) extends EntryWhereInput
+
+    object ConjunctionDisjunction extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[ConjunctionDisjunction] =
+        new ArgEncoder[ConjunctionDisjunction] {
+          override def encode(value: ConjunctionDisjunction): __Value =
+            __ObjectValue(
+              List(
+                "AND" -> value.AND.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(value => ConjunctionDisjunction.encode(value))
+                    )
+                ),
+                "OR" -> value.OR.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(value => ConjunctionDisjunction.encode(value))
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Conjunction"
+        }
+
+      @tailrec
+      def encode(value: EntryWhereInput): __Value = value match {
+        case conjunctionDisjunction: ConjunctionDisjunction =>
+          encode(conjunctionDisjunction)
+        case entryWhereInput => EntryWhereInput.encoder.encode(entryWhereInput)
+      }
+    }
+
+    case class Id(
+        id: Option[String] = None,
+        id_not: Option[String] = None,
+        id_lt: Option[String] = None,
+        id_lte: Option[String] = None,
+        id_gt: Option[String] = None,
+        id_gte: Option[String] = None,
+        id_in: Option[List[String]] = None,
+        id_not_in: Option[List[String]] = None
+    ) extends EntryWhereInput
+    object Id extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Id] =
+        new ArgEncoder[Id] {
+          override def encode(value: Id): __Value =
+            __ObjectValue(
+              List(
+                "id" -> value.id.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "id_lt" -> value.id_lt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "id_lte" -> value.id_lte.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "id_gt" -> value.id_gt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "id_gte" -> value.id_gte.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value => implicitly[ArgEncoder[String]].encode(value)
+                      )
+                    )
+                ),
+                "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value => implicitly[ArgEncoder[String]].encode(value)
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Id"
+        }
+    }
+    case class Name(
+        name: Option[String] = None,
+        name_not: Option[String] = None,
+        name_contains: Option[String] = None,
+        name_not_contains: Option[String] = None,
+        name_starts_with: Option[String] = None,
+        name_not_starts_with: Option[String] = None,
+        name_ends_with: Option[String] = None,
+        name_not_ends_with: Option[String] = None,
+        name_i: Option[String] = None,
+        name_not_i: Option[String] = None,
+        name_contains_i: Option[String] = None,
+        name_not_contains_i: Option[String] = None,
+        name_starts_with_i: Option[String] = None,
+        name_not_starts_with_i: Option[String] = None,
+        name_ends_with_i: Option[String] = None,
+        name_not_ends_with_i: Option[String] = None,
+        name_in: Option[List[Option[String]]] = None,
+        name_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object Name extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Name] =
+        new ArgEncoder[Name] {
+          override def encode(value: Name): __Value =
+            __ObjectValue(
+              List(
+                "name" -> value.name.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "name_contains" -> value.name_contains.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "name_not_contains" -> value.name_not_contains.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_starts_with" -> value.name_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_not_starts_with" -> value.name_not_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_ends_with" -> value.name_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_not_ends_with" -> value.name_not_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "name_contains_i" -> value.name_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_not_contains_i" -> value.name_not_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_starts_with_i" -> value.name_starts_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_not_starts_with_i" -> value.name_not_starts_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_ends_with_i" -> value.name_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Name"
+        }
+    }
+    case class HasBeenTagged(
+        hasBeenTagged: Option[Boolean] = None,
+        hasBeenTagged_not: Option[Boolean] = None
+    ) extends EntryWhereInput
+    object HasBeenTagged extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[HasBeenTagged] =
+        new ArgEncoder[HasBeenTagged] {
+          override def encode(value: HasBeenTagged): __Value =
+            __ObjectValue(
+              List(
+                "hasBeenTagged" -> value.hasBeenTagged.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[Boolean]].encode(value)
+                ),
+                "hasBeenTagged_not" -> value.hasBeenTagged_not.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[Boolean]].encode(value))
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "HasBeenTagged"
+        }
+    }
+    case class Url(
+        url: Option[UrlWhereInput] = None,
+        url_is_null: Option[Boolean] = None
+    ) extends EntryWhereInput
+    object Url extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Url] =
+        new ArgEncoder[Url] {
+          override def encode(value: Url): __Value =
+            __ObjectValue(
+              List(
+                "url" -> value.url.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[UrlWhereInput]].encode(value)
+                ),
+                "url_is_null" -> value.url_is_null.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[Boolean]].encode(value)
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Url"
+        }
+    }
+    case class Tags(
+        tags_every: Option[TagWhereInput] = None,
+        tags_some: Option[TagWhereInput] = None,
+        tags_none: Option[TagWhereInput] = None
+    ) extends EntryWhereInput
+    object Tags extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Tags] =
+        new ArgEncoder[Tags] {
+          override def encode(value: Tags): __Value =
+            __ObjectValue(
+              List(
+                "tags_every" -> value.tags_every.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
+                ),
+                "tags_some" -> value.tags_some.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
+                ),
+                "tags_none" -> value.tags_none.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Tags"
+        }
+    }
+    case class Language(
+        language: Option[LanguageWhereInput] = None,
+        language_is_null: Option[Boolean] = None
+    ) extends EntryWhereInput
+    object Language extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Language] =
+        new ArgEncoder[Language] {
+          override def encode(value: Language): __Value =
+            __ObjectValue(
+              List(
+                "language" -> value.language.fold(__NullValue: __Value)(
+                  value =>
+                    implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
+                ),
+                "language_is_null" -> value.language_is_null.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[Boolean]].encode(value))
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Language"
+        }
+    }
+    case class Content(
+        content: Option[String] = None,
+        content_not: Option[String] = None,
+        content_contains: Option[String] = None,
+        content_not_contains: Option[String] = None,
+        content_starts_with: Option[String] = None,
+        content_not_starts_with: Option[String] = None,
+        content_ends_with: Option[String] = None,
+        content_not_ends_with: Option[String] = None,
+        content_i: Option[String] = None,
+        content_not_i: Option[String] = None,
+        content_contains_i: Option[String] = None,
+        content_not_contains_i: Option[String] = None,
+        content_starts_with_i: Option[String] = None,
+        content_not_starts_with_i: Option[String] = None,
+        content_ends_with_i: Option[String] = None,
+        content_not_ends_with_i: Option[String] = None,
+        content_in: Option[List[Option[String]]] = None,
+        content_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object Content extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Content] =
+        new ArgEncoder[Content] {
+          override def encode(value: Content): __Value =
+            __ObjectValue(
+              List(
+                "content" -> value.content.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "content_not" -> value.content_not.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "content_contains" -> value.content_contains.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_not_contains" -> value.content_not_contains.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_starts_with" -> value.content_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_not_starts_with" -> value.content_not_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_ends_with" -> value.content_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_not_ends_with" -> value.content_not_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_i" -> value.content_i.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "content_not_i" -> value.content_not_i.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "content_contains_i" -> value.content_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_not_contains_i" -> value.content_not_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_starts_with_i" -> value.content_starts_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_not_starts_with_i" -> value.content_not_starts_with_i
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "content_ends_with_i" -> value.content_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_not_ends_with_i" -> value.content_not_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "content_in" -> value.content_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "content_not_in" -> value.content_not_in.fold(
+                  __NullValue: __Value
+                )(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Content"
+        }
+    }
+    case class Summary(
+        summary: Option[String] = None,
+        summary_not: Option[String] = None,
+        summary_contains: Option[String] = None,
+        summary_not_contains: Option[String] = None,
+        summary_starts_with: Option[String] = None,
+        summary_not_starts_with: Option[String] = None,
+        summary_ends_with: Option[String] = None,
+        summary_not_ends_with: Option[String] = None,
+        summary_i: Option[String] = None,
+        summary_not_i: Option[String] = None,
+        summary_contains_i: Option[String] = None,
+        summary_not_contains_i: Option[String] = None,
+        summary_starts_with_i: Option[String] = None,
+        summary_not_starts_with_i: Option[String] = None,
+        summary_ends_with_i: Option[String] = None,
+        summary_not_ends_with_i: Option[String] = None,
+        summary_in: Option[List[Option[String]]] = None,
+        summary_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object Summary extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Summary] =
+        new ArgEncoder[Summary] {
+          override def encode(value: Summary): __Value =
+            __ObjectValue(
+              List(
+                "summary" -> value.summary.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "summary_not" -> value.summary_not.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "summary_contains" -> value.summary_contains.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_not_contains" -> value.summary_not_contains.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_starts_with" -> value.summary_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_not_starts_with" -> value.summary_not_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_ends_with" -> value.summary_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_not_ends_with" -> value.summary_not_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_i" -> value.summary_i.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "summary_not_i" -> value.summary_not_i.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "summary_contains_i" -> value.summary_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_not_contains_i" -> value.summary_not_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_starts_with_i" -> value.summary_starts_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_not_starts_with_i" -> value.summary_not_starts_with_i
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "summary_ends_with_i" -> value.summary_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_not_ends_with_i" -> value.summary_not_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "summary_in" -> value.summary_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "summary_not_in" -> value.summary_not_in.fold(
+                  __NullValue: __Value
+                )(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Summary"
+        }
+    }
+    case class Date(
+        date: Option[String] = None,
+        date_not: Option[String] = None,
+        date_lt: Option[String] = None,
+        date_lte: Option[String] = None,
+        date_gt: Option[String] = None,
+        date_gte: Option[String] = None,
+        date_in: Option[List[Option[String]]] = None,
+        date_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object Date extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Date] =
+        new ArgEncoder[Date] {
+          override def encode(value: Date): __Value =
+            __ObjectValue(
+              List(
+                "date" -> value.date.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "date_not" -> value.date_not.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "date_lt" -> value.date_lt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "date_lte" -> value.date_lte.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "date_gt" -> value.date_gt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "date_gte" -> value.date_gte.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "date_in" -> value.date_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "date_not_in" -> value.date_not_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Date"
+        }
+    }
+    case class NextCrawl(
+        nextCrawl: Option[String] = None,
+        nextCrawl_not: Option[String] = None,
+        nextCrawl_lt: Option[String] = None,
+        nextCrawl_lte: Option[String] = None,
+        nextCrawl_gt: Option[String] = None,
+        nextCrawl_gte: Option[String] = None,
+        nextCrawl_in: Option[List[Option[String]]] = None,
+        nextCrawl_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object NextCrawl extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[NextCrawl] =
+        new ArgEncoder[NextCrawl] {
+          override def encode(value: NextCrawl): __Value =
+            __ObjectValue(
+              List(
+                "nextCrawl" -> value.nextCrawl.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "nextCrawl_not" -> value.nextCrawl_not.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "nextCrawl_lt" -> value.nextCrawl_lt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "nextCrawl_lte" -> value.nextCrawl_lte.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "nextCrawl_gt" -> value.nextCrawl_gt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "nextCrawl_gte" -> value.nextCrawl_gte.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "nextCrawl_in" -> value.nextCrawl_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "nextCrawl_not_in" -> value.nextCrawl_not_in.fold(
+                  __NullValue: __Value
+                )(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "NextCrawl"
+        }
+    }
+    case class UpdatedAt(
+        updatedAt: Option[String] = None,
+        updatedAt_not: Option[String] = None,
+        updatedAt_lt: Option[String] = None,
+        updatedAt_lte: Option[String] = None,
+        updatedAt_gt: Option[String] = None,
+        updatedAt_gte: Option[String] = None,
+        updatedAt_in: Option[List[Option[String]]] = None,
+        updatedAt_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object UpdatedAt extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[UpdatedAt] =
+        new ArgEncoder[UpdatedAt] {
+          override def encode(value: UpdatedAt): __Value =
+            __ObjectValue(
+              List(
+                "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "updatedAt_not" -> value.updatedAt_not.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "updatedAt_lt" -> value.updatedAt_lt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "updatedAt_lte" -> value.updatedAt_lte.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "updatedAt_gt" -> value.updatedAt_gt.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "updatedAt_gte" -> value.updatedAt_gte.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "updatedAt_in" -> value.updatedAt_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "updatedAt_not_in" -> value.updatedAt_not_in.fold(
+                  __NullValue: __Value
+                )(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "EntryWhereInput"
+        }
+    }
+    case class ETag(
+        eTag: Option[String] = None,
+        eTag_not: Option[String] = None,
+        eTag_contains: Option[String] = None,
+        eTag_not_contains: Option[String] = None,
+        eTag_starts_with: Option[String] = None,
+        eTag_not_starts_with: Option[String] = None,
+        eTag_ends_with: Option[String] = None,
+        eTag_not_ends_with: Option[String] = None,
+        eTag_i: Option[String] = None,
+        eTag_not_i: Option[String] = None,
+        eTag_contains_i: Option[String] = None,
+        eTag_not_contains_i: Option[String] = None,
+        eTag_starts_with_i: Option[String] = None,
+        eTag_not_starts_with_i: Option[String] = None,
+        eTag_ends_with_i: Option[String] = None,
+        eTag_not_ends_with_i: Option[String] = None,
+        eTag_in: Option[List[Option[String]]] = None,
+        eTag_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object ETag extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[ETag] =
+        new ArgEncoder[ETag] {
+          override def encode(value: ETag): __Value =
+            __ObjectValue(
+              List(
+                "eTag" -> value.eTag.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "eTag_not" -> value.eTag_not.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "eTag_contains" -> value.eTag_contains.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "eTag_not_contains" -> value.eTag_not_contains.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_starts_with" -> value.eTag_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_not_starts_with" -> value.eTag_not_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_ends_with" -> value.eTag_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_not_ends_with" -> value.eTag_not_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_i" -> value.eTag_i.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "eTag_not_i" -> value.eTag_not_i.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "eTag_contains_i" -> value.eTag_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_not_contains_i" -> value.eTag_not_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_starts_with_i" -> value.eTag_starts_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_not_starts_with_i" -> value.eTag_not_starts_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_ends_with_i" -> value.eTag_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_not_ends_with_i" -> value.eTag_not_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "eTag_in" -> value.eTag_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "eTag_not_in" -> value.eTag_not_in.fold(__NullValue: __Value)(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "ETag"
+        }
+    }
+    case class ProfileHash(
+        profileHash: Option[String] = None,
+        profileHash_not: Option[String] = None,
+        profileHash_contains: Option[String] = None,
+        profileHash_not_contains: Option[String] = None,
+        profileHash_starts_with: Option[String] = None,
+        profileHash_not_starts_with: Option[String] = None,
+        profileHash_ends_with: Option[String] = None,
+        profileHash_not_ends_with: Option[String] = None,
+        profileHash_i: Option[String] = None,
+        profileHash_not_i: Option[String] = None,
+        profileHash_contains_i: Option[String] = None,
+        profileHash_not_contains_i: Option[String] = None,
+        profileHash_starts_with_i: Option[String] = None,
+        profileHash_not_starts_with_i: Option[String] = None,
+        profileHash_ends_with_i: Option[String] = None,
+        profileHash_not_ends_with_i: Option[String] = None,
+        profileHash_in: Option[List[Option[String]]] = None,
+        profileHash_not_in: Option[List[Option[String]]] = None
+    ) extends EntryWhereInput
+    object ProfileHash extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[ProfileHash] =
+        new ArgEncoder[ProfileHash] {
+          override def encode(value: ProfileHash): __Value =
+            __ObjectValue(
+              List(
+                "profileHash" -> value.profileHash.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "profileHash_not" -> value.profileHash_not.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_contains" -> value.profileHash_contains.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_not_contains" -> value.profileHash_not_contains
+                  .fold(
+                    __NullValue: __Value
+                  )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_starts_with" -> value.profileHash_starts_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_not_starts_with" -> value.profileHash_not_starts_with
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "profileHash_ends_with" -> value.profileHash_ends_with.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_not_ends_with" -> value.profileHash_not_ends_with
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "profileHash_i" -> value.profileHash_i.fold(
+                  __NullValue: __Value
+                )(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+                "profileHash_not_i" -> value.profileHash_not_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_contains_i" -> value.profileHash_contains_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_not_contains_i" -> value.profileHash_not_contains_i
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "profileHash_starts_with_i" -> value.profileHash_starts_with_i
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "profileHash_not_starts_with_i" -> value.profileHash_not_starts_with_i
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "profileHash_ends_with_i" -> value.profileHash_ends_with_i.fold(
+                  __NullValue: __Value
+                )(value => implicitly[ArgEncoder[String]].encode(value)),
+                "profileHash_not_ends_with_i" -> value.profileHash_not_ends_with_i
+                  .fold(__NullValue: __Value)(
+                    value => implicitly[ArgEncoder[String]].encode(value)
+                  ),
+                "profileHash_in" -> value.profileHash_in.fold(
+                  __NullValue: __Value
+                )(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                ),
+                "profileHash_not_in" -> value.profileHash_not_in.fold(
+                  __NullValue: __Value
+                )(
+                  value =>
+                    __ListValue(
+                      value.map(
+                        value =>
+                          value.fold(__NullValue: __Value)(
+                            value =>
+                              implicitly[ArgEncoder[String]].encode(value)
+                          )
+                      )
+                    )
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "ProfileHash"
+        }
+    }
+    case class Disabled(
+        disabled: Option[Boolean] = None,
+        disabled_not: Option[Boolean] = None
+    ) extends EntryWhereInput
+    object Disabled extends EntryWhereInput {
+      implicit val encoder: ArgEncoder[Disabled] =
+        new ArgEncoder[Disabled] {
+          override def encode(value: Disabled): __Value =
+            __ObjectValue(
+              List(
+                "disabled" -> value.disabled.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[Boolean]].encode(value)
+                ),
+                "disabled_not" -> value.disabled_not.fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[Boolean]].encode(value)
+                )
+              ).filterNot(_._2.equals(__NullValue))
+            )
+          override def typeName: String = "Disabled"
+        }
+    }
   }
+
   case class EntryWhereUniqueInput(id: Option[String] = None)
   object EntryWhereUniqueInput {
     implicit val encoder: ArgEncoder[EntryWhereUniqueInput] =
@@ -2436,7 +3107,12 @@ object CoVerifiedClientSchema {
       hasBeenTagged: Option[OrderDirection] = None,
       content: Option[OrderDirection] = None,
       summary: Option[OrderDirection] = None,
-      date: Option[OrderDirection] = None
+      date: Option[OrderDirection] = None,
+      nextCrawl: Option[OrderDirection] = None,
+      updatedAt: Option[OrderDirection] = None,
+      eTag: Option[OrderDirection] = None,
+      profileHash: Option[OrderDirection] = None,
+      disabled: Option[OrderDirection] = None
   )
   object EntryOrderByInput {
     implicit val encoder: ArgEncoder[EntryOrderByInput] =
@@ -2461,6 +3137,21 @@ object CoVerifiedClientSchema {
               ),
               "date" -> value.date.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "nextCrawl" -> value.nextCrawl.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "eTag" -> value.eTag.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "profileHash" -> value.profileHash.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "disabled" -> value.disabled.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2475,7 +3166,12 @@ object CoVerifiedClientSchema {
       language: Option[LanguageRelateToOneInput] = None,
       content: Option[String] = None,
       summary: Option[String] = None,
-      date: Option[String] = None
+      date: Option[String] = None,
+      nextCrawl: Option[String] = None,
+      updatedAt: Option[String] = None,
+      eTag: Option[String] = None,
+      profileHash: Option[String] = None,
+      disabled: Option[Boolean] = None
   )
   object EntryUpdateInput {
     implicit val encoder: ArgEncoder[EntryUpdateInput] =
@@ -2509,6 +3205,21 @@ object CoVerifiedClientSchema {
               ),
               "date" -> value.date.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "nextCrawl" -> value.nextCrawl.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "eTag" -> value.eTag.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "profileHash" -> value.profileHash.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "disabled" -> value.disabled.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2632,7 +3343,12 @@ object CoVerifiedClientSchema {
       language: Option[LanguageRelateToOneInput] = None,
       content: Option[String] = None,
       summary: Option[String] = None,
-      date: Option[String] = None
+      date: Option[String] = None,
+      nextCrawl: Option[String] = None,
+      updatedAt: Option[String] = None,
+      eTag: Option[String] = None,
+      profileHash: Option[String] = None,
+      disabled: Option[Boolean] = None
   )
   object EntryCreateInput {
     implicit val encoder: ArgEncoder[EntryCreateInput] =
@@ -2666,6 +3382,21 @@ object CoVerifiedClientSchema {
               ),
               "date" -> value.date.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "nextCrawl" -> value.nextCrawl.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "updatedAt" -> value.updatedAt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "eTag" -> value.eTag.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "profileHash" -> value.profileHash.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "disabled" -> value.disabled.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2685,6 +3416,45 @@ object CoVerifiedClientSchema {
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "EntriesCreateInput"
+      }
+  }
+  case class SearchWhereInput(
+      tag_id_in: Option[List[String]] = None,
+      source_id_in: Option[List[String]] = None,
+      date_lte: Option[String] = None,
+      date_gte: Option[String] = None
+  )
+  object SearchWhereInput {
+    implicit val encoder: ArgEncoder[SearchWhereInput] =
+      new ArgEncoder[SearchWhereInput] {
+        override def encode(value: SearchWhereInput): __Value =
+          __ObjectValue(
+            List(
+              "tag_id_in" -> value.tag_id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value => implicitly[ArgEncoder[String]].encode(value)
+                    )
+                  )
+              ),
+              "source_id_in" -> value.source_id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value => implicitly[ArgEncoder[String]].encode(value)
+                    )
+                  )
+              ),
+              "date_lte" -> value.date_lte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "date_gte" -> value.date_gte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "SearchWhereInput"
       }
   }
   type Query = RootQuery
@@ -3017,13 +3787,19 @@ object CoVerifiedClientSchema {
 
     /** Return <first> search results for <search>, skipping <skip>
       */
-    def searchEntries[A](search: String, first: Int, skip: Int)(
+    def searchEntries[A](
+        search: String,
+        where: SearchWhereInput,
+        first: Int,
+        skip: Int
+    )(
         innerSelection: SelectionBuilder[SearchResult, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
       "searchEntries",
       OptionOf(Obj(innerSelection)),
       arguments = List(
         Argument("search", search),
+        Argument("where", where),
         Argument("first", first),
         Argument("skip", skip)
       )
