@@ -566,32 +566,6 @@ object CoVerifiedClientSchema {
       Field("isSet", Scalar())
   }
 
-  type SearchResult
-  object SearchResult {
-
-    final case class SearchResultView[ResultsSelection](
-        results: Option[List[Option[ResultsSelection]]],
-        totalResults: Int
-    )
-
-    type ViewSelection[ResultsSelection] =
-      SelectionBuilder[SearchResult, SearchResultView[ResultsSelection]]
-
-    def view[ResultsSelection](
-        resultsSelection: SelectionBuilder[Entry, ResultsSelection]
-    ): ViewSelection[ResultsSelection] =
-      (results(resultsSelection) ~ totalResults).map {
-        case (results, totalResults) => SearchResultView(results, totalResults)
-      }
-
-    def results[A](
-        innerSelection: SelectionBuilder[Entry, A]
-    ): SelectionBuilder[SearchResult, Option[List[Option[A]]]] =
-      Field("results", OptionOf(ListOf(OptionOf(Obj(innerSelection)))))
-    def totalResults: SelectionBuilder[SearchResult, Int] =
-      Field("totalResults", Scalar())
-  }
-
   case class UrlWhereInput(
       AND: Option[List[UrlWhereInput]] = None,
       OR: Option[List[UrlWhereInput]] = None,
@@ -3018,10 +2992,10 @@ object CoVerifiedClientSchema {
     /** Return <first> search results for <search>, skipping <skip>
       */
     def searchEntries[A](search: String, first: Int, skip: Int)(
-        innerSelection: SelectionBuilder[SearchResult, A]
-    ): SelectionBuilder[RootQuery, Option[A]] = Field(
+        innerSelection: SelectionBuilder[Entry, A]
+    ): SelectionBuilder[RootQuery, Option[List[Option[A]]]] = Field(
       "searchEntries",
-      OptionOf(Obj(innerSelection)),
+      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(
         Argument("search", search),
         Argument("first", first),
