@@ -64,9 +64,18 @@ dependencies {
 }
 
 tasks.withType(ScalaCompile) {
+	options.forkOptions.jvmArgs += [
+			'-Xmx4096m',
+			'-Xss4m',
+			'-Xms2048m',
+			'-XX:+UseParallelGC',
+			'-XX:MaxInlineLevel=20'
+	]
 	options.compilerArgs += [
-		'-Xmx4g',
-		'-Xmx2048m',
-		'-Xss2048k'
+		'-Xmx4096m',
+		'-Xss4m',
+		'-Xms2048m',
+		'-XX:+UseParallelGC',
+		'-XX:MaxInlineLevel=20'
 	]
 }
