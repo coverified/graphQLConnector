@@ -2,7 +2,8 @@ plugins {
 	id 'groovy' // groovy support
 	id 'java' // java support
 	id 'scala' // scala support
-	id 'com.diffplug.spotless' version '5.7.0'//code format
+	id 'com.diffplug.spotless' version '5.14.2' // code format
+	id 'maven-publish'
 }
 
 
@@ -65,11 +66,11 @@ dependencies {
 
 tasks.withType(ScalaCompile) {
 	options.forkOptions.jvmArgs += [
-			'-Xmx4096m',
-			'-Xss4m',
-			'-Xms2048m',
-			'-XX:+UseParallelGC',
-			'-XX:MaxInlineLevel=20'
+		'-Xmx4096m',
+		'-Xss4m',
+		'-Xms2048m',
+		'-XX:+UseParallelGC',
+		'-XX:MaxInlineLevel=20'
 	]
 	options.compilerArgs += [
 		'-Xmx4096m',
