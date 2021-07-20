@@ -3,7 +3,6 @@ plugins {
 	id 'java' // java support
 	id 'scala' // scala support
 	id 'com.diffplug.spotless' version '5.14.2' // code format
-	id 'maven-publish'
 }
 
 
