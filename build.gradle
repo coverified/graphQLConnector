@@ -65,8 +65,8 @@ dependencies {
 
 tasks.withType(ScalaCompile) {
 	options.compilerArgs += [
-		'-Xmx2g',
-		'-Xmx1024m',
-		'-Xss1024k'
+		'-Xmx4g',
+		'-Xmx2048m',
+		'-Xss2048k'
 	]
 }
