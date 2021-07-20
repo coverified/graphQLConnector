@@ -145,6 +145,8 @@ object CoVerifiedClientSchema {
     case object name_DESC extends SortTagsBy
     case object highlighted_ASC extends SortTagsBy
     case object highlighted_DESC extends SortTagsBy
+    case object generated_ASC extends SortTagsBy
+    case object generated_DESC extends SortTagsBy
 
     implicit val decoder: ScalarDecoder[SortTagsBy] = {
       case __StringValue("id_ASC")          => Right(SortTagsBy.id_ASC)
@@ -154,6 +156,8 @@ object CoVerifiedClientSchema {
       case __StringValue("highlighted_ASC") => Right(SortTagsBy.highlighted_ASC)
       case __StringValue("highlighted_DESC") =>
         Right(SortTagsBy.highlighted_DESC)
+      case __StringValue("generated_ASC")  => Right(SortTagsBy.generated_ASC)
+      case __StringValue("generated_DESC") => Right(SortTagsBy.generated_DESC)
       case other =>
         Left(DecodingError(s"Can't build SortTagsBy from input $other"))
     }
@@ -165,6 +169,8 @@ object CoVerifiedClientSchema {
         case SortTagsBy.name_DESC        => __EnumValue("name_DESC")
         case SortTagsBy.highlighted_ASC  => __EnumValue("highlighted_ASC")
         case SortTagsBy.highlighted_DESC => __EnumValue("highlighted_DESC")
+        case SortTagsBy.generated_ASC    => __EnumValue("generated_ASC")
+        case SortTagsBy.generated_DESC   => __EnumValue("generated_DESC")
       }
       override def typeName: String = "SortTagsBy"
     }
@@ -192,6 +198,8 @@ object CoVerifiedClientSchema {
     case object eTag_DESC extends SortEntriesBy
     case object profileHash_ASC extends SortEntriesBy
     case object profileHash_DESC extends SortEntriesBy
+    case object contentHash_ASC extends SortEntriesBy
+    case object contentHash_DESC extends SortEntriesBy
     case object disabled_ASC extends SortEntriesBy
     case object disabled_DESC extends SortEntriesBy
 
@@ -222,6 +230,10 @@ object CoVerifiedClientSchema {
         Right(SortEntriesBy.profileHash_ASC)
       case __StringValue("profileHash_DESC") =>
         Right(SortEntriesBy.profileHash_DESC)
+      case __StringValue("contentHash_ASC") =>
+        Right(SortEntriesBy.contentHash_ASC)
+      case __StringValue("contentHash_DESC") =>
+        Right(SortEntriesBy.contentHash_DESC)
       case __StringValue("disabled_ASC")  => Right(SortEntriesBy.disabled_ASC)
       case __StringValue("disabled_DESC") => Right(SortEntriesBy.disabled_DESC)
       case other =>
@@ -252,6 +264,8 @@ object CoVerifiedClientSchema {
           case SortEntriesBy.eTag_DESC        => __EnumValue("eTag_DESC")
           case SortEntriesBy.profileHash_ASC  => __EnumValue("profileHash_ASC")
           case SortEntriesBy.profileHash_DESC => __EnumValue("profileHash_DESC")
+          case SortEntriesBy.contentHash_ASC  => __EnumValue("contentHash_ASC")
+          case SortEntriesBy.contentHash_DESC => __EnumValue("contentHash_DESC")
           case SortEntriesBy.disabled_ASC     => __EnumValue("disabled_ASC")
           case SortEntriesBy.disabled_DESC    => __EnumValue("disabled_DESC")
         }
@@ -383,7 +397,8 @@ object CoVerifiedClientSchema {
         id: String,
         name: Option[String],
         language: Option[LanguageSelection],
-        highlighted: Option[Boolean]
+        highlighted: Option[Boolean],
+        generated: Option[Boolean]
     )
 
     type ViewSelection[LanguageSelection] =
@@ -392,9 +407,9 @@ object CoVerifiedClientSchema {
     def view[LanguageSelection](
         languageSelection: SelectionBuilder[Language, LanguageSelection]
     ): ViewSelection[LanguageSelection] =
-      (id ~ name ~ language(languageSelection) ~ highlighted).map {
-        case (((id, name), language), highlighted) =>
-          TagView(id, name, language, highlighted)
+      (id ~ name ~ language(languageSelection) ~ highlighted ~ generated).map {
+        case ((((id, name), language), highlighted), generated) =>
+          TagView(id, name, language, highlighted, generated)
       }
 
     def id: SelectionBuilder[Tag, String] = Field("id", Scalar())
@@ -406,6 +421,8 @@ object CoVerifiedClientSchema {
       Field("language", OptionOf(Obj(innerSelection)))
     def highlighted: SelectionBuilder[Tag, Option[Boolean]] =
       Field("highlighted", OptionOf(Scalar()))
+    def generated: SelectionBuilder[Tag, Option[Boolean]] =
+      Field("generated", OptionOf(Scalar()))
   }
 
   type Entry
@@ -432,6 +449,7 @@ object CoVerifiedClientSchema {
         updatedAt: Option[String],
         eTag: Option[String],
         profileHash: Option[String],
+        contentHash: Option[String],
         disabled: Option[Boolean]
     )
 
@@ -489,7 +507,7 @@ object CoVerifiedClientSchema {
         _tagsMetaSkip
       )(_tagsMetaSelection) ~ tagsCount(tagsCountWhere) ~ language(
         languageSelection
-      ) ~ content ~ summary ~ date ~ nextCrawl ~ updatedAt ~ eTag ~ profileHash ~ disabled)
+      ) ~ content ~ summary ~ date ~ nextCrawl ~ updatedAt ~ eTag ~ profileHash ~ contentHash ~ disabled)
         .map {
           case (
               (
@@ -502,26 +520,29 @@ object CoVerifiedClientSchema {
                             (
                               (
                                 (
-                                  ((((id, name), hasBeenTagged), url), tags),
-                                  _tagsMeta
+                                  (
+                                    ((((id, name), hasBeenTagged), url), tags),
+                                    _tagsMeta
+                                  ),
+                                  tagsCount
                                 ),
-                                tagsCount
+                                language
                               ),
-                              language
+                              content
                             ),
-                            content
+                            summary
                           ),
-                          summary
+                          date
                         ),
-                        date
+                        nextCrawl
                       ),
-                      nextCrawl
+                      updatedAt
                     ),
-                    updatedAt
+                    eTag
                   ),
-                  eTag
+                  profileHash
                 ),
-                profileHash
+                contentHash
               ),
               disabled
               ) =>
@@ -541,6 +562,7 @@ object CoVerifiedClientSchema {
               updatedAt,
               eTag,
               profileHash,
+              contentHash,
               disabled
             )
         }
@@ -620,6 +642,8 @@ object CoVerifiedClientSchema {
       Field("eTag", OptionOf(Scalar()))
     def profileHash: SelectionBuilder[Entry, Option[String]] =
       Field("profileHash", OptionOf(Scalar()))
+    def contentHash: SelectionBuilder[Entry, Option[String]] =
+      Field("contentHash", OptionOf(Scalar()))
     def disabled: SelectionBuilder[Entry, Option[Boolean]] =
       Field("disabled", OptionOf(Scalar()))
   }
@@ -1804,7 +1828,9 @@ object CoVerifiedClientSchema {
       language: Option[LanguageWhereInput] = None,
       language_is_null: Option[Boolean] = None,
       highlighted: Option[Boolean] = None,
-      highlighted_not: Option[Boolean] = None
+      highlighted_not: Option[Boolean] = None,
+      generated: Option[Boolean] = None,
+      generated_not: Option[Boolean] = None
   )
   object TagWhereInput {
     implicit val encoder: ArgEncoder[TagWhereInput] =
@@ -1934,7 +1960,13 @@ object CoVerifiedClientSchema {
               ),
               "highlighted_not" -> value.highlighted_not.fold(
                 __NullValue: __Value
-              )(value => implicitly[ArgEncoder[Boolean]].encode(value))
+              )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
+              "generated" -> value.generated.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              ),
+              "generated_not" -> value.generated_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "TagWhereInput"
@@ -1964,7 +1996,8 @@ object CoVerifiedClientSchema {
   case class TagOrderByInput(
       id: Option[OrderDirection] = None,
       name: Option[OrderDirection] = None,
-      highlighted: Option[OrderDirection] = None
+      highlighted: Option[OrderDirection] = None,
+      generated: Option[OrderDirection] = None
   )
   object TagOrderByInput {
     implicit val encoder: ArgEncoder[TagOrderByInput] =
@@ -1980,6 +2013,9 @@ object CoVerifiedClientSchema {
               ),
               "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "generated" -> value.generated.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -1989,7 +2025,8 @@ object CoVerifiedClientSchema {
   case class TagUpdateInput(
       name: Option[String] = None,
       language: Option[LanguageRelateToOneInput] = None,
-      highlighted: Option[Boolean] = None
+      highlighted: Option[Boolean] = None,
+      generated: Option[Boolean] = None
   )
   object TagUpdateInput {
     implicit val encoder: ArgEncoder[TagUpdateInput] =
@@ -2005,6 +2042,9 @@ object CoVerifiedClientSchema {
                   implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
               "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              ),
+              "generated" -> value.generated.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
@@ -2063,7 +2103,8 @@ object CoVerifiedClientSchema {
   case class TagCreateInput(
       name: Option[String] = None,
       language: Option[LanguageRelateToOneInput] = None,
-      highlighted: Option[Boolean] = None
+      highlighted: Option[Boolean] = None,
+      generated: Option[Boolean] = None
   )
   object TagCreateInput {
     implicit val encoder: ArgEncoder[TagCreateInput] =
@@ -2079,6 +2120,9 @@ object CoVerifiedClientSchema {
                   implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
               ),
               "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              ),
+              "generated" -> value.generated.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
@@ -2235,6 +2279,24 @@ object CoVerifiedClientSchema {
       profileHash_not_ends_with_i: Option[String] = None,
       profileHash_in: Option[List[Option[String]]] = None,
       profileHash_not_in: Option[List[Option[String]]] = None,
+      contentHash: Option[String] = None,
+      contentHash_not: Option[String] = None,
+      contentHash_contains: Option[String] = None,
+      contentHash_not_contains: Option[String] = None,
+      contentHash_starts_with: Option[String] = None,
+      contentHash_not_starts_with: Option[String] = None,
+      contentHash_ends_with: Option[String] = None,
+      contentHash_not_ends_with: Option[String] = None,
+      contentHash_i: Option[String] = None,
+      contentHash_not_i: Option[String] = None,
+      contentHash_contains_i: Option[String] = None,
+      contentHash_not_contains_i: Option[String] = None,
+      contentHash_starts_with_i: Option[String] = None,
+      contentHash_not_starts_with_i: Option[String] = None,
+      contentHash_ends_with_i: Option[String] = None,
+      contentHash_not_ends_with_i: Option[String] = None,
+      contentHash_in: Option[List[Option[String]]] = None,
+      contentHash_not_in: Option[List[Option[String]]] = None,
       disabled: Option[Boolean] = None,
       disabled_not: Option[Boolean] = None
   )
@@ -2802,6 +2864,86 @@ object CoVerifiedClientSchema {
                     )
                   )
               ),
+              "contentHash" -> value.contentHash.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "contentHash_not" -> value.contentHash_not.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_contains" -> value.contentHash_contains.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_not_contains" -> value.contentHash_not_contains.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_starts_with" -> value.contentHash_starts_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_not_starts_with" -> value.contentHash_not_starts_with
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+              "contentHash_ends_with" -> value.contentHash_ends_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_not_ends_with" -> value.contentHash_not_ends_with
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+              "contentHash_i" -> value.contentHash_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "contentHash_not_i" -> value.contentHash_not_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_contains_i" -> value.contentHash_contains_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_not_contains_i" -> value.contentHash_not_contains_i
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+              "contentHash_starts_with_i" -> value.contentHash_starts_with_i
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+              "contentHash_not_starts_with_i" -> value.contentHash_not_starts_with_i
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+              "contentHash_ends_with_i" -> value.contentHash_ends_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "contentHash_not_ends_with_i" -> value.contentHash_not_ends_with_i
+                .fold(__NullValue: __Value)(
+                  value => implicitly[ArgEncoder[String]].encode(value)
+                ),
+              "contentHash_in" -> value.contentHash_in.fold(
+                __NullValue: __Value
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "contentHash_not_in" -> value.contentHash_not_in.fold(
+                __NullValue: __Value
+              )(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
               "disabled" -> value.disabled.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               ),
@@ -2839,6 +2981,7 @@ object CoVerifiedClientSchema {
       updatedAt: Option[OrderDirection] = None,
       eTag: Option[OrderDirection] = None,
       profileHash: Option[OrderDirection] = None,
+      contentHash: Option[OrderDirection] = None,
       disabled: Option[OrderDirection] = None
   )
   object EntryOrderByInput {
@@ -2877,6 +3020,9 @@ object CoVerifiedClientSchema {
               "profileHash" -> value.profileHash.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               ),
+              "contentHash" -> value.contentHash.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
               "disabled" -> value.disabled.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               )
@@ -2898,6 +3044,7 @@ object CoVerifiedClientSchema {
       updatedAt: Option[String] = None,
       eTag: Option[String] = None,
       profileHash: Option[String] = None,
+      contentHash: Option[String] = None,
       disabled: Option[Boolean] = None
   )
   object EntryUpdateInput {
@@ -2943,6 +3090,9 @@ object CoVerifiedClientSchema {
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "profileHash" -> value.profileHash.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "contentHash" -> value.contentHash.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "disabled" -> value.disabled.fold(__NullValue: __Value)(
@@ -3075,6 +3225,7 @@ object CoVerifiedClientSchema {
       updatedAt: Option[String] = None,
       eTag: Option[String] = None,
       profileHash: Option[String] = None,
+      contentHash: Option[String] = None,
       disabled: Option[Boolean] = None
   )
   object EntryCreateInput {
@@ -3120,6 +3271,9 @@ object CoVerifiedClientSchema {
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "profileHash" -> value.profileHash.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "contentHash" -> value.contentHash.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "disabled" -> value.disabled.fold(__NullValue: __Value)(
