@@ -9,7 +9,7 @@ plugins {
 ext {
 
 	scalaVersion = '2.13'
-	scalaBinaryVersion = '2.13.1'
+	scalaBinaryVersion = '2.13.6'
 	javaVersion = JavaVersion.VERSION_11
 
 	slf4jVersion = '1.7.26'
