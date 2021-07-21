@@ -37,7 +37,7 @@ repositories {
 dependencies {
 
 	// https://mvnrepository.com/artifact/com.github.ghostdogpr/caliban
-	implementation group: 'com.github.ghostdogpr', name: "caliban_${scalaVersion}", version: '0.9.5'
+	implementation group: 'com.github.ghostdogpr', name: "caliban_${scalaVersion}", version: '1.1.0'
 
 	// https://mvnrepository.com/artifact/com.github.ghostdogpr/caliban-client
 	implementation group: 'com.github.ghostdogpr', name: "caliban-client_${scalaVersion}", version: '0.9.5'
