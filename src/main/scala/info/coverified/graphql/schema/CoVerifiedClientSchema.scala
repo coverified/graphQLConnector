@@ -495,6 +495,263 @@ object CoVerifiedClientSchema {
 
   type Entry
   object Entry {
+
+    final case class EntryView[
+        UrlSelection,
+        TagsSelection,
+        _tagsMetaSelection,
+        ArticleTagsSelection,
+        _articleTagsMetaSelection,
+        AiTagsSelection,
+        _aiTagsMetaSelection,
+        LanguageSelection
+    ](
+        id: String,
+        name: Option[String],
+        hasBeenTagged: Option[Boolean],
+        url: Option[UrlSelection],
+        tags: Option[List[TagsSelection]],
+        _tagsMeta: Option[_tagsMetaSelection],
+        tagsCount: Option[Int],
+        articleTags: Option[List[ArticleTagsSelection]],
+        _articleTagsMeta: Option[_articleTagsMetaSelection],
+        articleTagsCount: Option[Int],
+        aiTags: Option[List[AiTagsSelection]],
+        _aiTagsMeta: Option[_aiTagsMetaSelection],
+        aiTagsCount: Option[Int],
+        language: Option[LanguageSelection],
+        content: Option[String],
+        summary: Option[String],
+        date: Option[String],
+        nextCrawl: Option[String],
+        updatedAt: Option[String],
+        eTag: Option[String],
+        profileHash: Option[String],
+        contentHash: Option[String],
+        disabled: Option[Boolean]
+    )
+
+    type ViewSelection[
+        UrlSelection,
+        TagsSelection,
+        _tagsMetaSelection,
+        ArticleTagsSelection,
+        _articleTagsMetaSelection,
+        AiTagsSelection,
+        _aiTagsMetaSelection,
+        LanguageSelection
+    ] = SelectionBuilder[Entry, EntryView[
+      UrlSelection,
+      TagsSelection,
+      _tagsMetaSelection,
+      ArticleTagsSelection,
+      _articleTagsMetaSelection,
+      AiTagsSelection,
+      _aiTagsMetaSelection,
+      LanguageSelection
+    ]]
+
+    def view[
+        UrlSelection,
+        TagsSelection,
+        _tagsMetaSelection,
+        ArticleTagsSelection,
+        _articleTagsMetaSelection,
+        AiTagsSelection,
+        _aiTagsMetaSelection,
+        LanguageSelection
+    ](
+        tagsWhere: TagWhereInput,
+        tagsSearch: Option[String] = None,
+        tagsOrderBy: List[TagOrderByInput] = Nil,
+        tagsFirst: Option[Int] = None,
+        tagsSkip: Int,
+        _tagsMetaWhere: TagWhereInput,
+        _tagsMetaSearch: Option[String] = None,
+        _tagsMetaOrderBy: List[TagOrderByInput] = Nil,
+        _tagsMetaFirst: Option[Int] = None,
+        _tagsMetaSkip: Int,
+        tagsCountWhere: TagWhereInput,
+        articleTagsWhere: ArticleTagWhereInput,
+        articleTagsSearch: Option[String] = None,
+        articleTagsOrderBy: List[ArticleTagOrderByInput] = Nil,
+        articleTagsFirst: Option[Int] = None,
+        articleTagsSkip: Int,
+        _articleTagsMetaWhere: ArticleTagWhereInput,
+        _articleTagsMetaSearch: Option[String] = None,
+        _articleTagsMetaOrderBy: List[ArticleTagOrderByInput] = Nil,
+        _articleTagsMetaFirst: Option[Int] = None,
+        _articleTagsMetaSkip: Int,
+        articleTagsCountWhere: ArticleTagWhereInput,
+        aiTagsWhere: AITagWhereInput,
+        aiTagsSearch: Option[String] = None,
+        aiTagsOrderBy: List[AITagOrderByInput] = Nil,
+        aiTagsFirst: Option[Int] = None,
+        aiTagsSkip: Int,
+        _aiTagsMetaWhere: AITagWhereInput,
+        _aiTagsMetaSearch: Option[String] = None,
+        _aiTagsMetaOrderBy: List[AITagOrderByInput] = Nil,
+        _aiTagsMetaFirst: Option[Int] = None,
+        _aiTagsMetaSkip: Int,
+        aiTagsCountWhere: AITagWhereInput
+    )(
+        urlSelection: SelectionBuilder[Url, UrlSelection],
+        tagsSelection: SelectionBuilder[Tag, TagsSelection],
+        _tagsMetaSelection: SelectionBuilder[_QueryMeta, _tagsMetaSelection],
+        articleTagsSelection: SelectionBuilder[
+          ArticleTag,
+          ArticleTagsSelection
+        ],
+        _articleTagsMetaSelection: SelectionBuilder[
+          _QueryMeta,
+          _articleTagsMetaSelection
+        ],
+        aiTagsSelection: SelectionBuilder[AITag, AiTagsSelection],
+        _aiTagsMetaSelection: SelectionBuilder[
+          _QueryMeta,
+          _aiTagsMetaSelection
+        ],
+        languageSelection: SelectionBuilder[Language, LanguageSelection]
+    ): ViewSelection[
+      UrlSelection,
+      TagsSelection,
+      _tagsMetaSelection,
+      ArticleTagsSelection,
+      _articleTagsMetaSelection,
+      AiTagsSelection,
+      _aiTagsMetaSelection,
+      LanguageSelection
+    ] =
+      (id ~ name ~ hasBeenTagged ~ url(urlSelection) ~ tags(
+        tagsWhere,
+        tagsSearch,
+        tagsOrderBy,
+        tagsFirst,
+        tagsSkip
+      )(tagsSelection) ~ _tagsMeta(
+        _tagsMetaWhere,
+        _tagsMetaSearch,
+        _tagsMetaOrderBy,
+        _tagsMetaFirst,
+        _tagsMetaSkip
+      )(_tagsMetaSelection) ~ tagsCount(tagsCountWhere) ~ articleTags(
+        articleTagsWhere,
+        articleTagsSearch,
+        articleTagsOrderBy,
+        articleTagsFirst,
+        articleTagsSkip
+      )(articleTagsSelection) ~ _articleTagsMeta(
+        _articleTagsMetaWhere,
+        _articleTagsMetaSearch,
+        _articleTagsMetaOrderBy,
+        _articleTagsMetaFirst,
+        _articleTagsMetaSkip
+      )(_articleTagsMetaSelection) ~ articleTagsCount(
+        articleTagsCountWhere
+      ) ~ aiTags(
+        aiTagsWhere,
+        aiTagsSearch,
+        aiTagsOrderBy,
+        aiTagsFirst,
+        aiTagsSkip
+      )(aiTagsSelection) ~ _aiTagsMeta(
+        _aiTagsMetaWhere,
+        _aiTagsMetaSearch,
+        _aiTagsMetaOrderBy,
+        _aiTagsMetaFirst,
+        _aiTagsMetaSkip
+      )(_aiTagsMetaSelection) ~ aiTagsCount(aiTagsCountWhere) ~ language(
+        languageSelection
+      ) ~ content ~ summary ~ date ~ nextCrawl ~ updatedAt ~ eTag ~ profileHash ~ contentHash ~ disabled)
+        .map {
+          case (
+              (
+                (
+                  (
+                    (
+                      (
+                        (
+                          (
+                            (
+                              (
+                                (
+                                  (
+                                    (
+                                      (
+                                        (
+                                          (
+                                            (
+                                              (
+                                                (
+                                                  (
+                                                    ((id, name), hasBeenTagged),
+                                                    url
+                                                  ),
+                                                  tags
+                                                ),
+                                                _tagsMeta
+                                              ),
+                                              tagsCount
+                                            ),
+                                            articleTags
+                                          ),
+                                          _articleTagsMeta
+                                        ),
+                                        articleTagsCount
+                                      ),
+                                      aiTags
+                                    ),
+                                    _aiTagsMeta
+                                  ),
+                                  aiTagsCount
+                                ),
+                                language
+                              ),
+                              content
+                            ),
+                            summary
+                          ),
+                          date
+                        ),
+                        nextCrawl
+                      ),
+                      updatedAt
+                    ),
+                    eTag
+                  ),
+                  profileHash
+                ),
+                contentHash
+              ),
+              disabled
+              ) =>
+            EntryView(
+              id,
+              name,
+              hasBeenTagged,
+              url,
+              tags,
+              _tagsMeta,
+              tagsCount,
+              articleTags,
+              _articleTagsMeta,
+              articleTagsCount,
+              aiTags,
+              _aiTagsMeta,
+              aiTagsCount,
+              language,
+              content,
+              summary,
+              date,
+              nextCrawl,
+              updatedAt,
+              eTag,
+              profileHash,
+              contentHash,
+              disabled
+            )
+        }
+
     def id: SelectionBuilder[Entry, String] = Field("id", Scalar())
     def name: SelectionBuilder[Entry, Option[String]] =
       Field("name", OptionOf(Scalar()))
