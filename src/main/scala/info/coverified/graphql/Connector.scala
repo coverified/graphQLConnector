@@ -1,6 +1,5 @@
 /**
- * © 2021. CoVerified,
- * Diehl, Fetzer, Hiry, Kilian, Mayer, Schlittenbauer, Schweikert, Vollnhals, Weise GbR
+ * © 2021. CoVerified GmbH
  **/
 
 package info.coverified.graphql
@@ -13,11 +12,11 @@ import zio.console.{Console, putStrLn}
 import zio.RIO
 
 /**
-  * //ToDo: Class Description
-  *
   * @version 0.1
   * @since 25.02.21
+  * @deprecated will be dropped soon. Please consider implementing your own connector.
   */
+@Deprecated
 object Connector extends LazyLogging {
 
   def sendRequest[T](
