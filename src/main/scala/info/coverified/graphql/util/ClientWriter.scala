@@ -33,7 +33,7 @@ import scala.annotation.tailrec
   */
 object ClientWriter {
 
-  private val MaxTupleLength = 22
+  private val MaxTupleLength = 30
 
   def write(
       schema: Document,
