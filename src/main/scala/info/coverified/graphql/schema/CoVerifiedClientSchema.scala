@@ -1,6 +1,5 @@
 /**
- * © 2021. CoVerified,
- * Diehl, Fetzer, Hiry, Kilian, Mayer, Schlittenbauer, Schweikert, Vollnhals, Weise GbR
+ * © 2021. CoVerified GmbH
  **/
 
 package info.coverified.graphql.schema
@@ -145,8 +144,6 @@ object CoVerifiedClientSchema {
     case object name_DESC extends SortTagsBy
     case object highlighted_ASC extends SortTagsBy
     case object highlighted_DESC extends SortTagsBy
-    case object generated_ASC extends SortTagsBy
-    case object generated_DESC extends SortTagsBy
 
     implicit val decoder: ScalarDecoder[SortTagsBy] = {
       case __StringValue("id_ASC")          => Right(SortTagsBy.id_ASC)
@@ -156,8 +153,6 @@ object CoVerifiedClientSchema {
       case __StringValue("highlighted_ASC") => Right(SortTagsBy.highlighted_ASC)
       case __StringValue("highlighted_DESC") =>
         Right(SortTagsBy.highlighted_DESC)
-      case __StringValue("generated_ASC")  => Right(SortTagsBy.generated_ASC)
-      case __StringValue("generated_DESC") => Right(SortTagsBy.generated_DESC)
       case other =>
         Left(DecodingError(s"Can't build SortTagsBy from input $other"))
     }
@@ -169,11 +164,63 @@ object CoVerifiedClientSchema {
         case SortTagsBy.name_DESC        => __EnumValue("name_DESC")
         case SortTagsBy.highlighted_ASC  => __EnumValue("highlighted_ASC")
         case SortTagsBy.highlighted_DESC => __EnumValue("highlighted_DESC")
-        case SortTagsBy.generated_ASC    => __EnumValue("generated_ASC")
-        case SortTagsBy.generated_DESC   => __EnumValue("generated_DESC")
       }
       override def typeName: String = "SortTagsBy"
     }
+  }
+
+  sealed trait SortArticleTagsBy extends scala.Product with scala.Serializable
+  object SortArticleTagsBy {
+    case object id_ASC extends SortArticleTagsBy
+    case object id_DESC extends SortArticleTagsBy
+    case object name_ASC extends SortArticleTagsBy
+    case object name_DESC extends SortArticleTagsBy
+
+    implicit val decoder: ScalarDecoder[SortArticleTagsBy] = {
+      case __StringValue("id_ASC")    => Right(SortArticleTagsBy.id_ASC)
+      case __StringValue("id_DESC")   => Right(SortArticleTagsBy.id_DESC)
+      case __StringValue("name_ASC")  => Right(SortArticleTagsBy.name_ASC)
+      case __StringValue("name_DESC") => Right(SortArticleTagsBy.name_DESC)
+      case other =>
+        Left(DecodingError(s"Can't build SortArticleTagsBy from input $other"))
+    }
+    implicit val encoder: ArgEncoder[SortArticleTagsBy] =
+      new ArgEncoder[SortArticleTagsBy] {
+        override def encode(value: SortArticleTagsBy): __Value = value match {
+          case SortArticleTagsBy.id_ASC    => __EnumValue("id_ASC")
+          case SortArticleTagsBy.id_DESC   => __EnumValue("id_DESC")
+          case SortArticleTagsBy.name_ASC  => __EnumValue("name_ASC")
+          case SortArticleTagsBy.name_DESC => __EnumValue("name_DESC")
+        }
+        override def typeName: String = "SortArticleTagsBy"
+      }
+  }
+
+  sealed trait SortAITagsBy extends scala.Product with scala.Serializable
+  object SortAITagsBy {
+    case object id_ASC extends SortAITagsBy
+    case object id_DESC extends SortAITagsBy
+    case object name_ASC extends SortAITagsBy
+    case object name_DESC extends SortAITagsBy
+
+    implicit val decoder: ScalarDecoder[SortAITagsBy] = {
+      case __StringValue("id_ASC")    => Right(SortAITagsBy.id_ASC)
+      case __StringValue("id_DESC")   => Right(SortAITagsBy.id_DESC)
+      case __StringValue("name_ASC")  => Right(SortAITagsBy.name_ASC)
+      case __StringValue("name_DESC") => Right(SortAITagsBy.name_DESC)
+      case other =>
+        Left(DecodingError(s"Can't build SortAITagsBy from input $other"))
+    }
+    implicit val encoder: ArgEncoder[SortAITagsBy] =
+      new ArgEncoder[SortAITagsBy] {
+        override def encode(value: SortAITagsBy): __Value = value match {
+          case SortAITagsBy.id_ASC    => __EnumValue("id_ASC")
+          case SortAITagsBy.id_DESC   => __EnumValue("id_DESC")
+          case SortAITagsBy.name_ASC  => __EnumValue("name_ASC")
+          case SortAITagsBy.name_DESC => __EnumValue("name_DESC")
+        }
+        override def typeName: String = "SortAITagsBy"
+      }
   }
 
   sealed trait SortEntriesBy extends scala.Product with scala.Serializable
@@ -393,180 +440,61 @@ object CoVerifiedClientSchema {
   type Tag
   object Tag {
 
-    final case class TagView[LanguageSelection](
+    final case class TagView(
         id: String,
         name: Option[String],
-        language: Option[LanguageSelection],
-        highlighted: Option[Boolean],
-        generated: Option[Boolean]
+        highlighted: Option[Boolean]
     )
 
-    type ViewSelection[LanguageSelection] =
-      SelectionBuilder[Tag, TagView[LanguageSelection]]
+    type ViewSelection = SelectionBuilder[Tag, TagView]
 
-    def view[LanguageSelection](
-        languageSelection: SelectionBuilder[Language, LanguageSelection]
-    ): ViewSelection[LanguageSelection] =
-      (id ~ name ~ language(languageSelection) ~ highlighted ~ generated).map {
-        case ((((id, name), language), highlighted), generated) =>
-          TagView(id, name, language, highlighted, generated)
-      }
+    def view: ViewSelection = (id ~ name ~ highlighted).map {
+      case ((id, name), highlighted) => TagView(id, name, highlighted)
+    }
 
     def id: SelectionBuilder[Tag, String] = Field("id", Scalar())
     def name: SelectionBuilder[Tag, Option[String]] =
       Field("name", OptionOf(Scalar()))
-    def language[A](
-        innerSelection: SelectionBuilder[Language, A]
-    ): SelectionBuilder[Tag, Option[A]] =
-      Field("language", OptionOf(Obj(innerSelection)))
     def highlighted: SelectionBuilder[Tag, Option[Boolean]] =
       Field("highlighted", OptionOf(Scalar()))
-    def generated: SelectionBuilder[Tag, Option[Boolean]] =
-      Field("generated", OptionOf(Scalar()))
+  }
+
+  type ArticleTag
+  object ArticleTag {
+
+    final case class ArticleTagView(id: String, name: Option[String])
+
+    type ViewSelection = SelectionBuilder[ArticleTag, ArticleTagView]
+
+    def view: ViewSelection = (id ~ name).map {
+      case (id, name) =>
+        ArticleTagView(id, name)
+    }
+
+    def id: SelectionBuilder[ArticleTag, String] = Field("id", Scalar())
+    def name: SelectionBuilder[ArticleTag, Option[String]] =
+      Field("name", OptionOf(Scalar()))
+  }
+
+  type AITag
+  object AITag {
+
+    final case class AITagView(id: String, name: Option[String])
+
+    type ViewSelection = SelectionBuilder[AITag, AITagView]
+
+    def view: ViewSelection = (id ~ name).map {
+      case (id, name) =>
+        AITagView(id, name)
+    }
+
+    def id: SelectionBuilder[AITag, String] = Field("id", Scalar())
+    def name: SelectionBuilder[AITag, Option[String]] =
+      Field("name", OptionOf(Scalar()))
   }
 
   type Entry
   object Entry {
-
-    final case class EntryView[
-        UrlSelection,
-        TagsSelection,
-        _tagsMetaSelection,
-        LanguageSelection
-    ](
-        id: String,
-        name: Option[String],
-        hasBeenTagged: Option[Boolean],
-        url: Option[UrlSelection],
-        tags: Option[List[TagsSelection]],
-        _tagsMeta: Option[_tagsMetaSelection],
-        tagsCount: Option[Int],
-        language: Option[LanguageSelection],
-        content: Option[String],
-        summary: Option[String],
-        date: Option[String],
-        nextCrawl: Option[String],
-        updatedAt: Option[String],
-        eTag: Option[String],
-        profileHash: Option[String],
-        contentHash: Option[String],
-        disabled: Option[Boolean]
-    )
-
-    type ViewSelection[
-        UrlSelection,
-        TagsSelection,
-        _tagsMetaSelection,
-        LanguageSelection
-    ] = SelectionBuilder[Entry, EntryView[
-      UrlSelection,
-      TagsSelection,
-      _tagsMetaSelection,
-      LanguageSelection
-    ]]
-
-    def view[
-        UrlSelection,
-        TagsSelection,
-        _tagsMetaSelection,
-        LanguageSelection
-    ](
-        tagsWhere: TagWhereInput,
-        tagsSearch: Option[String] = None,
-        tagsOrderBy: List[TagOrderByInput] = Nil,
-        tagsFirst: Option[Int] = None,
-        tagsSkip: Int,
-        _tagsMetaWhere: TagWhereInput,
-        _tagsMetaSearch: Option[String] = None,
-        _tagsMetaOrderBy: List[TagOrderByInput] = Nil,
-        _tagsMetaFirst: Option[Int] = None,
-        _tagsMetaSkip: Int,
-        tagsCountWhere: TagWhereInput
-    )(
-        urlSelection: SelectionBuilder[Url, UrlSelection],
-        tagsSelection: SelectionBuilder[Tag, TagsSelection],
-        _tagsMetaSelection: SelectionBuilder[_QueryMeta, _tagsMetaSelection],
-        languageSelection: SelectionBuilder[Language, LanguageSelection]
-    ): ViewSelection[
-      UrlSelection,
-      TagsSelection,
-      _tagsMetaSelection,
-      LanguageSelection
-    ] =
-      (id ~ name ~ hasBeenTagged ~ url(urlSelection) ~ tags(
-        tagsWhere,
-        tagsSearch,
-        tagsOrderBy,
-        tagsFirst,
-        tagsSkip
-      )(tagsSelection) ~ _tagsMeta(
-        _tagsMetaWhere,
-        _tagsMetaSearch,
-        _tagsMetaOrderBy,
-        _tagsMetaFirst,
-        _tagsMetaSkip
-      )(_tagsMetaSelection) ~ tagsCount(tagsCountWhere) ~ language(
-        languageSelection
-      ) ~ content ~ summary ~ date ~ nextCrawl ~ updatedAt ~ eTag ~ profileHash ~ contentHash ~ disabled)
-        .map {
-          case (
-              (
-                (
-                  (
-                    (
-                      (
-                        (
-                          (
-                            (
-                              (
-                                (
-                                  (
-                                    ((((id, name), hasBeenTagged), url), tags),
-                                    _tagsMeta
-                                  ),
-                                  tagsCount
-                                ),
-                                language
-                              ),
-                              content
-                            ),
-                            summary
-                          ),
-                          date
-                        ),
-                        nextCrawl
-                      ),
-                      updatedAt
-                    ),
-                    eTag
-                  ),
-                  profileHash
-                ),
-                contentHash
-              ),
-              disabled
-              ) =>
-            EntryView(
-              id,
-              name,
-              hasBeenTagged,
-              url,
-              tags,
-              _tagsMeta,
-              tagsCount,
-              language,
-              content,
-              summary,
-              date,
-              nextCrawl,
-              updatedAt,
-              eTag,
-              profileHash,
-              contentHash,
-              disabled
-            )
-        }
-
     def id: SelectionBuilder[Entry, String] = Field("id", Scalar())
     def name: SelectionBuilder[Entry, Option[String]] =
       Field("name", OptionOf(Scalar()))
@@ -624,6 +552,104 @@ object CoVerifiedClientSchema {
         OptionOf(Scalar()),
         arguments = List(Argument("where", where))
       )
+    def articleTags[A](
+        where: ArticleTagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[ArticleTagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[Entry, Option[List[A]]] = Field(
+      "articleTags",
+      OptionOf(ListOf(Obj(innerSelection))),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+    @deprecated(
+      "This query will be removed in a future version. Please use articleTagsCount instead.",
+      ""
+    )
+    def _articleTagsMeta[A](
+        where: ArticleTagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[ArticleTagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[_QueryMeta, A]
+    ): SelectionBuilder[Entry, Option[A]] = Field(
+      "_articleTagsMeta",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+    def articleTagsCount(
+        where: ArticleTagWhereInput
+    ): SelectionBuilder[Entry, Option[Int]] = Field(
+      "articleTagsCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
+    def aiTags[A](
+        where: AITagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[AITagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[Entry, Option[List[A]]] = Field(
+      "aiTags",
+      OptionOf(ListOf(Obj(innerSelection))),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+    @deprecated(
+      "This query will be removed in a future version. Please use aiTagsCount instead.",
+      ""
+    )
+    def _aiTagsMeta[A](
+        where: AITagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[AITagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[_QueryMeta, A]
+    ): SelectionBuilder[Entry, Option[A]] = Field(
+      "_aiTagsMeta",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+    def aiTagsCount(
+        where: AITagWhereInput
+    ): SelectionBuilder[Entry, Option[Int]] = Field(
+      "aiTagsCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
     def language[A](
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[Entry, Option[A]] =
@@ -678,7 +704,7 @@ object CoVerifiedClientSchema {
   object SearchResult {
 
     final case class SearchResultView[ResultsSelection](
-        results: Option[List[Option[ResultsSelection]]],
+        results: Option[List[ResultsSelection]],
         totalResults: Int
     )
 
@@ -694,8 +720,8 @@ object CoVerifiedClientSchema {
 
     def results[A](
         innerSelection: SelectionBuilder[Entry, A]
-    ): SelectionBuilder[SearchResult, Option[List[Option[A]]]] =
-      Field("results", OptionOf(ListOf(OptionOf(Obj(innerSelection)))))
+    ): SelectionBuilder[SearchResult, Option[List[A]]] =
+      Field("results", OptionOf(ListOf(Obj(innerSelection))))
     def totalResults: SelectionBuilder[SearchResult, Int] =
       Field("totalResults", Scalar())
   }
@@ -1825,12 +1851,8 @@ object CoVerifiedClientSchema {
       name_not_ends_with_i: Option[String] = None,
       name_in: Option[List[Option[String]]] = None,
       name_not_in: Option[List[Option[String]]] = None,
-      language: Option[LanguageWhereInput] = None,
-      language_is_null: Option[Boolean] = None,
       highlighted: Option[Boolean] = None,
-      highlighted_not: Option[Boolean] = None,
-      generated: Option[Boolean] = None,
-      generated_not: Option[Boolean] = None
+      highlighted_not: Option[Boolean] = None
   )
   object TagWhereInput {
     implicit val encoder: ArgEncoder[TagWhereInput] =
@@ -1948,25 +1970,12 @@ object CoVerifiedClientSchema {
                     )
                   )
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageWhereInput]].encode(value)
-              ),
-              "language_is_null" -> value.language_is_null.fold(
-                __NullValue: __Value
-              )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
               "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               ),
               "highlighted_not" -> value.highlighted_not.fold(
                 __NullValue: __Value
-              )(value => implicitly[ArgEncoder[Boolean]].encode(value)),
-              "generated" -> value.generated.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              ),
-              "generated_not" -> value.generated_not.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
+              )(value => implicitly[ArgEncoder[Boolean]].encode(value))
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "TagWhereInput"
@@ -1996,8 +2005,7 @@ object CoVerifiedClientSchema {
   case class TagOrderByInput(
       id: Option[OrderDirection] = None,
       name: Option[OrderDirection] = None,
-      highlighted: Option[OrderDirection] = None,
-      generated: Option[OrderDirection] = None
+      highlighted: Option[OrderDirection] = None
   )
   object TagOrderByInput {
     implicit val encoder: ArgEncoder[TagOrderByInput] =
@@ -2013,9 +2021,6 @@ object CoVerifiedClientSchema {
               ),
               "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
-              ),
-              "generated" -> value.generated.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
@@ -2024,9 +2029,7 @@ object CoVerifiedClientSchema {
   }
   case class TagUpdateInput(
       name: Option[String] = None,
-      language: Option[LanguageRelateToOneInput] = None,
-      highlighted: Option[Boolean] = None,
-      generated: Option[Boolean] = None
+      highlighted: Option[Boolean] = None
   )
   object TagUpdateInput {
     implicit val encoder: ArgEncoder[TagUpdateInput] =
@@ -2037,51 +2040,12 @@ object CoVerifiedClientSchema {
               "name" -> value.name.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
-              ),
               "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              ),
-              "generated" -> value.generated.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "TagUpdateInput"
-      }
-  }
-  case class LanguageRelateToOneInput(
-      create: Option[LanguageCreateInput] = None,
-      connect: Option[LanguageWhereUniqueInput] = None,
-      disconnect: Option[LanguageWhereUniqueInput] = None,
-      disconnectAll: Option[Boolean] = None
-  )
-  object LanguageRelateToOneInput {
-    implicit val encoder: ArgEncoder[LanguageRelateToOneInput] =
-      new ArgEncoder[LanguageRelateToOneInput] {
-        override def encode(value: LanguageRelateToOneInput): __Value =
-          __ObjectValue(
-            List(
-              "create" -> value.create.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
-              ),
-              "connect" -> value.connect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
-              ),
-              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
-              ),
-              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              )
-            ).filterNot(_._2.equals(__NullValue))
-          )
-        override def typeName: String = "LanguageRelateToOneInput"
       }
   }
   case class TagsUpdateInput(id: String, data: Option[TagUpdateInput] = None)
@@ -2102,9 +2066,7 @@ object CoVerifiedClientSchema {
   }
   case class TagCreateInput(
       name: Option[String] = None,
-      language: Option[LanguageRelateToOneInput] = None,
-      highlighted: Option[Boolean] = None,
-      generated: Option[Boolean] = None
+      highlighted: Option[Boolean] = None
   )
   object TagCreateInput {
     implicit val encoder: ArgEncoder[TagCreateInput] =
@@ -2115,14 +2077,7 @@ object CoVerifiedClientSchema {
               "name" -> value.name.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[String]].encode(value)
               ),
-              "language" -> value.language.fold(__NullValue: __Value)(
-                value =>
-                  implicitly[ArgEncoder[LanguageRelateToOneInput]].encode(value)
-              ),
               "highlighted" -> value.highlighted.fold(__NullValue: __Value)(
-                value => implicitly[ArgEncoder[Boolean]].encode(value)
-              ),
-              "generated" -> value.generated.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
               )
             ).filterNot(_._2.equals(__NullValue))
@@ -2143,6 +2098,522 @@ object CoVerifiedClientSchema {
             ).filterNot(_._2.equals(__NullValue))
           )
         override def typeName: String = "TagsCreateInput"
+      }
+  }
+  case class ArticleTagWhereInput(
+      AND: Option[List[ArticleTagWhereInput]] = None,
+      OR: Option[List[ArticleTagWhereInput]] = None,
+      id: Option[String] = None,
+      id_not: Option[String] = None,
+      id_lt: Option[String] = None,
+      id_lte: Option[String] = None,
+      id_gt: Option[String] = None,
+      id_gte: Option[String] = None,
+      id_in: Option[List[String]] = None,
+      id_not_in: Option[List[String]] = None,
+      name: Option[String] = None,
+      name_not: Option[String] = None,
+      name_contains: Option[String] = None,
+      name_not_contains: Option[String] = None,
+      name_starts_with: Option[String] = None,
+      name_not_starts_with: Option[String] = None,
+      name_ends_with: Option[String] = None,
+      name_not_ends_with: Option[String] = None,
+      name_i: Option[String] = None,
+      name_not_i: Option[String] = None,
+      name_contains_i: Option[String] = None,
+      name_not_contains_i: Option[String] = None,
+      name_starts_with_i: Option[String] = None,
+      name_not_starts_with_i: Option[String] = None,
+      name_ends_with_i: Option[String] = None,
+      name_not_ends_with_i: Option[String] = None,
+      name_in: Option[List[Option[String]]] = None,
+      name_not_in: Option[List[Option[String]]] = None
+  )
+  object ArticleTagWhereInput {
+    implicit val encoder: ArgEncoder[ArticleTagWhereInput] =
+      new ArgEncoder[ArticleTagWhereInput] {
+        override def encode(value: ArticleTagWhereInput): __Value =
+          __ObjectValue(
+            List(
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value => __ListValue(value.map(value => encode(value)))
+              ),
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value => __ListValue(value.map(value => encode(value)))
+              ),
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_lt" -> value.id_lt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_lte" -> value.id_lte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_gt" -> value.id_gt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_gte" -> value.id_gte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value => implicitly[ArgEncoder[String]].encode(value)
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value => implicitly[ArgEncoder[String]].encode(value)
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not_contains" -> value.name_not_contains.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_starts_with" -> value.name_starts_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_starts_with" -> value.name_not_starts_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_ends_with" -> value.name_ends_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_ends_with" -> value.name_not_ends_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_contains_i" -> value.name_contains_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_contains_i" -> value.name_not_contains_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_starts_with_i" -> value.name_starts_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_starts_with_i" -> value.name_not_starts_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_ends_with_i" -> value.name_ends_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagWhereInput"
+      }
+  }
+  case class ArticleTagWhereUniqueInput(
+      id: Option[String] = None,
+      name: Option[String] = None
+  )
+  object ArticleTagWhereUniqueInput {
+    implicit val encoder: ArgEncoder[ArticleTagWhereUniqueInput] =
+      new ArgEncoder[ArticleTagWhereUniqueInput] {
+        override def encode(value: ArticleTagWhereUniqueInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagWhereUniqueInput"
+      }
+  }
+  case class ArticleTagOrderByInput(
+      id: Option[OrderDirection] = None,
+      name: Option[OrderDirection] = None
+  )
+  object ArticleTagOrderByInput {
+    implicit val encoder: ArgEncoder[ArticleTagOrderByInput] =
+      new ArgEncoder[ArticleTagOrderByInput] {
+        override def encode(value: ArticleTagOrderByInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagOrderByInput"
+      }
+  }
+  case class ArticleTagUpdateInput(name: Option[String] = None)
+  object ArticleTagUpdateInput {
+    implicit val encoder: ArgEncoder[ArticleTagUpdateInput] =
+      new ArgEncoder[ArticleTagUpdateInput] {
+        override def encode(value: ArticleTagUpdateInput): __Value =
+          __ObjectValue(
+            List(
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagUpdateInput"
+      }
+  }
+  case class ArticleTagsUpdateInput(
+      id: String,
+      data: Option[ArticleTagUpdateInput] = None
+  )
+  object ArticleTagsUpdateInput {
+    implicit val encoder: ArgEncoder[ArticleTagsUpdateInput] =
+      new ArgEncoder[ArticleTagsUpdateInput] {
+        override def encode(value: ArticleTagsUpdateInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> implicitly[ArgEncoder[String]].encode(value.id),
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[ArticleTagUpdateInput]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagsUpdateInput"
+      }
+  }
+  case class ArticleTagCreateInput(name: Option[String] = None)
+  object ArticleTagCreateInput {
+    implicit val encoder: ArgEncoder[ArticleTagCreateInput] =
+      new ArgEncoder[ArticleTagCreateInput] {
+        override def encode(value: ArticleTagCreateInput): __Value =
+          __ObjectValue(
+            List(
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagCreateInput"
+      }
+  }
+  case class ArticleTagsCreateInput(data: Option[ArticleTagCreateInput] = None)
+  object ArticleTagsCreateInput {
+    implicit val encoder: ArgEncoder[ArticleTagsCreateInput] =
+      new ArgEncoder[ArticleTagsCreateInput] {
+        override def encode(value: ArticleTagsCreateInput): __Value =
+          __ObjectValue(
+            List(
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[ArticleTagCreateInput]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagsCreateInput"
+      }
+  }
+  case class AITagWhereInput(
+      AND: Option[List[AITagWhereInput]] = None,
+      OR: Option[List[AITagWhereInput]] = None,
+      id: Option[String] = None,
+      id_not: Option[String] = None,
+      id_lt: Option[String] = None,
+      id_lte: Option[String] = None,
+      id_gt: Option[String] = None,
+      id_gte: Option[String] = None,
+      id_in: Option[List[String]] = None,
+      id_not_in: Option[List[String]] = None,
+      name: Option[String] = None,
+      name_not: Option[String] = None,
+      name_contains: Option[String] = None,
+      name_not_contains: Option[String] = None,
+      name_starts_with: Option[String] = None,
+      name_not_starts_with: Option[String] = None,
+      name_ends_with: Option[String] = None,
+      name_not_ends_with: Option[String] = None,
+      name_i: Option[String] = None,
+      name_not_i: Option[String] = None,
+      name_contains_i: Option[String] = None,
+      name_not_contains_i: Option[String] = None,
+      name_starts_with_i: Option[String] = None,
+      name_not_starts_with_i: Option[String] = None,
+      name_ends_with_i: Option[String] = None,
+      name_not_ends_with_i: Option[String] = None,
+      name_in: Option[List[Option[String]]] = None,
+      name_not_in: Option[List[Option[String]]] = None
+  )
+  object AITagWhereInput {
+    implicit val encoder: ArgEncoder[AITagWhereInput] =
+      new ArgEncoder[AITagWhereInput] {
+        override def encode(value: AITagWhereInput): __Value =
+          __ObjectValue(
+            List(
+              "AND" -> value.AND.fold(__NullValue: __Value)(
+                value => __ListValue(value.map(value => encode(value)))
+              ),
+              "OR" -> value.OR.fold(__NullValue: __Value)(
+                value => __ListValue(value.map(value => encode(value)))
+              ),
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_not" -> value.id_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_lt" -> value.id_lt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_lte" -> value.id_lte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_gt" -> value.id_gt.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_gte" -> value.id_gte.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "id_in" -> value.id_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value => implicitly[ArgEncoder[String]].encode(value)
+                    )
+                  )
+              ),
+              "id_not_in" -> value.id_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value => implicitly[ArgEncoder[String]].encode(value)
+                    )
+                  )
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not" -> value.name_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_contains" -> value.name_contains.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not_contains" -> value.name_not_contains.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_starts_with" -> value.name_starts_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_starts_with" -> value.name_not_starts_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_ends_with" -> value.name_ends_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_ends_with" -> value.name_not_ends_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_i" -> value.name_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_not_i" -> value.name_not_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name_contains_i" -> value.name_contains_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_contains_i" -> value.name_not_contains_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_starts_with_i" -> value.name_starts_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_starts_with_i" -> value.name_not_starts_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_ends_with_i" -> value.name_ends_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_not_ends_with_i" -> value.name_not_ends_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "name_in" -> value.name_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "name_not_in" -> value.name_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagWhereInput"
+      }
+  }
+  case class AITagWhereUniqueInput(
+      id: Option[String] = None,
+      name: Option[String] = None
+  )
+  object AITagWhereUniqueInput {
+    implicit val encoder: ArgEncoder[AITagWhereUniqueInput] =
+      new ArgEncoder[AITagWhereUniqueInput] {
+        override def encode(value: AITagWhereUniqueInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagWhereUniqueInput"
+      }
+  }
+  case class AITagOrderByInput(
+      id: Option[OrderDirection] = None,
+      name: Option[OrderDirection] = None
+  )
+  object AITagOrderByInput {
+    implicit val encoder: ArgEncoder[AITagOrderByInput] =
+      new ArgEncoder[AITagOrderByInput] {
+        override def encode(value: AITagOrderByInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> value.id.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagOrderByInput"
+      }
+  }
+  case class AITagUpdateInput(name: Option[String] = None)
+  object AITagUpdateInput {
+    implicit val encoder: ArgEncoder[AITagUpdateInput] =
+      new ArgEncoder[AITagUpdateInput] {
+        override def encode(value: AITagUpdateInput): __Value =
+          __ObjectValue(
+            List(
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagUpdateInput"
+      }
+  }
+  case class AITagsUpdateInput(
+      id: String,
+      data: Option[AITagUpdateInput] = None
+  )
+  object AITagsUpdateInput {
+    implicit val encoder: ArgEncoder[AITagsUpdateInput] =
+      new ArgEncoder[AITagsUpdateInput] {
+        override def encode(value: AITagsUpdateInput): __Value =
+          __ObjectValue(
+            List(
+              "id" -> implicitly[ArgEncoder[String]].encode(value.id),
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[AITagUpdateInput]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagsUpdateInput"
+      }
+  }
+  case class AITagCreateInput(name: Option[String] = None)
+  object AITagCreateInput {
+    implicit val encoder: ArgEncoder[AITagCreateInput] =
+      new ArgEncoder[AITagCreateInput] {
+        override def encode(value: AITagCreateInput): __Value =
+          __ObjectValue(
+            List(
+              "name" -> value.name.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagCreateInput"
+      }
+  }
+  case class AITagsCreateInput(data: Option[AITagCreateInput] = None)
+  object AITagsCreateInput {
+    implicit val encoder: ArgEncoder[AITagsCreateInput] =
+      new ArgEncoder[AITagsCreateInput] {
+        override def encode(value: AITagsCreateInput): __Value =
+          __ObjectValue(
+            List(
+              "data" -> value.data.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[AITagCreateInput]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagsCreateInput"
       }
   }
   case class EntryWhereInput(
@@ -2181,6 +2652,12 @@ object CoVerifiedClientSchema {
       tags_every: Option[TagWhereInput] = None,
       tags_some: Option[TagWhereInput] = None,
       tags_none: Option[TagWhereInput] = None,
+      articleTags_every: Option[ArticleTagWhereInput] = None,
+      articleTags_some: Option[ArticleTagWhereInput] = None,
+      articleTags_none: Option[ArticleTagWhereInput] = None,
+      aiTags_every: Option[AITagWhereInput] = None,
+      aiTags_some: Option[AITagWhereInput] = None,
+      aiTags_none: Option[AITagWhereInput] = None,
       language: Option[LanguageWhereInput] = None,
       language_is_null: Option[Boolean] = None,
       content: Option[String] = None,
@@ -2436,6 +2913,33 @@ object CoVerifiedClientSchema {
               ),
               "tags_none" -> value.tags_none.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
+              ),
+              "articleTags_every" -> value.articleTags_every.fold(
+                __NullValue: __Value
+              )(
+                value =>
+                  implicitly[ArgEncoder[ArticleTagWhereInput]].encode(value)
+              ),
+              "articleTags_some" -> value.articleTags_some.fold(
+                __NullValue: __Value
+              )(
+                value =>
+                  implicitly[ArgEncoder[ArticleTagWhereInput]].encode(value)
+              ),
+              "articleTags_none" -> value.articleTags_none.fold(
+                __NullValue: __Value
+              )(
+                value =>
+                  implicitly[ArgEncoder[ArticleTagWhereInput]].encode(value)
+              ),
+              "aiTags_every" -> value.aiTags_every.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[AITagWhereInput]].encode(value)
+              ),
+              "aiTags_some" -> value.aiTags_some.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[AITagWhereInput]].encode(value)
+              ),
+              "aiTags_none" -> value.aiTags_none.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[AITagWhereInput]].encode(value)
               ),
               "language" -> value.language.fold(__NullValue: __Value)(
                 value =>
@@ -3036,6 +3540,8 @@ object CoVerifiedClientSchema {
       hasBeenTagged: Option[Boolean] = None,
       url: Option[UrlRelateToOneInput] = None,
       tags: Option[TagRelateToManyInput] = None,
+      articleTags: Option[ArticleTagRelateToManyInput] = None,
+      aiTags: Option[AITagRelateToManyInput] = None,
       language: Option[LanguageRelateToOneInput] = None,
       content: Option[String] = None,
       summary: Option[String] = None,
@@ -3066,6 +3572,16 @@ object CoVerifiedClientSchema {
               "tags" -> value.tags.fold(__NullValue: __Value)(
                 value =>
                   implicitly[ArgEncoder[TagRelateToManyInput]].encode(value)
+              ),
+              "articleTags" -> value.articleTags.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[ArticleTagRelateToManyInput]].encode(
+                    value
+                  )
+              ),
+              "aiTags" -> value.aiTags.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[AITagRelateToManyInput]].encode(value)
               ),
               "language" -> value.language.fold(__NullValue: __Value)(
                 value =>
@@ -3193,6 +3709,164 @@ object CoVerifiedClientSchema {
         override def typeName: String = "TagRelateToManyInput"
       }
   }
+  case class ArticleTagRelateToManyInput(
+      create: Option[List[Option[ArticleTagCreateInput]]] = None,
+      connect: Option[List[Option[ArticleTagWhereUniqueInput]]] = None,
+      disconnect: Option[List[Option[ArticleTagWhereUniqueInput]]] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object ArticleTagRelateToManyInput {
+    implicit val encoder: ArgEncoder[ArticleTagRelateToManyInput] =
+      new ArgEncoder[ArticleTagRelateToManyInput] {
+        override def encode(value: ArticleTagRelateToManyInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[ArticleTagCreateInput]]
+                              .encode(
+                                value
+                              )
+                        )
+                    )
+                  )
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[ArticleTagWhereUniqueInput]]
+                              .encode(
+                                value
+                              )
+                        )
+                    )
+                  )
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[ArticleTagWhereUniqueInput]]
+                              .encode(value)
+                        )
+                    )
+                  )
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "ArticleTagRelateToManyInput"
+      }
+  }
+  case class AITagRelateToManyInput(
+      create: Option[List[Option[AITagCreateInput]]] = None,
+      connect: Option[List[Option[AITagWhereUniqueInput]]] = None,
+      disconnect: Option[List[Option[AITagWhereUniqueInput]]] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object AITagRelateToManyInput {
+    implicit val encoder: ArgEncoder[AITagRelateToManyInput] =
+      new ArgEncoder[AITagRelateToManyInput] {
+        override def encode(value: AITagRelateToManyInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[AITagCreateInput]]
+                              .encode(value)
+                        )
+                    )
+                  )
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[AITagWhereUniqueInput]]
+                              .encode(
+                                value
+                              )
+                        )
+                    )
+                  )
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value =>
+                            implicitly[ArgEncoder[AITagWhereUniqueInput]]
+                              .encode(
+                                value
+                              )
+                        )
+                    )
+                  )
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "AITagRelateToManyInput"
+      }
+  }
+  case class LanguageRelateToOneInput(
+      create: Option[LanguageCreateInput] = None,
+      connect: Option[LanguageWhereUniqueInput] = None,
+      disconnect: Option[LanguageWhereUniqueInput] = None,
+      disconnectAll: Option[Boolean] = None
+  )
+  object LanguageRelateToOneInput {
+    implicit val encoder: ArgEncoder[LanguageRelateToOneInput] =
+      new ArgEncoder[LanguageRelateToOneInput] {
+        override def encode(value: LanguageRelateToOneInput): __Value =
+          __ObjectValue(
+            List(
+              "create" -> value.create.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageCreateInput]].encode(value)
+              ),
+              "connect" -> value.connect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
+              ),
+              "disconnect" -> value.disconnect.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[LanguageWhereUniqueInput]].encode(value)
+              ),
+              "disconnectAll" -> value.disconnectAll.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[Boolean]].encode(value)
+              )
+            ).filterNot(_._2.equals(__NullValue))
+          )
+        override def typeName: String = "LanguageRelateToOneInput"
+      }
+  }
   case class EntriesUpdateInput(
       id: String,
       data: Option[EntryUpdateInput] = None
@@ -3217,6 +3891,8 @@ object CoVerifiedClientSchema {
       hasBeenTagged: Option[Boolean] = None,
       url: Option[UrlRelateToOneInput] = None,
       tags: Option[TagRelateToManyInput] = None,
+      articleTags: Option[ArticleTagRelateToManyInput] = None,
+      aiTags: Option[AITagRelateToManyInput] = None,
       language: Option[LanguageRelateToOneInput] = None,
       content: Option[String] = None,
       summary: Option[String] = None,
@@ -3247,6 +3923,16 @@ object CoVerifiedClientSchema {
               "tags" -> value.tags.fold(__NullValue: __Value)(
                 value =>
                   implicitly[ArgEncoder[TagRelateToManyInput]].encode(value)
+              ),
+              "articleTags" -> value.articleTags.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[ArticleTagRelateToManyInput]].encode(
+                    value
+                  )
+              ),
+              "aiTags" -> value.aiTags.fold(__NullValue: __Value)(
+                value =>
+                  implicitly[ArgEncoder[AITagRelateToManyInput]].encode(value)
               ),
               "language" -> value.language.fold(__NullValue: __Value)(
                 value =>
@@ -3601,6 +4287,136 @@ object CoVerifiedClientSchema {
       arguments = List(Argument("where", where))
     )
 
+    /** Search for all ArticleTag items which match the where clause.
+      */
+    def allArticleTags[A](
+        where: ArticleTagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[ArticleTagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootQuery, Option[List[A]]] = Field(
+      "allArticleTags",
+      OptionOf(ListOf(Obj(innerSelection))),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+
+    /** Search for the ArticleTag item with the matching ID.
+      */
+    def ArticleTag[A](where: ArticleTagWhereUniqueInput)(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootQuery, Option[A]] = Field(
+      "ArticleTag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("where", where))
+    )
+
+    /** Perform a meta-query on all ArticleTag items which match the where clause.
+      */
+    @deprecated(
+      "This query will be removed in a future version. Please use articleTagsCount instead.",
+      ""
+    )
+    def _allArticleTagsMeta[A](
+        where: ArticleTagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[ArticleTagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[_QueryMeta, A]
+    ): SelectionBuilder[RootQuery, Option[A]] = Field(
+      "_allArticleTagsMeta",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+    def articleTagsCount(
+        where: ArticleTagWhereInput
+    ): SelectionBuilder[RootQuery, Option[Int]] = Field(
+      "articleTagsCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
+
+    /** Search for all AITag items which match the where clause.
+      */
+    def allAITags[A](
+        where: AITagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[AITagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootQuery, Option[List[A]]] = Field(
+      "allAITags",
+      OptionOf(ListOf(Obj(innerSelection))),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+
+    /** Search for the AITag item with the matching ID.
+      */
+    def AITag[A](where: AITagWhereUniqueInput)(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootQuery, Option[A]] = Field(
+      "AITag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("where", where))
+    )
+
+    /** Perform a meta-query on all AITag items which match the where clause.
+      */
+    @deprecated(
+      "This query will be removed in a future version. Please use aITagsCount instead.",
+      ""
+    )
+    def _allAITagsMeta[A](
+        where: AITagWhereInput,
+        search: Option[String] = None,
+        orderBy: List[AITagOrderByInput] = Nil,
+        first: Option[Int] = None,
+        skip: Int
+    )(
+        innerSelection: SelectionBuilder[_QueryMeta, A]
+    ): SelectionBuilder[RootQuery, Option[A]] = Field(
+      "_allAITagsMeta",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(
+        Argument("where", where),
+        Argument("search", search),
+        Argument("orderBy", orderBy),
+        Argument("first", first),
+        Argument("skip", skip)
+      )
+    )
+    def aITagsCount(
+        where: AITagWhereInput
+    ): SelectionBuilder[RootQuery, Option[Int]] = Field(
+      "aITagsCount",
+      OptionOf(Scalar()),
+      arguments = List(Argument("where", where))
+    )
+
     /** Search for all Entry items which match the where clause.
       */
     def allEntries[A](
@@ -3669,7 +4485,7 @@ object CoVerifiedClientSchema {
     /** Return <first> search results for <search>, skipping <skip>
       */
     def searchEntries[A](
-        search: String,
+        search: Option[String] = None,
         where: SearchWhereInput,
         first: Int,
         skip: Int
@@ -3950,6 +4766,133 @@ object CoVerifiedClientSchema {
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
       "deleteTags",
+      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      arguments = List(Argument("ids", ids))
+    )
+
+    /** Create a single ArticleTag item.
+      */
+    def createArticleTag[A](data: Option[ArticleTagCreateInput] = None)(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootMutation, Option[A]] = Field(
+      "createArticleTag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("data", data))
+    )
+
+    /** Create multiple ArticleTag items.
+      */
+    def createArticleTags[A](
+        data: Option[List[Option[ArticleTagsCreateInput]]] = None
+    )(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
+      "createArticleTags",
+      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      arguments = List(Argument("data", data))
+    )
+
+    /** Update a single ArticleTag item by ID.
+      */
+    def updateArticleTag[A](
+        id: String,
+        data: Option[ArticleTagUpdateInput] = None
+    )(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootMutation, Option[A]] = Field(
+      "updateArticleTag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("id", id), Argument("data", data))
+    )
+
+    /** Update multiple ArticleTag items by ID.
+      */
+    def updateArticleTags[A](
+        data: Option[List[Option[ArticleTagsUpdateInput]]] = None
+    )(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
+      "updateArticleTags",
+      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      arguments = List(Argument("data", data))
+    )
+
+    /** Delete a single ArticleTag item by ID.
+      */
+    def deleteArticleTag[A](id: String)(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootMutation, Option[A]] = Field(
+      "deleteArticleTag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("id", id))
+    )
+
+    /** Delete multiple ArticleTag items by ID.
+      */
+    def deleteArticleTags[A](ids: Option[List[String]] = None)(
+        innerSelection: SelectionBuilder[ArticleTag, A]
+    ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
+      "deleteArticleTags",
+      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      arguments = List(Argument("ids", ids))
+    )
+
+    /** Create a single AITag item.
+      */
+    def createAITag[A](data: Option[AITagCreateInput] = None)(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootMutation, Option[A]] = Field(
+      "createAITag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("data", data))
+    )
+
+    /** Create multiple AITag items.
+      */
+    def createAITags[A](data: Option[List[Option[AITagsCreateInput]]] = None)(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
+      "createAITags",
+      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      arguments = List(Argument("data", data))
+    )
+
+    /** Update a single AITag item by ID.
+      */
+    def updateAITag[A](id: String, data: Option[AITagUpdateInput] = None)(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootMutation, Option[A]] = Field(
+      "updateAITag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("id", id), Argument("data", data))
+    )
+
+    /** Update multiple AITag items by ID.
+      */
+    def updateAITags[A](data: Option[List[Option[AITagsUpdateInput]]] = None)(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
+      "updateAITags",
+      OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
+      arguments = List(Argument("data", data))
+    )
+
+    /** Delete a single AITag item by ID.
+      */
+    def deleteAITag[A](id: String)(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootMutation, Option[A]] = Field(
+      "deleteAITag",
+      OptionOf(Obj(innerSelection)),
+      arguments = List(Argument("id", id))
+    )
+
+    /** Delete multiple AITag items by ID.
+      */
+    def deleteAITags[A](ids: Option[List[String]] = None)(
+        innerSelection: SelectionBuilder[AITag, A]
+    ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
+      "deleteAITags",
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("ids", ids))
     )
