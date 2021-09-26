@@ -2,17 +2,17 @@ plugins {
 	id 'groovy' // groovy support
 	id 'java' // java support
 	id 'scala' // scala support
-	id 'com.diffplug.spotless' version '5.14.2' // code format
+	id 'com.diffplug.spotless' version '5.15.1' // code format
 }
 
 
 ext {
 
 	scalaVersion = '2.13'
-	scalaBinaryVersion = '2.13.1'
+	scalaBinaryVersion = '2.13.6'
 	javaVersion = JavaVersion.VERSION_11
 
-	slf4jVersion = '1.7.26'
+	slf4jVersion = '1.7.32'
 
 	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -31,7 +31,8 @@ configurations {
 }
 
 repositories {
-	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
+	jcenter()
+	mavenCentral() //searches in bintray's repository 'jCenter', which contains Maven Central
 }
 
 dependencies {
@@ -51,9 +52,9 @@ dependencies {
 	// logging
 	implementation "org.slf4j:slf4j-api:${slf4jVersion}"  // slf4j wrapper
 	implementation 'com.lmax:disruptor:3.4.4' // async logging
-	implementation 'org.apache.logging.log4j:log4j-api:2.14.0' // log4j
-	implementation 'org.apache.logging.log4j:log4j-core:2.14.0' // log4j
-	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.0' // log4j -> slf4j
+	implementation 'org.apache.logging.log4j:log4j-api:2.14.1' // log4j
+	implementation 'org.apache.logging.log4j:log4j-core:2.14.1' // log4j
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.1' // log4j -> slf4j
 
 	implementation "com.typesafe.scala-logging:scala-logging_${scalaVersion}:3.9.2" // akka scala logging
 	implementation 'com.typesafe.scala-logging:scala-logging-slf4j_2.11:2.1.2'// scala logging
