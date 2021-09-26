@@ -231,6 +231,8 @@ object CoVerifiedClientSchema {
     case object name_DESC extends SortEntriesBy
     case object hasBeenTagged_ASC extends SortEntriesBy
     case object hasBeenTagged_DESC extends SortEntriesBy
+    case object img_ASC extends SortEntriesBy
+    case object img_DESC extends SortEntriesBy
     case object content_ASC extends SortEntriesBy
     case object content_DESC extends SortEntriesBy
     case object summary_ASC extends SortEntriesBy
@@ -259,6 +261,8 @@ object CoVerifiedClientSchema {
         Right(SortEntriesBy.hasBeenTagged_ASC)
       case __StringValue("hasBeenTagged_DESC") =>
         Right(SortEntriesBy.hasBeenTagged_DESC)
+      case __StringValue("img_ASC")       => Right(SortEntriesBy.img_ASC)
+      case __StringValue("img_DESC")      => Right(SortEntriesBy.img_DESC)
       case __StringValue("content_ASC")   => Right(SortEntriesBy.content_ASC)
       case __StringValue("content_DESC")  => Right(SortEntriesBy.content_DESC)
       case __StringValue("summary_ASC")   => Right(SortEntriesBy.summary_ASC)
@@ -297,6 +301,8 @@ object CoVerifiedClientSchema {
             __EnumValue("hasBeenTagged_ASC")
           case SortEntriesBy.hasBeenTagged_DESC =>
             __EnumValue("hasBeenTagged_DESC")
+          case SortEntriesBy.img_ASC          => __EnumValue("img_ASC")
+          case SortEntriesBy.img_DESC         => __EnumValue("img_DESC")
           case SortEntriesBy.content_ASC      => __EnumValue("content_ASC")
           case SortEntriesBy.content_DESC     => __EnumValue("content_DESC")
           case SortEntriesBy.summary_ASC      => __EnumValue("summary_ASC")
@@ -361,6 +367,26 @@ object CoVerifiedClientSchema {
           }
         override def typeName: String = "PasswordAuthErrorCode"
       }
+  }
+
+  sealed trait QueryMode extends scala.Product with scala.Serializable
+  object QueryMode {
+    case object default extends QueryMode
+    case object insensitive extends QueryMode
+
+    implicit val decoder: ScalarDecoder[QueryMode] = {
+      case __StringValue("default")     => Right(QueryMode.default)
+      case __StringValue("insensitive") => Right(QueryMode.insensitive)
+      case other =>
+        Left(DecodingError(s"Can't build QueryMode from input $other"))
+    }
+    implicit val encoder: ArgEncoder[QueryMode] = new ArgEncoder[QueryMode] {
+      override def encode(value: QueryMode): __Value = value match {
+        case QueryMode.default     => __EnumValue("default")
+        case QueryMode.insensitive => __EnumValue("insensitive")
+      }
+      override def typeName: String = "QueryMode"
+    }
   }
 
   type Url
@@ -510,6 +536,7 @@ object CoVerifiedClientSchema {
         name: Option[String],
         hasBeenTagged: Option[Boolean],
         url: Option[UrlSelection],
+        img: Option[String],
         tags: Option[List[TagsSelection]],
         _tagsMeta: Option[_tagsMetaSelection],
         tagsCount: Option[Int],
@@ -622,7 +649,7 @@ object CoVerifiedClientSchema {
       _aiTagsMetaSelection,
       LanguageSelection
     ] =
-      (id ~ name ~ hasBeenTagged ~ url(urlSelection) ~ tags(
+      (id ~ name ~ hasBeenTagged ~ url(urlSelection) ~ img ~ tags(
         tagsWhere,
         tagsSearch,
         tagsOrderBy,
@@ -684,8 +711,14 @@ object CoVerifiedClientSchema {
                                               (
                                                 (
                                                   (
-                                                    ((id, name), hasBeenTagged),
-                                                    url
+                                                    (
+                                                      (
+                                                        (id, name),
+                                                        hasBeenTagged
+                                                      ),
+                                                      url
+                                                    ),
+                                                    img
                                                   ),
                                                   tags
                                                 ),
@@ -730,6 +763,7 @@ object CoVerifiedClientSchema {
               name,
               hasBeenTagged,
               url,
+              img,
               tags,
               _tagsMeta,
               tagsCount,
@@ -761,6 +795,8 @@ object CoVerifiedClientSchema {
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[Entry, Option[A]] =
       Field("url", OptionOf(Obj(innerSelection)))
+    def img: SelectionBuilder[Entry, Option[String]] =
+      Field("img", OptionOf(Scalar()))
     def tags[A](
         where: TagWhereInput,
         search: Option[String] = None,
@@ -2906,6 +2942,24 @@ object CoVerifiedClientSchema {
       hasBeenTagged_not: Option[Boolean] = None,
       url: Option[UrlWhereInput] = None,
       url_is_null: Option[Boolean] = None,
+      img: Option[String] = None,
+      img_not: Option[String] = None,
+      img_contains: Option[String] = None,
+      img_not_contains: Option[String] = None,
+      img_starts_with: Option[String] = None,
+      img_not_starts_with: Option[String] = None,
+      img_ends_with: Option[String] = None,
+      img_not_ends_with: Option[String] = None,
+      img_i: Option[String] = None,
+      img_not_i: Option[String] = None,
+      img_contains_i: Option[String] = None,
+      img_not_contains_i: Option[String] = None,
+      img_starts_with_i: Option[String] = None,
+      img_not_starts_with_i: Option[String] = None,
+      img_ends_with_i: Option[String] = None,
+      img_not_ends_with_i: Option[String] = None,
+      img_in: Option[List[Option[String]]] = None,
+      img_not_in: Option[List[Option[String]]] = None,
       tags_every: Option[TagWhereInput] = None,
       tags_some: Option[TagWhereInput] = None,
       tags_none: Option[TagWhereInput] = None,
@@ -3161,6 +3215,76 @@ object CoVerifiedClientSchema {
               ),
               "url_is_null" -> value.url_is_null.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[Boolean]].encode(value)
+              ),
+              "img" -> value.img.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "img_not" -> value.img_not.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "img_contains" -> value.img_contains.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "img_not_contains" -> value.img_not_contains.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_starts_with" -> value.img_starts_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_not_starts_with" -> value.img_not_starts_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_ends_with" -> value.img_ends_with.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "img_not_ends_with" -> value.img_not_ends_with.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_i" -> value.img_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "img_not_i" -> value.img_not_i.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
+              ),
+              "img_contains_i" -> value.img_contains_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_not_contains_i" -> value.img_not_contains_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_starts_with_i" -> value.img_starts_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_not_starts_with_i" -> value.img_not_starts_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_ends_with_i" -> value.img_ends_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_not_ends_with_i" -> value.img_not_ends_with_i.fold(
+                __NullValue: __Value
+              )(value => implicitly[ArgEncoder[String]].encode(value)),
+              "img_in" -> value.img_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
+              ),
+              "img_not_in" -> value.img_not_in.fold(__NullValue: __Value)(
+                value =>
+                  __ListValue(
+                    value.map(
+                      value =>
+                        value.fold(__NullValue: __Value)(
+                          value => implicitly[ArgEncoder[String]].encode(value)
+                        )
+                    )
+                  )
               ),
               "tags_every" -> value.tags_every.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[TagWhereInput]].encode(value)
@@ -3735,6 +3859,7 @@ object CoVerifiedClientSchema {
       id: Option[OrderDirection] = None,
       name: Option[OrderDirection] = None,
       hasBeenTagged: Option[OrderDirection] = None,
+      img: Option[OrderDirection] = None,
       content: Option[OrderDirection] = None,
       summary: Option[OrderDirection] = None,
       date: Option[OrderDirection] = None,
@@ -3758,6 +3883,9 @@ object CoVerifiedClientSchema {
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               ),
               "hasBeenTagged" -> value.hasBeenTagged.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[OrderDirection]].encode(value)
+              ),
+              "img" -> value.img.fold(__NullValue: __Value)(
                 value => implicitly[ArgEncoder[OrderDirection]].encode(value)
               ),
               "content" -> value.content.fold(__NullValue: __Value)(
@@ -3796,6 +3924,7 @@ object CoVerifiedClientSchema {
       name: Option[String] = None,
       hasBeenTagged: Option[Boolean] = None,
       url: Option[UrlRelateToOneInput] = None,
+      img: Option[String] = None,
       tags: Option[TagRelateToManyInput] = None,
       articleTags: Option[ArticleTagRelateToManyInput] = None,
       aiTags: Option[AITagRelateToManyInput] = None,
@@ -3825,6 +3954,9 @@ object CoVerifiedClientSchema {
               "url" -> value.url.fold(__NullValue: __Value)(
                 value =>
                   implicitly[ArgEncoder[UrlRelateToOneInput]].encode(value)
+              ),
+              "img" -> value.img.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "tags" -> value.tags.fold(__NullValue: __Value)(
                 value =>
@@ -4147,6 +4279,7 @@ object CoVerifiedClientSchema {
       name: Option[String] = None,
       hasBeenTagged: Option[Boolean] = None,
       url: Option[UrlRelateToOneInput] = None,
+      img: Option[String] = None,
       tags: Option[TagRelateToManyInput] = None,
       articleTags: Option[ArticleTagRelateToManyInput] = None,
       aiTags: Option[AITagRelateToManyInput] = None,
@@ -4176,6 +4309,9 @@ object CoVerifiedClientSchema {
               "url" -> value.url.fold(__NullValue: __Value)(
                 value =>
                   implicitly[ArgEncoder[UrlRelateToOneInput]].encode(value)
+              ),
+              "img" -> value.img.fold(__NullValue: __Value)(
+                value => implicitly[ArgEncoder[String]].encode(value)
               ),
               "tags" -> value.tags.fold(__NullValue: __Value)(
                 value =>
@@ -4283,9 +4419,6 @@ object CoVerifiedClientSchema {
   }
   type Query = RootQuery
   object Query {
-
-    /** Search for all Url items which match the where clause.
-      */
     def allUrls[A](
         where: UrlWhereInput,
         search: Option[String] = None,
@@ -4305,9 +4438,6 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
-
-    /** Search for the Url item with the matching ID.
-      */
     def Url[A](where: UrlWhereUniqueInput)(
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -4315,9 +4445,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("where", where))
     )
-
-    /** Perform a meta-query on all Url items which match the where clause.
-      */
     @deprecated(
       "This query will be removed in a future version. Please use urlsCount instead.",
       ""
@@ -4348,9 +4475,6 @@ object CoVerifiedClientSchema {
       OptionOf(Scalar()),
       arguments = List(Argument("where", where))
     )
-
-    /** Search for all Source items which match the where clause.
-      */
     def allSources[A](
         where: SourceWhereInput,
         search: Option[String] = None,
@@ -4370,9 +4494,6 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
-
-    /** Search for the Source item with the matching ID.
-      */
     def Source[A](where: SourceWhereUniqueInput)(
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -4380,9 +4501,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("where", where))
     )
-
-    /** Perform a meta-query on all Source items which match the where clause.
-      */
     @deprecated(
       "This query will be removed in a future version. Please use sourcesCount instead.",
       ""
@@ -4413,9 +4531,6 @@ object CoVerifiedClientSchema {
       OptionOf(Scalar()),
       arguments = List(Argument("where", where))
     )
-
-    /** Search for all Language items which match the where clause.
-      */
     def allLanguages[A](
         where: LanguageWhereInput,
         search: Option[String] = None,
@@ -4435,9 +4550,6 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
-
-    /** Search for the Language item with the matching ID.
-      */
     def Language[A](where: LanguageWhereUniqueInput)(
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -4445,9 +4557,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("where", where))
     )
-
-    /** Perform a meta-query on all Language items which match the where clause.
-      */
     @deprecated(
       "This query will be removed in a future version. Please use languagesCount instead.",
       ""
@@ -4478,9 +4587,6 @@ object CoVerifiedClientSchema {
       OptionOf(Scalar()),
       arguments = List(Argument("where", where))
     )
-
-    /** Search for all Tag items which match the where clause.
-      */
     def allTags[A](
         where: TagWhereInput,
         search: Option[String] = None,
@@ -4500,9 +4606,6 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
-
-    /** Search for the Tag item with the matching ID.
-      */
     def Tag[A](where: TagWhereUniqueInput)(
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -4510,9 +4613,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("where", where))
     )
-
-    /** Perform a meta-query on all Tag items which match the where clause.
-      */
     @deprecated(
       "This query will be removed in a future version. Please use tagsCount instead.",
       ""
@@ -4543,9 +4643,6 @@ object CoVerifiedClientSchema {
       OptionOf(Scalar()),
       arguments = List(Argument("where", where))
     )
-
-    /** Search for all ArticleTag items which match the where clause.
-      */
     def allArticleTags[A](
         where: ArticleTagWhereInput,
         search: Option[String] = None,
@@ -4565,9 +4662,6 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
-
-    /** Search for the ArticleTag item with the matching ID.
-      */
     def ArticleTag[A](where: ArticleTagWhereUniqueInput)(
         innerSelection: SelectionBuilder[ArticleTag, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -4575,9 +4669,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("where", where))
     )
-
-    /** Perform a meta-query on all ArticleTag items which match the where clause.
-      */
     @deprecated(
       "This query will be removed in a future version. Please use articleTagsCount instead.",
       ""
@@ -4608,9 +4699,6 @@ object CoVerifiedClientSchema {
       OptionOf(Scalar()),
       arguments = List(Argument("where", where))
     )
-
-    /** Search for all AITag items which match the where clause.
-      */
     def allAITags[A](
         where: AITagWhereInput,
         search: Option[String] = None,
@@ -4630,9 +4718,6 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
-
-    /** Search for the AITag item with the matching ID.
-      */
     def AITag[A](where: AITagWhereUniqueInput)(
         innerSelection: SelectionBuilder[AITag, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -4640,9 +4725,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("where", where))
     )
-
-    /** Perform a meta-query on all AITag items which match the where clause.
-      */
     @deprecated(
       "This query will be removed in a future version. Please use aITagsCount instead.",
       ""
@@ -4673,9 +4755,6 @@ object CoVerifiedClientSchema {
       OptionOf(Scalar()),
       arguments = List(Argument("where", where))
     )
-
-    /** Search for all Entry items which match the where clause.
-      */
     def allEntries[A](
         where: EntryWhereInput,
         search: Option[String] = None,
@@ -4695,9 +4774,6 @@ object CoVerifiedClientSchema {
         Argument("skip", skip)
       )
     )
-
-    /** Search for the Entry item with the matching ID.
-      */
     def Entry[A](where: EntryWhereUniqueInput)(
         innerSelection: SelectionBuilder[Entry, A]
     ): SelectionBuilder[RootQuery, Option[A]] = Field(
@@ -4705,9 +4781,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("where", where))
     )
-
-    /** Perform a meta-query on all Entry items which match the where clause.
-      */
     @deprecated(
       "This query will be removed in a future version. Please use entriesCount instead.",
       ""
@@ -4762,11 +4835,12 @@ object CoVerifiedClientSchema {
     /** Return autocompletion for <search>
       */
     def autocompleteSearchTerm(
-        search: String
-    ): SelectionBuilder[RootQuery, Option[String]] = Field(
+        search: String,
+        first: Int
+    ): SelectionBuilder[RootQuery, Option[List[Option[String]]]] = Field(
       "autocompleteSearchTerm",
-      OptionOf(Scalar()),
-      arguments = List(Argument("search", search))
+      OptionOf(ListOf(OptionOf(Scalar()))),
+      arguments = List(Argument("search", search), Argument("first", first))
     )
 
     /** Return suggestions for <search>
@@ -4782,9 +4856,6 @@ object CoVerifiedClientSchema {
 
   type Mutation = RootMutation
   object Mutation {
-
-    /** Create a single Url item.
-      */
     def createUrl[A](data: Option[UrlCreateInput] = None)(
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4792,9 +4863,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("data", data))
     )
-
-    /** Create multiple Url items.
-      */
     def createUrls[A](data: Option[List[Option[UrlsCreateInput]]] = None)(
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4802,9 +4870,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Update a single Url item by ID.
-      */
     def updateUrl[A](id: String, data: Option[UrlUpdateInput] = None)(
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4812,9 +4877,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id), Argument("data", data))
     )
-
-    /** Update multiple Url items by ID.
-      */
     def updateUrls[A](data: Option[List[Option[UrlsUpdateInput]]] = None)(
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4822,9 +4884,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Delete a single Url item by ID.
-      */
     def deleteUrl[A](id: String)(
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4832,9 +4891,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id))
     )
-
-    /** Delete multiple Url items by ID.
-      */
     def deleteUrls[A](ids: Option[List[String]] = None)(
         innerSelection: SelectionBuilder[Url, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4842,9 +4898,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("ids", ids))
     )
-
-    /** Create a single Source item.
-      */
     def createSource[A](data: Option[SourceCreateInput] = None)(
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4852,9 +4905,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("data", data))
     )
-
-    /** Create multiple Source items.
-      */
     def createSources[A](data: Option[List[Option[SourcesCreateInput]]] = None)(
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4862,9 +4912,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Update a single Source item by ID.
-      */
     def updateSource[A](id: String, data: Option[SourceUpdateInput] = None)(
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4872,9 +4919,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id), Argument("data", data))
     )
-
-    /** Update multiple Source items by ID.
-      */
     def updateSources[A](data: Option[List[Option[SourcesUpdateInput]]] = None)(
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4882,9 +4926,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Delete a single Source item by ID.
-      */
     def deleteSource[A](id: String)(
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4892,9 +4933,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id))
     )
-
-    /** Delete multiple Source items by ID.
-      */
     def deleteSources[A](ids: Option[List[String]] = None)(
         innerSelection: SelectionBuilder[Source, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4902,9 +4940,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("ids", ids))
     )
-
-    /** Create a single Language item.
-      */
     def createLanguage[A](data: Option[LanguageCreateInput] = None)(
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4912,9 +4947,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("data", data))
     )
-
-    /** Create multiple Language items.
-      */
     def createLanguages[A](
         data: Option[List[Option[LanguagesCreateInput]]] = None
     )(
@@ -4924,9 +4956,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Update a single Language item by ID.
-      */
     def updateLanguage[A](id: String, data: Option[LanguageUpdateInput] = None)(
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4934,9 +4963,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id), Argument("data", data))
     )
-
-    /** Update multiple Language items by ID.
-      */
     def updateLanguages[A](
         data: Option[List[Option[LanguagesUpdateInput]]] = None
     )(
@@ -4946,9 +4972,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Delete a single Language item by ID.
-      */
     def deleteLanguage[A](id: String)(
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4956,9 +4979,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id))
     )
-
-    /** Delete multiple Language items by ID.
-      */
     def deleteLanguages[A](ids: Option[List[String]] = None)(
         innerSelection: SelectionBuilder[Language, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4966,9 +4986,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("ids", ids))
     )
-
-    /** Create a single Tag item.
-      */
     def createTag[A](data: Option[TagCreateInput] = None)(
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4976,9 +4993,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("data", data))
     )
-
-    /** Create multiple Tag items.
-      */
     def createTags[A](data: Option[List[Option[TagsCreateInput]]] = None)(
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -4986,9 +5000,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Update a single Tag item by ID.
-      */
     def updateTag[A](id: String, data: Option[TagUpdateInput] = None)(
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -4996,9 +5007,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id), Argument("data", data))
     )
-
-    /** Update multiple Tag items by ID.
-      */
     def updateTags[A](data: Option[List[Option[TagsUpdateInput]]] = None)(
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5006,9 +5014,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Delete a single Tag item by ID.
-      */
     def deleteTag[A](id: String)(
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5016,9 +5021,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id))
     )
-
-    /** Delete multiple Tag items by ID.
-      */
     def deleteTags[A](ids: Option[List[String]] = None)(
         innerSelection: SelectionBuilder[Tag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5026,9 +5028,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("ids", ids))
     )
-
-    /** Create a single ArticleTag item.
-      */
     def createArticleTag[A](data: Option[ArticleTagCreateInput] = None)(
         innerSelection: SelectionBuilder[ArticleTag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5036,9 +5035,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("data", data))
     )
-
-    /** Create multiple ArticleTag items.
-      */
     def createArticleTags[A](
         data: Option[List[Option[ArticleTagsCreateInput]]] = None
     )(
@@ -5048,9 +5044,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Update a single ArticleTag item by ID.
-      */
     def updateArticleTag[A](
         id: String,
         data: Option[ArticleTagUpdateInput] = None
@@ -5061,9 +5054,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id), Argument("data", data))
     )
-
-    /** Update multiple ArticleTag items by ID.
-      */
     def updateArticleTags[A](
         data: Option[List[Option[ArticleTagsUpdateInput]]] = None
     )(
@@ -5073,9 +5063,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Delete a single ArticleTag item by ID.
-      */
     def deleteArticleTag[A](id: String)(
         innerSelection: SelectionBuilder[ArticleTag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5083,9 +5070,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id))
     )
-
-    /** Delete multiple ArticleTag items by ID.
-      */
     def deleteArticleTags[A](ids: Option[List[String]] = None)(
         innerSelection: SelectionBuilder[ArticleTag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5093,9 +5077,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("ids", ids))
     )
-
-    /** Create a single AITag item.
-      */
     def createAITag[A](data: Option[AITagCreateInput] = None)(
         innerSelection: SelectionBuilder[AITag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5103,9 +5084,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("data", data))
     )
-
-    /** Create multiple AITag items.
-      */
     def createAITags[A](data: Option[List[Option[AITagsCreateInput]]] = None)(
         innerSelection: SelectionBuilder[AITag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5113,9 +5091,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Update a single AITag item by ID.
-      */
     def updateAITag[A](id: String, data: Option[AITagUpdateInput] = None)(
         innerSelection: SelectionBuilder[AITag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5123,9 +5098,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id), Argument("data", data))
     )
-
-    /** Update multiple AITag items by ID.
-      */
     def updateAITags[A](data: Option[List[Option[AITagsUpdateInput]]] = None)(
         innerSelection: SelectionBuilder[AITag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5133,9 +5105,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Delete a single AITag item by ID.
-      */
     def deleteAITag[A](id: String)(
         innerSelection: SelectionBuilder[AITag, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5143,9 +5112,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id))
     )
-
-    /** Delete multiple AITag items by ID.
-      */
     def deleteAITags[A](ids: Option[List[String]] = None)(
         innerSelection: SelectionBuilder[AITag, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5153,9 +5119,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("ids", ids))
     )
-
-    /** Create a single Entry item.
-      */
     def createEntry[A](data: Option[EntryCreateInput] = None)(
         innerSelection: SelectionBuilder[Entry, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5163,9 +5126,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("data", data))
     )
-
-    /** Create multiple Entry items.
-      */
     def createEntries[A](data: Option[List[Option[EntriesCreateInput]]] = None)(
         innerSelection: SelectionBuilder[Entry, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5173,9 +5133,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Update a single Entry item by ID.
-      */
     def updateEntry[A](id: String, data: Option[EntryUpdateInput] = None)(
         innerSelection: SelectionBuilder[Entry, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5183,9 +5140,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id), Argument("data", data))
     )
-
-    /** Update multiple Entry items by ID.
-      */
     def updateEntries[A](data: Option[List[Option[EntriesUpdateInput]]] = None)(
         innerSelection: SelectionBuilder[Entry, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
@@ -5193,9 +5147,6 @@ object CoVerifiedClientSchema {
       OptionOf(ListOf(OptionOf(Obj(innerSelection)))),
       arguments = List(Argument("data", data))
     )
-
-    /** Delete a single Entry item by ID.
-      */
     def deleteEntry[A](id: String)(
         innerSelection: SelectionBuilder[Entry, A]
     ): SelectionBuilder[RootMutation, Option[A]] = Field(
@@ -5203,9 +5154,6 @@ object CoVerifiedClientSchema {
       OptionOf(Obj(innerSelection)),
       arguments = List(Argument("id", id))
     )
-
-    /** Delete multiple Entry items by ID.
-      */
     def deleteEntries[A](ids: Option[List[String]] = None)(
         innerSelection: SelectionBuilder[Entry, A]
     ): SelectionBuilder[RootMutation, Option[List[Option[A]]]] = Field(
