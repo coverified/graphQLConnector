@@ -11,10 +11,10 @@ import com.typesafe.scalalogging.LazyLogging
 import zio.console.{Console, putStrLn}
 import zio.RIO
 
-/**
-  * @version 0.1
+/** @version 0.1
   * @since 25.02.21
-  * @deprecated will be dropped soon. Please consider implementing your own connector.
+  * @deprecated
+  *   will be dropped soon. Please consider implementing your own connector.
   */
 @Deprecated
 object Connector extends LazyLogging {

@@ -7,8 +7,7 @@ package info.coverified.graphql.util
 import caliban.parsing.adt.Document
 import caliban.tools.SchemaWriter._
 
-/**
-  * //ToDo: Class Description
+/** //ToDo: Class Description
   *
   * @version 0.1
   * @since 24.02.21
@@ -24,15 +23,14 @@ object SchemaWriter {
     val schemaDef = schema.schemaDefinition
 
     val argsTypes = schema.objectTypeDefinitions
-      .flatMap(
-        typeDef =>
-          typeDef.fields.filter(_.args.nonEmpty).map(writeArguments(_, typeDef))
+      .flatMap(typeDef =>
+        typeDef.fields.filter(_.args.nonEmpty).map(writeArguments(_, typeDef))
       )
       .mkString("\n")
 
     val unionTypes = schema.unionTypeDefinitions
-      .map(
-        union => (union, union.memberTypes.flatMap(schema.objectTypeDefinition))
+      .map(union =>
+        (union, union.memberTypes.flatMap(schema.objectTypeDefinition))
       )
       .toMap
 
@@ -41,14 +39,13 @@ object SchemaWriter {
       .mkString("\n")
 
     val objects = schema.objectTypeDefinitions
-      .filterNot(
-        obj =>
-          reservedType(obj) ||
-            schemaDef.exists(_.query.getOrElse("Query") == obj.name) ||
-            schemaDef.exists(_.mutation.getOrElse("Mutation") == obj.name) ||
-            schemaDef
-              .exists(_.subscription.getOrElse("Subscription") == obj.name) ||
-            unionTypes.values.flatten.exists(_.name == obj.name)
+      .filterNot(obj =>
+        reservedType(obj) ||
+          schemaDef.exists(_.query.getOrElse("Query") == obj.name) ||
+          schemaDef.exists(_.mutation.getOrElse("Mutation") == obj.name) ||
+          schemaDef
+            .exists(_.subscription.getOrElse("Subscription") == obj.name) ||
+          unionTypes.values.flatten.exists(_.name == obj.name)
       )
       .map(writeObject)
       .mkString("\n")
@@ -76,8 +73,10 @@ object SchemaWriter {
       .getOrElse("")
 
     val hasSubscriptions = subscriptions.nonEmpty
-    val hasTypes = argsTypes.length + objects.length + enums.length + unions.length + inputs.length > 0
-    val hasOperations = queries.length + mutations.length + subscriptions.length > 0
+    val hasTypes =
+      argsTypes.length + objects.length + enums.length + unions.length + inputs.length > 0
+    val hasOperations =
+      queries.length + mutations.length + subscriptions.length > 0
 
     val typesAndOperations =
       s"""
@@ -100,7 +99,9 @@ object SchemaWriter {
       else ""}
       """
 
-    s"""${packageName.fold("")(p => s"package $p\n\n")}${if (hasTypes && hasOperations)
+    s"""${packageName.fold("")(p => s"package $p\n\n")}${if (
+      hasTypes && hasOperations
+    )
       s"import ${packageName.fold("")(p => s"$p")}.${objectName.fold("")(o => o)}.Types._\n"
     else ""}
           ${if (typesAndOperations.contains("@GQL"))

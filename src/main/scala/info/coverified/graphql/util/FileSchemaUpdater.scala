@@ -9,8 +9,7 @@ import zio.{Task, UIO}
 
 import java.io.{File, PrintWriter}
 
-/**
-  * Updating client schema from file
+/** Updating client schema from file
   */
 object FileSchemaUpdater extends ClientSchemaUpdater with App {
   // params

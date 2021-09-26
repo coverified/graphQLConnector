@@ -25,8 +25,8 @@ import caliban.parsing.adt.Type.{ListType, NamedType}
 
 import scala.annotation.tailrec
 
-/**
-  * Extract case classes etc. from client schema definition and write them to file
+/** Extract case classes etc. from client schema definition and write them to
+  * file
   *
   * @version 0.1
   * @since 24.02.21
@@ -72,21 +72,19 @@ object ClientWriter {
         case op @ ScalarTypeDefinition(_, name, _)         => name -> op
         case op @ InterfaceTypeDefinition(_, name, _, _)   => name -> op
       }
-      .map {
-        case (name, op) =>
-          safeTypeName(name, mappingClashedTypeNames) -> op
+      .map { case (name, op) =>
+        safeTypeName(name, mappingClashedTypeNames) -> op
       }
       .toMap
 
     val objects = schema.objectTypeDefinitions
-      .filterNot(
-        obj =>
-          reservedType(obj) ||
-            schemaDef.exists(_.query.getOrElse("Query") == obj.name) ||
-            schemaDef.exists(_.mutation.getOrElse("Mutation") == obj.name) ||
-            schemaDef
-              .exists(_.subscription.getOrElse("Subscription") == obj.name) ||
-            unwanted(obj)
+      .filterNot(obj =>
+        reservedType(obj) ||
+          schemaDef.exists(_.query.getOrElse("Query") == obj.name) ||
+          schemaDef.exists(_.mutation.getOrElse("Mutation") == obj.name) ||
+          schemaDef
+            .exists(_.subscription.getOrElse("Subscription") == obj.name) ||
+          unwanted(obj)
       )
       .map(writeObject(_, typesMap, mappingClashedTypeNames, genView))
       .mkString("\n")
@@ -131,16 +129,22 @@ object ClientWriter {
         """import caliban.client.CalibanClientError.DecodingError
             |""".stripMargin
       else
-        ""}${if (objects.nonEmpty || queries.nonEmpty || mutations.nonEmpty || subscriptions.nonEmpty)
+        ""}${if (
+        objects.nonEmpty || queries.nonEmpty || mutations.nonEmpty || subscriptions.nonEmpty
+      )
         """import caliban.client.FieldBuilder._
             |import caliban.client.SelectionBuilder._
             |""".stripMargin
       else
-        ""}${if (enums.nonEmpty || objects.nonEmpty || queries.nonEmpty || mutations.nonEmpty || subscriptions.nonEmpty || inputs.nonEmpty)
+        ""}${if (
+        enums.nonEmpty || objects.nonEmpty || queries.nonEmpty || mutations.nonEmpty || subscriptions.nonEmpty || inputs.nonEmpty
+      )
         """import caliban.client._
             |""".stripMargin
       else
-        ""}${if (queries.nonEmpty || mutations.nonEmpty || subscriptions.nonEmpty)
+        ""}${if (
+        queries.nonEmpty || mutations.nonEmpty || subscriptions.nonEmpty
+      )
         """import caliban.client.Operations._
             |""".stripMargin
       else ""}${if (enums.nonEmpty || inputs.nonEmpty)
@@ -163,13 +167,16 @@ object ClientWriter {
        |}""".stripMargin
   }
 
-  /**
-    * Determine, if the given definition's name contains an undesired key word
+  /** Determine, if the given definition's name contains an undesired key word
     *
-    * @param definition       Definition to assess
-    * @param unwantedKeyWords Key words, that indicate an unwanted entity
-    * @return true, if field is unwanted
-    * @throws IllegalArgumentException if there is an uncovered [[Definition]]
+    * @param definition
+    *   Definition to assess
+    * @param unwantedKeyWords
+    *   Key words, that indicate an unwanted entity
+    * @return
+    *   true, if field is unwanted
+    * @throws IllegalArgumentException
+    *   if there is an uncovered [[Definition]]
     */
   def unwanted(
       definition: Definition
@@ -191,13 +198,16 @@ object ClientWriter {
       )
   }
 
-  /**
-    * Determine, if the given definition's name contains an undesired key word
+  /** Determine, if the given definition's name contains an undesired key word
     *
-    * @param definition       Definition to assess
-    * @param unwantedKeyWords Key words, that indicate an unwanted entity
-    * @return true, if field is unwanted
-    * @throws IllegalArgumentException if there is an uncovered [[Definition]]
+    * @param definition
+    *   Definition to assess
+    * @param unwantedKeyWords
+    *   Key words, that indicate an unwanted entity
+    * @return
+    *   true, if field is unwanted
+    * @throws IllegalArgumentException
+    *   if there is an uncovered [[Definition]]
     */
   def unwanted(
       definition: FieldDefinition
@@ -206,12 +216,15 @@ object ClientWriter {
       .map(_.toLowerCase)
       .exists(definition.name.toLowerCase.contains(_))
 
-  /**
-    * Check, if the field name contains any of the undesired key words (ignoring the case)
+  /** Check, if the field name contains any of the undesired key words (ignoring
+    * the case)
     *
-    * @param fieldName        Name of the field to assess
-    * @param unwantedKeyWords Key words, that indicate an unwanted entity
-    * @return true, if an unwanted key word is in the field name
+    * @param fieldName
+    *   Name of the field to assess
+    * @param unwantedKeyWords
+    *   Key words, that indicate an unwanted entity
+    * @return
+    *   true, if an unwanted key word is in the field name
     */
   def unwanted(fieldName: String, unwantedKeyWords: Vector[String]): Boolean =
     unwantedKeyWords.map(_.toLowerCase).exists {
@@ -253,9 +266,9 @@ object ClientWriter {
     s"""type ${typedef.name} = RootQuery
        |object ${typedef.name} {
        |  ${typedef.fields
-         .filterNot(unwanted(_))
-         .map(writeField(_, "RootQuery", typesMap, mappingClashedTypeNames))
-         .mkString("\n  ")}
+      .filterNot(unwanted(_))
+      .map(writeField(_, "RootQuery", typesMap, mappingClashedTypeNames))
+      .mkString("\n  ")}
        |}
        |""".stripMargin
 
@@ -267,9 +280,9 @@ object ClientWriter {
     s"""type ${typedef.name} = RootMutation
        |object ${typedef.name} {
        |  ${typedef.fields
-         .filterNot(unwanted(_))
-         .map(writeField(_, "RootMutation", typesMap, mappingClashedTypeNames))
-         .mkString("\n  ")}
+      .filterNot(unwanted(_))
+      .map(writeField(_, "RootMutation", typesMap, mappingClashedTypeNames))
+      .mkString("\n  ")}
        |}
        |""".stripMargin
 
@@ -281,10 +294,10 @@ object ClientWriter {
     s"""type ${typedef.name} = RootSubscription
        |object ${typedef.name} {
        |  ${typedef.fields
-         .map(
-           writeField(_, "RootSubscription", typesMap, mappingClashedTypeNames)
-         )
-         .mkString("\n  ")}
+      .map(
+        writeField(_, "RootSubscription", typesMap, mappingClashedTypeNames)
+      )
+      .mkString("\n  ")}
        |}
        |""".stripMargin
 
@@ -335,8 +348,8 @@ object ClientWriter {
       }
 
     val genericSelectionFieldTypes =
-      genericSelectionFields.map {
-        case (field, name) => (field, name.capitalize)
+      genericSelectionFields.map { case (field, name) =>
+        (field, name.capitalize)
       }
 
     val genericSelectionFieldsMap = genericSelectionFields.toMap
@@ -355,30 +368,28 @@ object ClientWriter {
     val viewFunctionSelectionArguments: List[String] =
       genericSelectionFields.collect {
         case (
-            field @ FieldTypeInfo(_, _, _, Nil, Nil, _, Some(owner)),
-            fieldName
+              field @ FieldTypeInfo(_, _, _, Nil, Nil, _, Some(owner)),
+              fieldName
             ) =>
           val tpe = genericSelectionFieldTypesMap(field)
           List(s"$fieldName: SelectionBuilder[$owner, $tpe]")
 
         case (
-            field @ FieldTypeInfo(_, _, _, _, unionTypes, _, Some(_)),
-            fieldName
+              field @ FieldTypeInfo(_, _, _, _, unionTypes, _, Some(_)),
+              fieldName
             ) if unionTypes.nonEmpty =>
           val tpe = genericSelectionFieldTypesMap(field)
-          unionTypes.map(
-            unionType =>
-              s"${fieldName}On$unionType: SelectionBuilder[$unionType, $tpe]"
+          unionTypes.map(unionType =>
+            s"${fieldName}On$unionType: SelectionBuilder[$unionType, $tpe]"
           )
 
         case (
-            field @ FieldTypeInfo(_, _, _, interfaceTypes, _, _, Some(_)),
-            fieldName
+              field @ FieldTypeInfo(_, _, _, interfaceTypes, _, _, Some(_)),
+              fieldName
             ) if interfaceTypes.nonEmpty =>
           val tpe = genericSelectionFieldTypesMap(field)
-          interfaceTypes.map(
-            intType =>
-              s"${fieldName}On$intType: Option[SelectionBuilder[$intType, $tpe]] = None"
+          interfaceTypes.map(intType =>
+            s"${fieldName}On$intType: Option[SelectionBuilder[$intType, $tpe]] = None"
           )
       }.flatten
 
@@ -415,8 +426,8 @@ object ClientWriter {
             val selectionPart = {
               val parts =
                 if (unionTypes.nonEmpty)
-                  unionTypes.map(
-                    unionType => s"${selectionType.head}On$unionType"
+                  unionTypes.map(unionType =>
+                    s"${selectionType.head}On$unionType"
                   )
                 else if (interfaceTypes.nonEmpty)
                   interfaceTypes.map(tpe => s"${selectionType.head}On$tpe")
@@ -470,23 +481,22 @@ object ClientWriter {
   ): String = {
     val inputObjectName = safeTypeName(typedef.name, mappingClashedTypeNames)
     s"""case class $inputObjectName(${writeArgumentFields(
-         typedef.fields,
-         mappingClashedTypeNames
-       )})
+      typedef.fields,
+      mappingClashedTypeNames
+    )})
        |object $inputObjectName {
        |  implicit val encoder: ArgEncoder[$inputObjectName] = new ArgEncoder[$inputObjectName] {
        |    override def encode(value: $inputObjectName): __Value =
        |      __ObjectValue(List(${typedef.fields
-         .map(
-           f =>
-             s""""${f.name}" -> ${writeInputValue(
-               f.ofType,
-               s"value.${safeName(f.name)}",
-               inputObjectName,
-               mappingClashedTypeNames
-             )}"""
-         )
-         .mkString(", ")}).filterNot(_._2.equals(__NullValue)))
+      .map(f =>
+        s""""${f.name}" -> ${writeInputValue(
+             f.ofType,
+             s"value.${safeName(f.name)}",
+             inputObjectName,
+             mappingClashedTypeNames
+           )}"""
+      )
+      .mkString(", ")}).filterNot(_._2.equals(__NullValue)))
        |    override def typeName: String = "$inputObjectName"
        |  }
        |}""".stripMargin
@@ -533,11 +543,10 @@ object ClientWriter {
 
           implicit val decoder: ScalarDecoder[$enumName] = {
             ${typedef.enumValuesDefinition
-      .map(
-        v =>
-          s"""case __StringValue ("${v.enumValue}") => Right($enumName.${safeEnumValue(
-            v.enumValue
-          )})"""
+      .map(v =>
+        s"""case __StringValue ("${v.enumValue}") => Right($enumName.${safeEnumValue(
+          v.enumValue
+        )})"""
       )
       .mkString("\n")}
             case other => Left(DecodingError(s"Can't build ${typedef.name} from input $$other"))
@@ -545,9 +554,10 @@ object ClientWriter {
           implicit val encoder: ArgEncoder[${typedef.name}] = new ArgEncoder[${typedef.name}] {
             override def encode(value: ${enumName}): __Value = value match {
               ${typedef.enumValuesDefinition
-      .map(
-        v =>
-          s"""case ${typedef.name}.${safeEnumValue(v.enumValue)} => __EnumValue("${v.enumValue}")"""
+      .map(v =>
+        s"""case ${typedef.name}.${safeEnumValue(
+          v.enumValue
+        )} => __EnumValue("${v.enumValue}")"""
       )
       .mkString("\n")}
             }
@@ -632,9 +642,8 @@ object ClientWriter {
       case Some(directive) =>
         val body =
           directive.arguments
-            .collectFirst {
-              case ("reason", StringValue(reason)) =>
-                reason
+            .collectFirst { case ("reason", StringValue(reason)) =>
+              reason
             }
             .getOrElse("")
 
@@ -656,30 +665,26 @@ object ClientWriter {
       .getOrElse(true)
     val unionTypes = typesMap
       .get(fieldType)
-      .collect {
-        case UnionTypeDefinition(_, _, _, memberTypes) =>
-          memberTypes.flatMap(
-            name => typesMap.get(safeTypeName(name, mappingClashedTypeNames))
-          )
+      .collect { case UnionTypeDefinition(_, _, _, memberTypes) =>
+        memberTypes.flatMap(name =>
+          typesMap.get(safeTypeName(name, mappingClashedTypeNames))
+        )
       }
       .getOrElse(Nil)
-      .collect {
-        case o: ObjectTypeDefinition =>
-          o
+      .collect { case o: ObjectTypeDefinition =>
+        o
       }
     val interfaceTypes = typesMap
       .get(fieldType)
-      .collect {
-        case InterfaceTypeDefinition(_, name, _, _) =>
-          name
+      .collect { case InterfaceTypeDefinition(_, name, _, _) =>
+        name
       }
-      .map(
-        interface =>
-          typesMap.values.collect {
-            case o @ ObjectTypeDefinition(_, _, implements, _, _)
-                if implements.exists(_.name == interface) =>
-              o
-          }
+      .map(interface =>
+        typesMap.values.collect {
+          case o @ ObjectTypeDefinition(_, _, implements, _, _)
+              if implements.exists(_.name == interface) =>
+            o
+        }
       )
       .getOrElse(Nil)
     val typeLetter = getTypeLetter(typesMap)
